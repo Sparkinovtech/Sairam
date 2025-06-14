@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "800199246089",
+    "project_id": "sitc-dd9a9",
+    "storage_bucket": "sitc-dd9a9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800199246089:android:741a773951f0725886d3d8",
+        "android_client_info": {
+          "package_name": "com.example.sairam_incubation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjxp-CLSnlHfrxlPY0djAWS4igv79TKCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
