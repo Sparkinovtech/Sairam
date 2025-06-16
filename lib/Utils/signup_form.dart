@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 
 import '../Auth/login_page.dart';
 import '../View/home_page.dart';
@@ -65,7 +66,7 @@ class _SignUpFormState extends State<SignUpForm> {
               MaterialButton(
                 onPressed: (){
                   if(_key.currentState!.validate()){
-                    Navigator.pushReplacement(context,PageTransition(type: PageTransitionType.fade ,child: HomePage()) );
+                    Navigator.pushReplacement(context,PageTransition(type: PageTransitionType.fade ,child:BottomNavBar()) );
                   }
                 },
                 color: Colors.blue,
