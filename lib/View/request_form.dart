@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Utils/images.dart';
 import 'package:sairam_incubation/View/home_page.dart';
+
 class RequestForm extends StatefulWidget {
   const RequestForm({super.key});
 
@@ -12,6 +14,10 @@ class RequestForm extends StatefulWidget {
 
 class _RequestFormState extends State<RequestForm> {
   final TextEditingController _dataController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  String? selectedTo;
+  String? stayDuration = 'Evening stay';
+  String? residenceType = 'Hosteller';
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -65,6 +71,7 @@ class _RequestFormState extends State<RequestForm> {
                     ),
                     SizedBox(height: size.height * .03,),
                     TextFormField(
+                      readOnly: true,
                       controller: _dataController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -76,16 +83,113 @@ class _RequestFormState extends State<RequestForm> {
                         labelText: "Date",
                         labelStyle: GoogleFonts.inter(fontSize: 13 , fontWeight: FontWeight.w500,color: Colors.black),
                         suffixIcon: IconButton(
-                            onPressed: (){
-
-                            }, icon: Icon(CupertinoIcons.calendar)),
+                            onPressed: (){}, icon: Icon(CupertinoIcons.calendar)),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+            SizedBox(height: size.height * .03,),
+            Expanded(
+              child:Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(image: AssetImage(background),fit: BoxFit.cover),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(30) , topRight: Radius.circular(30)),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withOpacity(.9),
+                          Colors.white.withOpacity(.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomLeft,
+                      ),
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(30) , topLeft: Radius.circular(30)),
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 20),
+                    child: Column(
+                      children: [
+                        SizedBox(height: size.height * .04,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Description:",style: GoogleFonts.inter(color: Colors.black,fontSize: 17,fontWeight: FontWeight.w500),),
+                          ],
+                        ),
+                        SizedBox(height: size.height * .02,),
+                        Card(
+                          elevation: 15,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            width: double.infinity,
+                            height: size.height * .13,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: TextFormField(
+                              controller: _descriptionController,
+                              cursorColor: Colors.grey,
+                              maxLines: 5,
+                              decoration: InputDecoration(
+                                hintText: "Type here..",
+                                hintStyle: GoogleFonts.inter(color: Colors.grey,fontSize: 12),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: size.height * .04,),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Stay Duration:",style: GoogleFonts.inter(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),
+                          ],
+                        ),
+                        SizedBox(height: size.height * .03,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+  Widget _buildChoiceButton({required String text , required bool isSelected ,  required VoidCallback onTap }){
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.blue : Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(text,style: GoogleFonts.inter(color: isSelected ? Colors.white : Colors.black,fontSize: 15,fontWeight: FontWeight.w500),),
+          ),
         ),
       ),
     );
