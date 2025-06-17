@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Utils/images.dart';
-import 'package:sairam_incubation/View/home_page.dart';
 
 class RequestForm extends StatefulWidget {
   const RequestForm({super.key});
@@ -17,7 +17,7 @@ class _RequestFormState extends State<RequestForm> {
   final TextEditingController _descriptionController = TextEditingController();
   String? selectedTo;
   String? stayDuration = 'Evening stay';
-  String? residenceType = 'Hosteller';
+  String? residenceType = 'Hosteler';
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -37,7 +37,7 @@ class _RequestFormState extends State<RequestForm> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   IconButton(onPressed: (){
-                    Navigator.pushReplacement(context,PageTransition(type: PageTransitionType.fade , child: HomePage()));
+                    Navigator.pushReplacement(context,PageTransition(type: PageTransitionType.fade , child: BottomNavBar()));
                     }, icon: Icon(Icons.arrow_back_ios)),
                 ],
               ),
@@ -163,9 +163,43 @@ class _RequestFormState extends State<RequestForm> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-
+                            _buildChoiceButton("Evening Stay", stayDuration == "Evening Stay", () => setState(() => stayDuration = "Evening Stay") , CupertinoIcons.sun_dust_fill ),
+                            SizedBox(width: size.width * .04,),
+                            _buildChoiceButton("Night Stay", stayDuration == "Night Stay", () => setState(() => stayDuration = "Night Stay"),CupertinoIcons.moon_stars_fill)
                           ],
-                        )
+                        ),
+                        SizedBox(height: size.height * .06,),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            children: [
+                              Text("Residence Type" , style: GoogleFonts.inter(fontSize:20,fontWeight: FontWeight.bold,color: Colors.black),),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: size.height * .03,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _residentButton("Hostler", residenceType == "Hostler", () => setState(() => residenceType = "Hostler")),
+                            SizedBox(width: size.width * .04,),
+                            _residentButton("Day Scholar", residenceType == "Day Scholar", () => setState(() => residenceType = "Day Scholar")),
+                          ],
+                        ),
+                        SizedBox(height: size.height * .08,),
+                        MaterialButton(
+                          onPressed: (){
+
+                          },
+                          color: Color(0xFF2580C3),
+                          minWidth: size.width * .8,
+                          height: size.height * .05,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Text("Submit",style: GoogleFonts.poppins(color: Colors.white , fontSize: 15,fontWeight: FontWeight.w500),),
+                        ),
+                        SizedBox(height: size.height * .02,),
                       ],
                     ),
                   ),
@@ -177,21 +211,68 @@ class _RequestFormState extends State<RequestForm> {
       ),
     );
   }
-  Widget _buildChoiceButton({required String text , required bool isSelected ,  required VoidCallback onTap }){
+  Widget _buildChoiceButton(String text , bool isSelected , VoidCallback onTap , IconData icon){
+    var size = MediaQuery.of(context).size;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.blue : Colors.grey.shade100,
+            gradient: isSelected ? LinearGradient(
+                colors:[
+                  Colors.blue[600]!,
+                  Colors.blue[300]!
+                ]
+            ) : LinearGradient(
+                colors: [
+                  Colors.grey[400]!,
+                  Colors.grey[300]!,
+                  Colors.grey[100]!,
+                ]
+            ),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Center(
-            child: Text(text,style: GoogleFonts.inter(color: isSelected ? Colors.white : Colors.black,fontSize: 15,fontWeight: FontWeight.w500),),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(text , style: GoogleFonts.inter(color: isSelected ? Colors.white : Colors.black),),
+              SizedBox(width:size.width * .02 ,),
+              Icon(icon, color: isSelected ? Colors.white : Colors.black,),
+
+            ],
           ),
         ),
       ),
+    );
+  }
+  Widget _residentButton (String text  , bool isSelected , VoidCallback onTap){
+    return Expanded(
+      child: GestureDetector(
+        onTap:onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 13),
+          decoration: BoxDecoration(
+            gradient: isSelected ? LinearGradient(
+                colors:[
+                  Colors.blue[600]!,
+                  Colors.blue[300]!
+                ]
+            ) : LinearGradient(
+                colors: [
+                  Colors.grey[400]!,
+                  Colors.grey[300]!,
+                  Colors.grey[100]!,
+                ]
+            ),
+
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(text , style: GoogleFonts.inter(color: isSelected ? Colors.white : Colors.black),),
+          ),
+        ),
+      )
     );
   }
 }

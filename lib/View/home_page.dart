@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Utils/images.dart';
-import 'package:sairam_incubation/View/request_form.dart';
 
 import '../Utils/stay_request_container.dart';
 class HomePage extends StatefulWidget {
@@ -14,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final String name = "Krishna Rajan";
+  final String name = "John Patric";
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +30,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Row(
                     children: [
-                      CircleAvatar( backgroundColor: Colors.grey.withOpacity(.1),radius: 24,child: Icon(CupertinoIcons.person,color: Colors.black,),),
+                      CircleAvatar( backgroundColor: Colors.grey.withOpacity(.1),radius: 24,backgroundImage: NetworkImage("https://t3.ftcdn.net/jpg/03/02/88/46/360_F_302884605_actpipOdPOQHDTnFtp4zg4RtlWzhOASp.jpg"),),
                       SizedBox(width: size.width * .02,),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
