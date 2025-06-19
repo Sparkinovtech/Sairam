@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 
-import '../Utils/signup_form.dart';
+import '../../Utils/signup_form.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -31,8 +31,8 @@ class _SignupPageState extends State<SignupPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(.9),
-                  Colors.white.withOpacity(.8),
+                  Colors.white.withValues(alpha: .9),
+                  Colors.white.withValues(alpha: .8),
                 ],
               ),
             ),

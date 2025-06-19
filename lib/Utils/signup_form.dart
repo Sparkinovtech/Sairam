@@ -2,13 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 
-import '../Auth/login_page.dart';
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({
-    super.key,
-  });
+  const SignUpForm({super.key});
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -41,31 +39,72 @@ class _SignUpFormState extends State<SignUpForm> {
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 25),
-        child:Form(
+        child: Form(
           key: _key,
           child: Column(
             children: [
-              _buildTextField(controller: _user, hintText: "Enter  Name", icon: CupertinoIcons.person ,
-                  validator:  (v) => v == null || v.isEmpty ?"Enter the Name" : null),
-              SizedBox(height: size.height * .03,),
-              _buildTextField(controller: _id, hintText: "Enter Student ID ", icon: CupertinoIcons.creditcard , validator: (v) => v == null || v.isEmpty ?"Enter the Student ID" : null),
-              SizedBox(height: size.height * .03,),
-              _buildTextField(controller:_email , hintText: "Enter Email Address", icon: CupertinoIcons.mail,keyboard: TextInputType.emailAddress ,
-                  validator: (v) => v == null || v.isEmpty ? "Enter the Email Address" : !v.contains("@") ? "Invalid Email Address" :
-                  v.length < 5 ? "The email must contain 5 letters" : null ),
-              SizedBox(height: size.height * .03,),
-              _buildPasswordField(controller: _password, hintText: "Enter Password", isVisible:_isPasswordVisible ,
-                  toggleVisible: () => setState(() => _isPasswordVisible = !_isPasswordVisible ),
-                  validator: (v) => v == null || v.isEmpty ? "Enter Password" : null),
-              SizedBox(height: size.height * .05,),
-              _buildPasswordField(controller:_confirmPassword , hintText: "Enter Confirm Password", isVisible: _isConfirmPasswordVisible,
-                  toggleVisible: () => setState(()  => _isConfirmPasswordVisible = !_isConfirmPasswordVisible),
-                  validator: (v) => v == null || v.isEmpty ? "Enter the Confirm Password" : null),
-              SizedBox(height: size.height * .05,),
+              _buildTextField(
+                controller: _user,
+                hintText: "Enter  Name",
+                icon: CupertinoIcons.person,
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Enter the Name" : null,
+              ),
+              SizedBox(height: size.height * .03),
+              _buildTextField(
+                controller: _id,
+                hintText: "Enter Student ID ",
+                icon: CupertinoIcons.creditcard,
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Enter the Student ID" : null,
+              ),
+              SizedBox(height: size.height * .03),
+              _buildTextField(
+                controller: _email,
+                hintText: "Enter Email Address",
+                icon: CupertinoIcons.mail,
+                keyboard: TextInputType.emailAddress,
+                validator: (v) => v == null || v.isEmpty
+                    ? "Enter the Email Address"
+                    : !v.contains("@")
+                    ? "Invalid Email Address"
+                    : v.length < 5
+                    ? "The email must contain 5 letters"
+                    : null,
+              ),
+              SizedBox(height: size.height * .03),
+              _buildPasswordField(
+                controller: _password,
+                hintText: "Enter Password",
+                isVisible: _isPasswordVisible,
+                toggleVisible: () =>
+                    setState(() => _isPasswordVisible = !_isPasswordVisible),
+                validator: (v) =>
+                    v == null || v.isEmpty ? "Enter Password" : null,
+              ),
+              SizedBox(height: size.height * .05),
+              _buildPasswordField(
+                controller: _confirmPassword,
+                hintText: "Enter Confirm Password",
+                isVisible: _isConfirmPasswordVisible,
+                toggleVisible: () => setState(
+                  () => _isConfirmPasswordVisible = !_isConfirmPasswordVisible,
+                ),
+                validator: (v) => v == null || v.isEmpty
+                    ? "Enter the Confirm Password"
+                    : null,
+              ),
+              SizedBox(height: size.height * .05),
               MaterialButton(
-                onPressed: (){
-                  if(_key.currentState!.validate()){
-                    Navigator.pushReplacement(context,PageTransition(type: PageTransitionType.fade ,child:BottomNavBar()) );
+                onPressed: () {
+                  if (_key.currentState!.validate()) {
+                    Navigator.pushReplacement(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: BottomNavBar(),
+                      ),
+                    );
                   }
                 },
                 color: Colors.blue,
@@ -74,32 +113,63 @@ class _SignUpFormState extends State<SignUpForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Text("SIGN UP",style: GoogleFonts.poppins(color: Colors.white,fontSize: 16,fontWeight: FontWeight.w500),),
+                child: Text(
+                  "SIGN UP",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-              SizedBox(height: size.height * .02,),
+              SizedBox(height: size.height * .02),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("have an account already ?",style: GoogleFonts.poppins(fontSize: 14,fontWeight: FontWeight.w500,color: Colors.black),),
-                  SizedBox(width: size.width * .02,),
+                  Text(
+                    "have an account already ?",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(width: size.width * .02),
                   InkWell(
-                    onTap: (){
-                      Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade , child: LoginPage()));
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: LoginPage(),
+                        ),
+                      );
                     },
-                    child: Text("Log in",style: GoogleFonts.poppins(color: Colors.blue,fontSize: 14,fontWeight: FontWeight.w400),),
-
-                  )
+                    child: Text(
+                      "Log in",
+                      style: GoogleFonts.poppins(
+                        color: Colors.blue,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
-        ) ,
+        ),
       ),
     );
   }
 
-  Widget _buildTextField({required TextEditingController controller , required String hintText ,required String? Function(String?) validator,
-    required IconData icon ,TextInputType keyboard  = TextInputType.text }){
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required String? Function(String?) validator,
+    required IconData icon,
+    TextInputType keyboard = TextInputType.text,
+  }) {
     return TextFormField(
       validator: validator,
       autofocus: false,
@@ -112,18 +182,26 @@ class _SignUpFormState extends State<SignUpForm> {
           borderSide: BorderSide.none,
         ),
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey,fontWeight: FontWeight.w500,fontSize: 16,),
+        hintStyle: TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.w500,
+          fontSize: 16,
+        ),
         filled: true,
-        fillColor: Colors.grey.withOpacity(.2),
-        prefixIcon: Icon(icon , color: Colors.grey,),
+        fillColor: Colors.grey.withValues(alpha: .2),
+        prefixIcon: Icon(icon, color: Colors.grey),
         contentPadding: EdgeInsets.all(10),
       ),
     );
   }
-  Widget _buildPasswordField({required TextEditingController controller ,
-    required String hintText , required bool isVisible ,
-    required VoidCallback toggleVisible ,
-    required String? Function(String?) validator}){
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String hintText,
+    required bool isVisible,
+    required VoidCallback toggleVisible,
+    required String? Function(String?) validator,
+  }) {
     return TextFormField(
       validator: validator,
       autofocus: false,
@@ -136,11 +214,20 @@ class _SignUpFormState extends State<SignUpForm> {
           borderRadius: BorderRadius.circular(15),
         ),
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey,fontSize: 16,fontWeight: FontWeight.w500),
-        fillColor: Colors.grey.withOpacity(.2),
+        hintStyle: TextStyle(
+          color: Colors.grey,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        fillColor: Colors.grey.withValues(alpha: .2),
         filled: true,
-        suffixIcon: IconButton(onPressed: toggleVisible, icon: Icon(isVisible ?  CupertinoIcons.eye_slash_fill :CupertinoIcons.eye_fill ,
-          color: isVisible ? Colors.grey : Colors.grey.withOpacity(.5) ,)),
+        suffixIcon: IconButton(
+          onPressed: toggleVisible,
+          icon: Icon(
+            isVisible ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+            color: isVisible ? Colors.grey : Colors.grey.withValues(alpha: .5),
+          ),
+        ),
         contentPadding: EdgeInsets.all(10),
       ),
     );

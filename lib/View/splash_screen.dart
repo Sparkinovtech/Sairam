@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/signup_page.dart';
+import 'package:sairam_incubation/Auth/View/signup_page.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -42,8 +42,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.blue.withOpacity(.3),
-                  Colors.white.withOpacity(.8),
+                  Colors.blue.withValues(alpha : .3),
+                  Colors.white.withValues(alpha : .8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.center,

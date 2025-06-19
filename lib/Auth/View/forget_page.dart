@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/login_page.dart';
-import 'package:sairam_incubation/Auth/otp_verify_page.dart';
+import 'package:sairam_incubation/Auth/View/login_page.dart';
+import 'package:sairam_incubation/Auth/View/otp_verify_page.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 class ForgetPage extends StatefulWidget {
   const ForgetPage({super.key});
@@ -28,8 +28,8 @@ class _ForgetPageState extends State<ForgetPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(.8),
-                  Colors.white.withOpacity(.9),
+                  Colors.white.withValues(alpha : .8),
+                  Colors.white.withValues(alpha : .9),
                 ]
               ),
             ),
@@ -83,7 +83,7 @@ class _ForgetPageState extends State<ForgetPage> {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.grey.withOpacity(.2),
+                        fillColor: Colors.grey.withValues(alpha : .2),
                         contentPadding: EdgeInsets.all(10),
                         hintText: "Enter Email Address",
                         hintStyle: TextStyle(color: Colors.grey,fontSize: 16,fontWeight: FontWeight.w500),

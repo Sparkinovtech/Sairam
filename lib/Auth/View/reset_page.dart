@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/login_page.dart';
+import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 class ResetPage extends StatefulWidget {
   const ResetPage({super.key});
@@ -34,9 +34,9 @@ class _ResetPageState extends State<ResetPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(.9),
+                  Colors.white.withValues(alpha : .9),
                   // Colors.white.withOpacity(.8),
-                  Colors.white.withOpacity(.9),
+                  Colors.white.withValues(alpha : .9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -134,7 +134,7 @@ class _ResetPageState extends State<ResetPage> {
           color: isVisible ? Colors.grey : Colors.black,)),
         prefixIcon: Icon(icon ,color: Colors.grey,),
         contentPadding: EdgeInsets.all(10),
-        fillColor: Colors.grey.withOpacity(.3),
+        fillColor: Colors.grey.withValues(alpha : .3),
         filled: true,
       ),
     );

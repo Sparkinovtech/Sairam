@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:pinput/pinput.dart';
-import 'package:sairam_incubation/Auth/forget_page.dart';
-import 'package:sairam_incubation/Auth/reset_page.dart';
+import 'package:sairam_incubation/Auth/View/forget_page.dart';
+import 'package:sairam_incubation/Auth/View/reset_page.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 class OtpVerifyPage extends StatefulWidget {
   const OtpVerifyPage({super.key});
@@ -20,13 +20,13 @@ final defaultPinTheme = PinTheme(
     height: 54,
     textStyle: TextStyle(color: Color.fromRGBO(30, 60, 87, 1) , fontSize: 20 , fontWeight: FontWeight.w500),
     decoration: BoxDecoration(
-      color: Colors.grey.withOpacity(.3),
+      color: Colors.grey.withValues(alpha : .3),
       borderRadius: BorderRadius.circular(15),
       border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
     )
 );
 final focusPinTheme = defaultPinTheme.copyDecorationWith(
-  color: Colors.grey.withOpacity(.4),
+  color: Colors.grey.withValues(alpha : .4),
     border: Border.all(color: Color.fromRGBO(114, 178, 238,1)),
   borderRadius: BorderRadius.circular(20),
 );
@@ -88,8 +88,8 @@ class _OtpVerifyPageState extends State<OtpVerifyPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withOpacity(.8),
-                  Colors.white.withOpacity(.9),
+                  Colors.white.withValues(alpha : .8),
+                  Colors.white.withValues(alpha : .9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
