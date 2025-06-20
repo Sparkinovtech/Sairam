@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 // import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Utils/profile_list.dart';
@@ -20,16 +21,16 @@ class _ProfilePageState extends State<ProfilePage>
     await [Permission.camera, Permission.photos, Permission.storage].request();
   }
 
-  // Future<void> _openCamera() async{
-  //   await requestPermission();
-  //   final picker = ImagePicker();
-  //   final pickedFile = await picker.pickImage(source: ImageSource.camera);
-  //   if(pickedFile != null){
-  //     setState(() {
-  //       _imageFile = File(pickedFile.path);
-  //     });
-  //   }
-  // }
+  Future<void> _openPhoneStorage() async{
+    await requestPermission();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if(pickedFile != null){
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,9 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                         padding: EdgeInsets.all(10),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _openPhoneStorage();
+                          },
                           icon: Icon(
                             CupertinoIcons.photo_camera_solid,
                             color: Colors.black,
