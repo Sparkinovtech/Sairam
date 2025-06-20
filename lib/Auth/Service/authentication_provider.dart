@@ -30,5 +30,5 @@ abstract class AuthenticationProvider {
   Future<void> sendEmailVerification();
 
   /// in case the user forgets the password, user this method
-  Future<void> resetPassword();
+  Future<void> resetPassword({required String email});
 }

@@ -1,4 +1,4 @@
-import 'dart:developer' as devTools;
+import 'dart:developer' as devtools;
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,17 +16,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await provider.sendEmailVerification();
         emit(state);
       } on FirebaseAuthException catch (e) {
-        devTools.log(e.code);
+        devtools.log("From the Auth Bloc : ${e.code}");
+        emit(RequiresEmailVerifiactionState());
       }
     });
 
     // Sending mail for resetting password
     on<AuthForgotPasswordEvent>((event, emit) async {
       try {
-        await provider.resetPassword();
+        await provider.resetPassword(email: event.email);
         emit(LoggedOutState());
       } on FirebaseAuthException catch (e) {
-        devTools.log(e.code);
+        devtools.log("From the Auth Bloc : ${e.code}");
+        emit(ForgotPasswordState());
       }
     });
 
@@ -43,17 +45,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(LoggedInState(user));
         }
       } on GenericAuthException catch (e) {
-        devTools.log(e.toString());
+        devtools.log("From the Auth Bloc : ${e.toString()}");
+        emit(LoggedOutState());
       }
     });
 
     // Logging out the user
-    on<AuthUserLogOutEvent>((event, emit) async{
-      try{
+    on<AuthUserLogOutEvent>((event, emit) async {
+      try {
         await provider.logout();
-      } catch on GenericAuthException(e){
-        devTools.log(e.toString());
-      };
-    },);
+        emit(LoggedOutState());
+      } on GenericAuthException catch (e) {
+        devtools.log("From the Auth Bloc : ${e.toString()}");
+        emit(LoggedOutState());
+      }
+    });
+
+    // Registering new user
+    on<AuthUserRegisterEvent>((event, emit) async {
+      final email = event.email;
+      final password = event.password;
+      try {
+        await provider.signup(emailId: email, password: password);
+        provider.sendEmailVerification();
+        emit(RequiresEmailVerifiactionState());
+      } on FirebaseAuthException catch (e) {
+        devtools.log("From the Auth Bloc : ${e.code}");
+        emit(RegisteringState(e));
+      }
+    });
   }
 }

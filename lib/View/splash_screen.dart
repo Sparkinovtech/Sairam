@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
 import 'package:sairam_incubation/Utils/images.dart';
@@ -23,7 +24,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
     Timer(Duration(seconds: 10), () {
-      Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, duration: Duration(seconds : 1), child: SignupPage()));
+      Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, duration: Duration(seconds : 1), child: return BlocBuilder(builder: (context, state) {
+        
+      },))));
     });
   }
   @override
