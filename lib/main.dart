@@ -18,6 +18,7 @@ void main() async {
     MaterialApp(
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
+        child: const MyApp(),
       ),
     ),
   );
