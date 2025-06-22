@@ -6,6 +6,10 @@ abstract class AuthState {
   const AuthState();
 }
 
+class AuthInitialiseState extends AuthState {
+  const AuthInitialiseState();
+}
+
 class AuthStateUninitialized extends AuthState {
   const AuthStateUninitialized();
 }
@@ -30,8 +34,4 @@ class ForgotPasswordState extends AuthState {
 
 class RequiresEmailVerifiactionState extends AuthState {
   const RequiresEmailVerifiactionState();
-}
-
-class LoadingState extends AuthState {
-  const LoadingState();
 }

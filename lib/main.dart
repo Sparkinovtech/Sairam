@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/View/splash_screen.dart';
 import 'package:sairam_incubation/firebase_options.dart';
 
@@ -24,8 +25,19 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    context.read<AuthBloc>().add(AuthInitialiseEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

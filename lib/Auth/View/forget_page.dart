@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
-import 'package:sairam_incubation/Auth/View/otp_verify_page.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/Utils/images.dart';
+
 class ForgetPage extends StatefulWidget {
   const ForgetPage({super.key});
 
@@ -13,7 +16,7 @@ class ForgetPage extends StatefulWidget {
 }
 
 class _ForgetPageState extends State<ForgetPage> {
-  final TextEditingController _email  = TextEditingController();
+  final TextEditingController _email = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -21,30 +24,40 @@ class _ForgetPageState extends State<ForgetPage> {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(background,fit: BoxFit.cover,),
-          ),
+          Positioned.fill(child: Image.asset(background, fit: BoxFit.cover)),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.white.withValues(alpha : .8),
-                  Colors.white.withValues(alpha : .9),
-                ]
+                  Colors.white.withValues(alpha: .8),
+                  Colors.white.withValues(alpha: .9),
+                ],
               ),
             ),
           ),
           Positioned(
             top: size.height * .05,
             left: 6,
-            child: IconButton(onPressed: (){
-              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade , child: LoginPage()));
-            }, icon: Icon(Icons.arrow_back_ios_new_outlined,color: Colors.black,)),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: LoginPage(),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: Colors.black,
+              ),
+            ),
           ),
           SafeArea(
             child: Column(
               children: [
-                SizedBox(height: size.height * .09,),
+                SizedBox(height: size.height * .09),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -52,27 +65,43 @@ class _ForgetPageState extends State<ForgetPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text("Forgot your  Password ?",style: GoogleFonts.poppins(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 24),),
+                          Text(
+                            "Forgot your  Password ?",
+                            style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
                         ],
                       ),
-                      SizedBox(height: size.height * .01,),
+                      SizedBox(height: size.height * .01),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text("Enter your email address and we will share a link to \ncreate a new password ",
-                            style: GoogleFonts.poppins(color: Colors.black,fontSize: 13),),
+                          Text(
+                            "Enter your email address and we will share a link to \ncreate a new password ",
+                            style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontSize: 13,
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: size.height * .05,),
+                SizedBox(height: size.height * .05),
                 Form(
                   key: _key,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: TextFormField(
-                      validator: (v) => v == null || v.isEmpty ? "Enter the email Address" : !v.contains("@") ? "Invalid Email Address" : null,
+                      validator: (v) => v == null || v.isEmpty
+                          ? "Enter the email Address"
+                          : !v.contains("@")
+                          ? "Invalid Email Address"
+                          : null,
                       controller: _email,
                       autofocus: false,
                       cursorColor: Colors.grey,
@@ -83,21 +112,29 @@ class _ForgetPageState extends State<ForgetPage> {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.grey.withValues(alpha : .2),
+                        fillColor: Colors.grey.withValues(alpha: .2),
                         contentPadding: EdgeInsets.all(10),
                         hintText: "Enter Email Address",
-                        hintStyle: TextStyle(color: Colors.grey,fontSize: 16,fontWeight: FontWeight.w500),
-                        prefixIcon: Icon(CupertinoIcons.mail,color: Colors.grey,),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        prefixIcon: Icon(
+                          CupertinoIcons.mail,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: size.height * .06,),
+                SizedBox(height: size.height * .06),
                 MaterialButton(
-                  onPressed: (){
-                    if(_key.currentState!.validate()) {
-                      Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.bottomToTop, child: OtpVerifyPage()));
-                    }
+                  onPressed: () {
+                    final email = _email.text.toString();
+                    context.read<AuthBloc>().add(
+                      AuthForgotPasswordEvent(email: email),
+                    );
                   },
                   color: Colors.blue,
                   minWidth: size.width * .6,
@@ -105,11 +142,18 @@ class _ForgetPageState extends State<ForgetPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Text("Send",style: GoogleFonts.inter(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),),
+                  child: Text(
+                    "Send",
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

@@ -10,6 +10,19 @@ import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(AuthenticationProvider provider)
     : super(const AuthStateUninitialized()) {
+    // Initialise the Firebase app
+    on<AuthInitialiseEvent>((event, emit) async {
+      await provider.initialise();
+      final user = provider.user;
+      if (user == null) {
+        emit(const LoggedOutState());
+      } else if (!user.isEmailVerified) {
+        emit(const RequiresEmailVerifiactionState());
+      } else {
+        emit(LoggedInState(user));
+      }
+    });
+
     /// Sending verification email to user if needed
     on<AuthSendEmailVerificationEvent>((event, emit) async {
       try {
@@ -30,6 +43,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         devtools.log("From the Auth Bloc : ${e.code}");
         emit(ForgotPasswordState());
       }
+    });
+
+    on<AuthHasForgotPassworEvent>((event, emit) {
+      emit(ForgotPasswordState());
     });
 
     // Logging in the user
@@ -73,6 +90,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         devtools.log("From the Auth Bloc : ${e.code}");
         emit(RegisteringState(e));
       }
+    });
+
+    on<AuthUserShouldRegisterEvent>((event, emit) {
+      emit(RegisteringState(null));
     });
   }
 }
