@@ -43,13 +43,13 @@ class _ProfileListState extends State<ProfileList>
   bool _isPasswordVisible = false;
   bool _isNewPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
-  bool _ShowNewField = false;
+  bool _showNewField = false;
   bool _isProcessing = false;
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   void _showChangePasswordSheet(BuildContext context) {
     setState(() {
-      _ShowNewField = false;
+      _showNewField = false;
       _isProcessing = false;
       _isPasswordVisible = false;
       _isConfirmPasswordVisible = false;
@@ -116,7 +116,7 @@ class _ProfileListState extends State<ProfileList>
                         key: _key,
                         child: Column(
                           children: [
-                            if (!_ShowNewField) ...[
+                            if (!_showNewField) ...[
                               SizedBox(height: size.height * .025),
                               _buildText(
                                 controller: _currentPasswordController,
@@ -139,7 +139,7 @@ class _ProfileListState extends State<ProfileList>
                                     await Future.delayed(Duration(seconds: 10));
                                     setState(() {
                                       _isProcessing = false;
-                                      _ShowNewField = true;
+                                      _showNewField = true;
                                     });
                                   }
                                 },
@@ -226,7 +226,6 @@ class _ProfileListState extends State<ProfileList>
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
