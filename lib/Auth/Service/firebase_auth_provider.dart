@@ -111,7 +111,11 @@ class FirebaseAuthProvider implements AuthenticationProvider {
   Future<void> sendEmailVerification() async {
     final user = _getCurrentUser();
     if (user != null) {
+      devtools.log(user.toString());
+      devtools.log("Sending user email");
       await user.sendEmailVerification();
+    } else {
+      devtools.log("Some exception occured");
     }
   }
 

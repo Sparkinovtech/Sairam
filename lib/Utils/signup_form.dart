@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
-import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -139,13 +136,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   SizedBox(width: size.width * .02),
                   InkWell(
                     onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: LoginPage(),
-                        ),
-                      );
+                      context.read<AuthBloc>().add((AuthUserLogOutEvent()));
                     },
                     child: Text(
                       "Log in",

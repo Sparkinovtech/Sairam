@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/Utils/images.dart';
@@ -40,13 +38,7 @@ class _ForgetPageState extends State<ForgetPage> {
             left: 6,
             child: IconButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: LoginPage(),
-                  ),
-                );
+                context.read<AuthBloc>().add(AuthUserLogOutEvent());
               },
               icon: Icon(
                 Icons.arrow_back_ios_new_outlined,
@@ -79,11 +71,32 @@ class _ForgetPageState extends State<ForgetPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            "Enter your email address and we will share a link to \ncreate a new password ",
-                            style: GoogleFonts.poppins(
-                              color: Colors.black,
-                              fontSize: 13,
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "we have shared a link to your registered email for verfication!",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.black,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      SizedBox(height: size.height * .06),
+                                      Text(
+                                        "NOTE : If not visible in the inbox, Please check in spams as well!",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.black,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -99,7 +112,7 @@ class _ForgetPageState extends State<ForgetPage> {
                     child: TextFormField(
                       validator: (v) => v == null || v.isEmpty
                           ? "Enter the email Address"
-                          : !v.contains("@")
+                          : !v.contains("@sairamtap.edu.in")
                           ? "Invalid Email Address"
                           : null,
                       controller: _email,

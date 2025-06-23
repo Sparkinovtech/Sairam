@@ -1,10 +1,11 @@
+import 'dart:developer' as devtools;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/View/forget_page.dart';
-import 'package:sairam_incubation/Auth/View/signup_page.dart';
-import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -61,13 +62,8 @@ class _LoginFormState extends State<LoginForm> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: ForgetPage(),
-                        ),
-                      );
+                      devtools.log("From login page");
+                      context.read<AuthBloc>().add(AuthHasForgotPassworEvent());
                     },
                     child: Text("Forget Password ?"),
                   ),
@@ -77,12 +73,10 @@ class _LoginFormState extends State<LoginForm> {
               MaterialButton(
                 onPressed: () {
                   if (_key.currentState!.validate()) {
-                    Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.fade,
-                        child: BottomNavBar(),
-                      ),
+                    final email = "${_id.text.toLowerCase()}@sairamtap.edu.in";
+                    final password = _password.text;
+                    context.read<AuthBloc>().add(
+                      AuthUserLogInEvent(email: email, password: password),
                     );
                   }
                 },
@@ -116,12 +110,8 @@ class _LoginFormState extends State<LoginForm> {
                   SizedBox(width: size.width * .02),
                   InkWell(
                     onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: SignupPage(),
-                        ),
+                      context.read<AuthBloc>().add(
+                        AuthUserShouldRegisterEvent(),
                       );
                     },
                     child: Text(

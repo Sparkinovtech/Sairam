@@ -5,8 +5,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Auth/View/forget_page.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
+import 'package:sairam_incubation/Auth/View/verify_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
-import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 import 'package:sairam_incubation/View/home_page.dart';
@@ -49,11 +49,11 @@ class _SplashScreenState extends State<SplashScreen>
               } else if (state is ForgotPasswordState) {
                 return ForgetPage();
               } else if (state is RequiresEmailVerifiactionState) {
-                // TODO return an email verification page that needs to be built
+                return VerifyEmailPage();
               } else if (state is RegisteringState) {
                 return SignupPage();
               }
-              return Scaffold(body: CircularProgressIndicator());
+              return Scaffold(body: Center(child: CircularProgressIndicator()));
             },
           ),
         ),

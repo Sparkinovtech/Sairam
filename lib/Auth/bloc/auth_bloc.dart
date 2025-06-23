@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     /// Sending verification email to user if needed
     on<AuthSendEmailVerificationEvent>((event, emit) async {
       try {
+        devtools.log("Email verification sent");
         await provider.sendEmailVerification();
         emit(state);
       } on FirebaseAuthException catch (e) {
@@ -44,8 +45,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(ForgotPasswordState());
       }
     });
-
+    // for going to the foget password view page
     on<AuthHasForgotPassworEvent>((event, emit) {
+      devtools.log("Is Entering the Forgot page");
       emit(ForgotPasswordState());
     });
 
@@ -57,6 +59,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await provider.login(emailId: email, password: password);
         final bool isVerified = await provider.isEmailVerified();
         if (!isVerified) {
+          await provider.sendEmailVerification();
           emit(RequiresEmailVerifiactionState());
         } else {
           emit(LoggedInState(user));

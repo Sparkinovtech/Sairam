@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 class TeamsPage extends StatefulWidget {
   const TeamsPage({super.key});
 
@@ -9,39 +10,47 @@ class TeamsPage extends StatefulWidget {
 }
 
 class _TeamsPageState extends State<TeamsPage> {
-  final List<String> tabs = ['Your Team' ,'Add Team'  ,  'Past Team'];
+  final List<String> tabs = ['Your Team', 'Add Team', 'Past Team'];
   int _selectedTab = 0;
   String _searchQuery = "";
-  final List<Map<String  , String >> recentTeams = [
+  final List<Map<String, String>> recentTeams = [
     {"name": "Skoolinq", "mentor": "Juno Bella", "category": "Software"},
-    {"name": "Telepresence robot", "mentor": "Jayantha", "category": "Hardware"},
+    {
+      "name": "Telepresence robot",
+      "mentor": "Jayantha",
+      "category": "Hardware",
+    },
     {"name": "Rover", "mentor": "Sam", "category": "Hardware"},
   ];
-  final List<Map<String , String >> addableTeams = [
+  final List<Map<String, String>> addableTeams = [
     {"name": "Child Safety", "mentor": "Jayantha", "category": "Hardware"},
     {"name": "GamifyX", "mentor": "Sundar", "category": "Software"},
     {"name": "Skoolinq", "mentor": "Juno Bella", "category": "Software"},
-    {"name": "Telepresence robot", "mentor": "Jayantha", "category": "Hardware"},
+    {
+      "name": "Telepresence robot",
+      "mentor": "Jayantha",
+      "category": "Hardware",
+    },
   ];
-  final List<Map<String , String >> pastTeams = [
+  final List<Map<String, String>> pastTeams = [
     {"name": "Child Safety", "mentor": "Jayantha", "category": "Hardware"},
     {"name": "GamifyX", "mentor": "Sundar", "category": "Software"},
   ];
   @override
   Widget build(BuildContext context) {
-    List<Map<String , String>>  currentList = [];
-    switch(_selectedTab){
+    List<Map<String, String>> currentList = [];
+    switch (_selectedTab) {
       case 0:
         currentList = recentTeams;
         break;
       case 1:
-        currentList =  addableTeams;
+        currentList = addableTeams;
         break;
       case 2:
         currentList = pastTeams;
         break;
     }
-    final filteredTeams = currentList.where((team){
+    final filteredTeams = currentList.where((team) {
       return team['name']!.toLowerCase().contains(_searchQuery.toLowerCase());
     });
     var size = MediaQuery.of(context).size;
@@ -53,15 +62,22 @@ class _TeamsPageState extends State<TeamsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(tabs[_selectedTab],style: GoogleFonts.inter(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w500),),
-              SizedBox(height: size.height * .04,),
+              Text(
+                tabs[_selectedTab],
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: size.height * .04),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:List.generate(tabs.length,(index){
+                children: List.generate(tabs.length, (index) {
                   final isSelectedIndex = index == _selectedTab;
                   return Expanded(
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         setState(() {
                           _selectedTab = index;
                           _searchQuery = "";
@@ -72,29 +88,37 @@ class _TeamsPageState extends State<TeamsPage> {
                         padding: EdgeInsets.symmetric(vertical: 20),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: isSelectedIndex ? [
-                              Colors.blue[700]!,
-                              Colors.blue[500]!,
-                              Colors.blue[300]!
-                            ] : [
-                              Colors.grey[700]!,
-                              Colors.grey[500]!,
-                              Colors.grey[300]!
-                            ],
+                            colors: isSelectedIndex
+                                ? [
+                                    Colors.blue[700]!,
+                                    Colors.blue[500]!,
+                                    Colors.blue[300]!,
+                                  ]
+                                : [
+                                    Colors.grey[700]!,
+                                    Colors.grey[500]!,
+                                    Colors.grey[300]!,
+                                  ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(15),
                         ),
                         alignment: Alignment.center,
-                        child: Text(tabs[index] ,style: GoogleFonts.inter(color: Colors.white,
-                            fontSize: 15,fontWeight: FontWeight.bold),),
+                        child: Text(
+                          tabs[index],
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   );
                 }),
               ),
-              SizedBox(height: size.height * .03,),
+              SizedBox(height: size.height * .03),
               TextFormField(
                 onChanged: (value) => setState(() {
                   _searchQuery = value;
@@ -106,28 +130,38 @@ class _TeamsPageState extends State<TeamsPage> {
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
-                  hintText: _selectedTab  == 1 ? "Search New Team" : _selectedTab == 2 ?   "Search Past Team" : "Search Your Team",
+                  hintText: _selectedTab == 1
+                      ? "Search New Team"
+                      : _selectedTab == 2
+                      ? "Search Past Team"
+                      : "Search Your Team",
                   prefixIcon: Icon(CupertinoIcons.search),
                   contentPadding: EdgeInsets.all(14),
                   fillColor: Colors.grey.withOpacity(.1),
-                  filled: true
+                  filled: true,
                 ),
               ),
             ],
           ),
         ),
-      )
+      ),
     );
   }
-  Widget _teamCard({required String teamName , required  String mentor , required String category , required String image}){
+
+  Widget _teamCard({
+    required String teamName,
+    required String mentor,
+    required String category,
+    required String image,
+  }) {
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFD0ECFF) , Color(0xFFF1FAFF)],
-          begin: Alignment.topLeft ,
-          end: Alignment.center
+          colors: [Color(0xFFD0ECFF), Color(0xFFF1FAFF)],
+          begin: Alignment.topLeft,
+          end: Alignment.center,
         ),
       ),
     );
