@@ -13,6 +13,7 @@ class FirebaseAuthProvider implements AuthenticationProvider {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    devtools.log("From firebase provider : Firebase Initialised");
   }
 
   @override
@@ -30,26 +31,36 @@ class FirebaseAuthProvider implements AuthenticationProvider {
     required String password,
   }) async {
     try {
+      if (emailId.trim().isEmpty || password.trim().isEmpty) {
+        throw InvalidEmailAuthException(); // Or a specific EmptyFieldsException
+      }
+
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailId,
-        password: password,
+        email: emailId.trim(),
+        password: password.trim(),
       );
-      final user = this.user;
-      if (user == null) {
+
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
         throw UserNotLoggedInException();
       }
-      return user;
+
+      return AuthUser.fromFirebase(currentUser);
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
-        throw UserNotFoundAuthException();
-      } else if (e.code == "invalid-credential") {
-        throw WrongPasswordAuthException();
-      } else if (e.code == "invalid-email") {
-        throw InvalidEmailAuthException();
-      } else {
-        throw GenericAuthException();
+      devtools.log("FirebaseAuthException: ${e.code}");
+
+      switch (e.code) {
+        case "user-not-found":
+          throw UserNotFoundAuthException();
+        case "wrong-password":
+          throw WrongPasswordAuthException();
+        case "invalid-email":
+          throw InvalidEmailAuthException();
+        default:
+          throw GenericAuthException();
       }
-    } catch (_) {
+    } catch (e) {
+      devtools.log("Unknown error: $e");
       throw GenericAuthException();
     }
   }

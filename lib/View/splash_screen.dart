@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
@@ -8,8 +9,8 @@ import 'package:sairam_incubation/Auth/View/signup_page.dart';
 import 'package:sairam_incubation/Auth/View/verify_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
+import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Utils/images.dart';
-import 'package:sairam_incubation/View/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -42,8 +43,9 @@ class _SplashScreenState extends State<SplashScreen>
           duration: Duration(seconds: 1),
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
+              devtools.log("From the Splash screen : $state");
               if (state is LoggedInState) {
-                return HomePage();
+                return BottomNavBar();
               } else if (state is LoggedOutState) {
                 return LoginPage();
               } else if (state is ForgotPasswordState) {

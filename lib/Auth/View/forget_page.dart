@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
+import 'package:sairam_incubation/Utils/dialogs/error_dialog.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 
 class ForgetPage extends StatefulWidget {
@@ -145,6 +146,13 @@ class _ForgetPageState extends State<ForgetPage> {
                 MaterialButton(
                   onPressed: () {
                     final email = _email.text.toString();
+                    if (!email.contains("@sairamtap.edu.in")) {
+                      showErrorDialog(
+                        context,
+                        "Enter your college mail please",
+                      );
+                      return;
+                    }
                     context.read<AuthBloc>().add(
                       AuthForgotPasswordEvent(email: email),
                     );

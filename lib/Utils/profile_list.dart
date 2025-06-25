@@ -1,9 +1,14 @@
+import 'dart:developer' as devtools;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
+import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
+import 'package:sairam_incubation/Utils/dialogs/logout_dialog.dart';
 
 class ProfileList extends StatefulWidget {
   const ProfileList({super.key});
@@ -226,6 +231,7 @@ class _ProfileListState extends State<ProfileList>
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -264,70 +270,13 @@ class _ProfileListState extends State<ProfileList>
           _buildList(
             icon: Icons.logout,
             text: "Log out",
-            onTap: () {
-              showCupertinoDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) {
-                  return CupertinoAlertDialog(
-                    title: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AnimatedBuilder(
-                              animation: _opacity,
-                              builder: (context, child) {
-                                return Opacity(
-                                  opacity: _opacity.value,
-                                  child: child,
-                                );
-                              },
-                              child: Icon(
-                                Icons.warning,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: size.height * .01),
-
-                        Text(
-                          "Are you sure want to log out ?",
-                          style: GoogleFonts.inder(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        SizedBox(height: size.height * .01),
-                      ],
-                    ),
-                    actions: [
-                      CupertinoDialogAction(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.fade,
-                              duration: Duration(seconds: 1),
-                              child: LoginPage(),
-                            ),
-                          );
-                        },
-                        child: Text("OK"),
-                      ),
-                      CupertinoDialogAction(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("CANCEL"),
-                      ),
-                    ],
-                  );
-                },
-              );
+            onTap: () async {
+              final bool shouldLogOut = await showLogoutDialog(context);
+              devtools.log(shouldLogOut.toString());
+              if (!context.mounted) return;
+              if (shouldLogOut) {
+                context.read<AuthBloc>().add(const AuthUserLogOutEvent());
+              }
             },
             iconColor: Colors.red,
           ),
@@ -476,7 +425,7 @@ class _ProfileListState extends State<ProfileList>
         ),
         hintText: hintText,
         hintStyle: GoogleFonts.inter(
-          color: Colors.grey.withOpacity(.3),
+          color: Colors.grey.withValues(alpha: .3),
           fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
@@ -486,10 +435,10 @@ class _ProfileListState extends State<ProfileList>
           icon: isVisible
               ? Icon(CupertinoIcons.eye_slash_fill)
               : Icon(CupertinoIcons.eye_fill),
-          color: isVisible ? Colors.grey.withOpacity(.3) : Colors.black,
+          color: isVisible ? Colors.grey.withValues(alpha: .3) : Colors.black,
         ),
         filled: true,
-        fillColor: Colors.grey.withOpacity(.1),
+        fillColor: Colors.grey.withValues(alpha: .1),
         prefixIcon: Icon(icon, color: Colors.black),
       ),
     );

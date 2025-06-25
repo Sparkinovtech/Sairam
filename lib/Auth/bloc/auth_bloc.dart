@@ -15,7 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await provider.initialise();
       final user = provider.user;
       if (user == null) {
-        emit(const LoggedOutState());
+        emit(const LoggedOutState(null, false));
       } else if (!user.isEmailVerified) {
         emit(const RequiresEmailVerifiactionState());
       } else {
@@ -39,7 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthForgotPasswordEvent>((event, emit) async {
       try {
         await provider.resetPassword(email: event.email);
-        emit(LoggedOutState());
+        emit(LoggedOutState(null, false));
       } on FirebaseAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.code}");
         emit(ForgotPasswordState());
@@ -53,20 +53,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     // Logging in the user
     on<AuthUserLogInEvent>((event, emit) async {
-      final email = event.email;
-      final password = event.password;
+      final String email = event.email;
+      final String password = event.password;
+
       try {
         final user = await provider.login(emailId: email, password: password);
-        final bool isVerified = await provider.isEmailVerified();
-        if (!isVerified) {
-          await provider.sendEmailVerification();
-          emit(RequiresEmailVerifiactionState());
-        } else {
+        if (user.isEmailVerified) {
           emit(LoggedInState(user));
+        } else {
+          emit(const LoggedOutState(null, false));
+          emit(RequiresEmailVerifiactionState());
         }
-      } on GenericAuthException catch (e) {
-        devtools.log("From the Auth Bloc : ${e.toString()}");
-        emit(LoggedOutState());
+      } on Exception catch (e) {
+        emit(LoggedOutState(e, false));
       }
     });
 
@@ -74,10 +73,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthUserLogOutEvent>((event, emit) async {
       try {
         await provider.logout();
-        emit(LoggedOutState());
+        emit(LoggedOutState(null, false));
       } on GenericAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.toString()}");
-        emit(LoggedOutState());
+        emit(LoggedOutState(e, false));
       }
     });
 

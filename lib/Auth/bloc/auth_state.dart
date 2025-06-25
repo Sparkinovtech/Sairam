@@ -20,12 +20,22 @@ class LoggedInState extends AuthState {
 }
 
 class RegisteringState extends AuthState {
-  final Exception? e;
-  const RegisteringState(this.e);
+  final Exception? exception;
+  const RegisteringState(this.exception);
 }
 
 class LoggedOutState extends AuthState {
-  const LoggedOutState();
+  final Exception? exception;
+  final bool isLoading;
+  const LoggedOutState(this.exception, this.isLoading);
+
+  @override
+  String toString() {
+    return """LoggedOutState :
+    Exception : ${exception.toString()}
+    isLoading : $isLoading
+    """;
+  }
 }
 
 class ForgotPasswordState extends AuthState {

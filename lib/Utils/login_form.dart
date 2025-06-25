@@ -74,6 +74,7 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: () {
                   if (_key.currentState!.validate()) {
                     final email = "${_id.text.toLowerCase()}@sairamtap.edu.in";
+                    devtools.log(" From the login form : $email");
                     final password = _password.text;
                     context.read<AuthBloc>().add(
                       AuthUserLogInEvent(email: email, password: password),
