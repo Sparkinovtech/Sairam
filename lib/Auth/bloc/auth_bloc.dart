@@ -57,8 +57,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final String password = event.password;
 
       try {
+        emit(LoggedOutState(null, true));
+        await Future.delayed(Duration(seconds: 5));
         final user = await provider.login(emailId: email, password: password);
         if (user.isEmailVerified) {
+          emit(LoggedOutState(null, false));
           emit(LoggedInState(user));
         } else {
           emit(const LoggedOutState(null, false));

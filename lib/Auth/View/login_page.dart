@@ -3,10 +3,11 @@ import 'dart:developer' as devtools;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
 import 'package:sairam_incubation/Utils/dialogs/error_dialog.dart';
-import 'package:sairam_incubation/Utils/dialogs/loading_dialog.dart';
+import 'package:sairam_incubation/Utils/dialogs/loading_overlay.dart';
 import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
 import 'package:sairam_incubation/Utils/images.dart';
 
@@ -20,22 +21,27 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  CloseDialog? _closeDialogHandle;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is LoggedOutState) {
+          bool isLoading = context.loaderOverlay.visible;
           devtools.log("From the Login Page : ${state.exception.toString()}");
+          devtools.log("From the Login Page : $isLoading");
 
           if (!context.mounted) return;
-
-          // Always close any existing dialog first
-          final closeDialog = _closeDialogHandle;
-          if (closeDialog != null) {
-            closeDialog();
-            _closeDialogHandle = null;
+          if (state.isLoading) {
+            devtools.log("From Login page : Loader overlay is initiated");
+            context.loaderOverlay.show(
+              widgetBuilder: (_) {
+                return LoadingOverlay(text: "Connecting...");
+              },
+            );
+          } else if (!state.isLoading) {
+            devtools.log("From Login page : Loader overlay is closed");
+            context.loaderOverlay.hide();
           }
 
           // Show error if any
@@ -47,15 +53,6 @@ class _LoginPageState extends State<LoginPage> {
             await showErrorDialog(context, "Authentication error");
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(context, "Invalid email entered");
-          }
-
-          // Show loading dialog *after* handling error
-          if (state.isLoading) {
-            if (!context.mounted) return;
-            _closeDialogHandle = showLoadingDialog(
-              context: context,
-              text: "Loading...",
-            );
           }
         }
       },

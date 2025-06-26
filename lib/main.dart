@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
@@ -41,10 +42,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+    return GlobalLoaderOverlay(
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen(),
+      ),
     );
   }
 }

@@ -30,16 +30,13 @@ class _SignupPageState extends State<SignupPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is RegisteringState) {
-          devtools.log("coming here because of the error");
           if (!context.mounted) return;
-          devtools.log("has passed the above if statement");
-
+          devtools.log("From Register Page : ${state.exception}");
           if (state.exception is WeakPasswordAuthException) {
             await showErrorDialog(context, "Weak Password");
           } else if (state.exception is EmailAlreadyInUseAuthException) {
             await showErrorDialog(context, "Email Already in use");
           } else if (state.exception is GenericAuthException) {
-            devtools.log("i am in generic auth exception");
             await showErrorDialog(context, "Failed to register");
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(context, "Invalid email");
