@@ -58,7 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       try {
         emit(LoggedOutState(null, true));
-        await Future.delayed(Duration(seconds: 5));
+        await Future.delayed(Duration(seconds: 3));
         final user = await provider.login(emailId: email, password: password);
         if (user.isEmailVerified) {
           emit(LoggedOutState(null, false));
@@ -97,7 +97,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
-    on<AuthUserShouldRegisterEvent>((event, emit) {
+    on<AuthUserShouldRegisterEvent>((event, emit) async {
       emit(RegisteringState(null));
     });
   }
