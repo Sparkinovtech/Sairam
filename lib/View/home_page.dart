@@ -139,9 +139,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: size.height * .03),
+              SizedBox(height: size.height * .025),
               StayRequestContainer(size: size),
-              SizedBox(height: size.height * .05),
+              SizedBox(height: size.height * .03),
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(

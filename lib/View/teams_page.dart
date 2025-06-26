@@ -38,7 +38,7 @@ class _TeamsPageState extends State<TeamsPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Placeholder());
+    return Scaffold(backgroundColor: Colors.white,);
     // List<Map<String, String>> currentList = [];
     // switch (_selectedTab) {
     //   case 0:
@@ -167,4 +167,5 @@ class _TeamsPageState extends State<TeamsPage> {
   //     ),
   //   );
   // }
+
 }

@@ -56,7 +56,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 hintText: "Enter Student ID ",
                 icon: CupertinoIcons.creditcard,
                 validator: (v) =>
-                    v == null || v.isEmpty ? "Enter the Student ID" : null,
+                    v == null || v.isEmpty ? "Enter the Student ID" : v.length !=  10 ? "Enter the valid STUDENT ID" :    null,
               ),
               SizedBox(height: size.height * .03),
               _buildTextField(
@@ -198,7 +198,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return TextFormField(
       validator: validator,
       autofocus: false,
-      obscureText: isVisible,
+      obscureText: !isVisible,
       cursorColor: Colors.grey,
       controller: controller,
       decoration: InputDecoration(
@@ -217,7 +217,7 @@ class _SignUpFormState extends State<SignUpForm> {
         suffixIcon: IconButton(
           onPressed: toggleVisible,
           icon: Icon(
-            isVisible ? CupertinoIcons.eye_slash_fill : CupertinoIcons.eye_fill,
+            isVisible ? CupertinoIcons.eye_fill : CupertinoIcons.eye_slash_fill,
             color: isVisible ? Colors.grey : Colors.grey.withValues(alpha: .5),
           ),
         ),
