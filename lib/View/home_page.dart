@@ -12,8 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final String name = "John Patric";
-
+  final String name = "John Doe";
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -35,7 +34,7 @@ class _HomePageState extends State<HomePage> {
                         backgroundColor: Colors.grey.withValues(alpha: .1),
                         radius: 24,
                         backgroundImage: NetworkImage(
-                          "https://t3.ftcdn.net/jpg/03/02/88/46/360_F_302884605_actpipOdPOQHDTnFtp4zg4RtlWzhOASp.jpg",
+                          "https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg",
                         ),
                       ),
                       SizedBox(width: size.width * .02),

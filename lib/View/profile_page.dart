@@ -1,12 +1,15 @@
+import 'dart:developer' as devtools;
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Utils/profile_list.dart';
-
+import '../Auth/bloc/auth_bloc.dart';
+import '../Auth/bloc/auth_event.dart';
+import '../Utils/dialogs/logout_dialog.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -14,8 +17,7 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage>
-    with SingleTickerProviderStateMixin {
+class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
   File? _imageFile;
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
@@ -38,75 +40,114 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: size.height * 0.04),
-            Column(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Column(
               children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(80),
-                      ),
-                      color: Colors.white,
-                      child: CircleAvatar(
-                        radius: 80,
-                        backgroundImage: _imageFile != null
-                            ? FileImage(_imageFile!)
-                            : NetworkImage(
-                                    "https://t3.ftcdn.net/jpg/03/02/88/46/360_F_302884605_actpipOdPOQHDTnFtp4zg4RtlWzhOASp.jpg",
-                                  )
-                                  as ImageProvider,
-                        backgroundColor: Colors.white,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: size.width * .032,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+                SizedBox(height: size.height * 0.03),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Profile",style: GoogleFonts.lato(color: Colors.black,fontSize: 32 , fontWeight: FontWeight.bold),),
+                      IconButton(onPressed: ()  async{
+                        final bool shouldLogOut = await showLogoutDialog(context);
+                        devtools.log(shouldLogOut.toString());
+                        if (!context.mounted) return;
+                        if (shouldLogOut) {
+                          context.read<AuthBloc>().add(const AuthUserLogOutEvent());
+                        }
+                      }, icon:Icon(Icons.logout_outlined,color: Colors.grey,)),
+                    ],
+                  ),
+                ),
+                SizedBox(height: size.height * .02,),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 13),
+                  child: Row(
+                    children: [
+                      Card(
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50),
                         ),
-                        padding: EdgeInsets.all(10),
-                        child: IconButton(
-                          onPressed: () {
-                            _openPhoneStorage();
-                          },
-                          icon: Icon(
-                            CupertinoIcons.photo_camera_solid,
-                            color: Colors.black,
+                        child: CircleAvatar(
+                          radius: 50,backgroundColor: Colors.white,
+                          backgroundImage: _imageFile != null ? FileImage(_imageFile!) :
+                          NetworkImage("https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg") as ImageProvider,
+                        ),
+                      ),
+                      SizedBox(width: size.width * .03,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("John Doe",style: GoogleFonts.inter(color: Colors.black,fontSize: 21 , fontWeight: FontWeight.bold),),
+                          Row(
+                            children: [
+                              Text("SEC22CB080",style: GoogleFonts.inter(color: Colors.grey,fontWeight: FontWeight.w500,fontSize: 16),),
+                            ],
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: size.height * .02),
-                Text(
-                  "JOHN PATRIC",
-                  style: GoogleFonts.poppins(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                          SizedBox(height: size.height * .01,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Material(
+                                borderRadius: BorderRadius.circular(10),
+                                child: InkWell(
+                                  onTap: (){},
+                                  child: Container(
+                                    height: size.height * .05,
+                                    width: size.width * .48,
+                                    padding: EdgeInsets.symmetric(horizontal: 20),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.blue[400]!,
+                                          Colors.blue[600]!,
+                                          Colors.blue[500]!,
+                                          Colors.blue[400]!
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                      borderRadius:  BorderRadius.circular(10),
+                                    ),
+                                    child: Center(
+                                      child: Text("Edit Profile",style: GoogleFonts.inter(color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: size.width * .03,),
+                              InkWell(
+                                onTap: (){},
+                                child: Container(
+                                  height: size.height * .04,
+                                  width: size.width * .08,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(color: Colors.blue,width: 2),
+                                  ),
+                                  child: Center(
+                                    child: Icon(Icons.ios_share,size: 17,color: Colors.grey,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                ),
-                SizedBox(height: size.height * .015),
-                Text(
-                  "CSE A SEC22CS23",
-                  style: GoogleFonts.inter(
-                    color: Colors.grey,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                )
               ],
-            ),
-            Expanded(child: ListView(children: [ProfileList()])),
-          ],
+              ),
+              SizedBox(height: size.height * .04,),
+              ProfileList(),
+            ],
+          ),
         ),
       ),
     );
