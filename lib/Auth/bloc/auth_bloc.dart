@@ -87,6 +87,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final email = event.email;
       final password = event.password;
       try {
+        emit(RegisteringState(exception: null, isLoading: true));
         await provider.signup(emailId: email, password: password);
         provider.sendEmailVerification();
         emit(RequiresEmailVerifiactionState(isLoading: false));

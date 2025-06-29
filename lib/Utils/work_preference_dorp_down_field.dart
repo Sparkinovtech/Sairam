@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 class WorkpreferenceDorpDownField extends StatefulWidget {
   const WorkpreferenceDorpDownField({super.key});
 
   @override
-  State<WorkpreferenceDorpDownField> createState() => _WorkpreferenceDorpDownFieldState();
+  State<WorkpreferenceDorpDownField> createState() =>
+      _WorkpreferenceDorpDownFieldState();
 }
 
-class _WorkpreferenceDorpDownFieldState extends State<WorkpreferenceDorpDownField> {
+class _WorkpreferenceDorpDownFieldState
+    extends State<WorkpreferenceDorpDownField> {
   bool _isExpanded = false;
-  String? _Selected;
+  String? _selected;
   final List<String> _options = [
     "Graphics Designer",
     "UI/UX Designer",
@@ -17,7 +20,7 @@ class _WorkpreferenceDorpDownFieldState extends State<WorkpreferenceDorpDownFiel
     "Mobile Application Developer",
     "Architecture Designer",
     "Machine Learning"
-    "Prompt Engineer",
+        "Prompt Engineer",
     "Others",
   ];
   @override
@@ -26,29 +29,45 @@ class _WorkpreferenceDorpDownFieldState extends State<WorkpreferenceDorpDownFiel
     return Column(
       children: [
         GestureDetector(
-          onTap: (){
+          onTap: () {
             setState(() {
               _isExpanded = !_isExpanded;
             });
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16 , vertical: 20),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(.1),
+              color: Colors.grey.withValues(alpha: .1),
               borderRadius: BorderRadius.circular(7),
-              border: Border.all(color: Colors.grey.withOpacity(.5),width: 1)
+              border: Border.all(
+                color: Colors.grey.withValues(alpha: .5),
+                width: 1,
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Text(_Selected ??  "Add Your Work Preference",style: GoogleFonts.lato(color: Colors.black,fontSize: 15,fontWeight: FontWeight.w500),),
-                Icon(_isExpanded ?  Icons.keyboard_arrow_up_outlined : Icons.keyboard_arrow_down_outlined,color: Colors.black,size: 25,),
+                Text(
+                  _selected ?? "Add Your Work Preference",
+                  style: GoogleFonts.lato(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Icon(
+                  _isExpanded
+                      ? Icons.keyboard_arrow_up_outlined
+                      : Icons.keyboard_arrow_down_outlined,
+                  color: Colors.black,
+                  size: 25,
+                ),
               ],
             ),
           ),
         ),
-        if(_isExpanded)
+        if (_isExpanded)
           Container(
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
@@ -59,12 +78,12 @@ class _WorkpreferenceDorpDownFieldState extends State<WorkpreferenceDorpDownFiel
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: _options.length,
-              itemBuilder: (context , index){
+              itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(_options[index]),
-                  onTap: (){
+                  onTap: () {
                     setState(() {
-                      _Selected = _options[index];
+                      _selected = _options[index];
                       _isExpanded = false;
                     });
                   },

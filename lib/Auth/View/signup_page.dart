@@ -40,6 +40,11 @@ class _SignupPageState extends State<SignupPage> {
             await showErrorDialog(context, "Failed to register");
           } else if (state.exception is InvalidEmailAuthException) {
             await showErrorDialog(context, "Invalid email");
+          } else if (state.exception is InvalidEmailFormatException) {
+            await showErrorDialog(
+              context,
+              "Only SEC account registeration allowed",
+            );
           }
         }
       },
