@@ -9,11 +9,12 @@ import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/View/forget_page.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
+import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
+import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Auth/View/verify_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
-import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 import 'package:sairam_incubation/View/splash_screen.dart';
 import 'package:sairam_incubation/firebase_options.dart';
 
@@ -54,7 +55,17 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
-        home: BlocBuilder<AuthBloc, AuthState>(
+        home: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state.isLoading) {
+              LoadingScreen().show(
+                context: context,
+                text: state.loadingText ?? "Please Wait a moment...",
+              );
+            } else {
+              LoadingScreen().hide();
+            }
+          },
           builder: (context, state) {
             devtools.log("From the Splash screen : $state");
             if (state is LoggedInState) {

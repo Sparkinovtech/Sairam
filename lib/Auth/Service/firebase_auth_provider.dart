@@ -30,6 +30,9 @@ class FirebaseAuthProvider implements AuthenticationProvider {
     required String emailId,
     required String password,
   }) async {
+    if (!_validateEmail(emailId)) {
+      throw InvalidEmailFormatException();
+    }
     try {
       if (emailId.trim().isEmpty || password.trim().isEmpty) {
         throw InvalidEmailAuthException(); // Or a specific EmptyFieldsException
@@ -83,6 +86,9 @@ class FirebaseAuthProvider implements AuthenticationProvider {
     required String emailId,
     required String password,
   }) async {
+    if (!_validateEmail(emailId)) {
+      throw InvalidEmailFormatException();
+    }
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailId,
@@ -133,4 +139,8 @@ class FirebaseAuthProvider implements AuthenticationProvider {
   User? _getCurrentUser() {
     return FirebaseAuth.instance.currentUser;
   }
+}
+
+bool _validateEmail(String email) {
+  return email.endsWith("@sairamtap.edu.in");
 }

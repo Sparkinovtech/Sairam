@@ -9,17 +9,17 @@ import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(AuthenticationProvider provider)
-    : super(const AuthStateUninitialized()) {
+    : super(const AuthStateUninitialized(isLoading: false)) {
     // Initialise the Firebase app
     on<AuthInitialiseEvent>((event, emit) async {
       await provider.initialise();
       final user = provider.user;
       if (user == null) {
-        emit(const LoggedOutState(null, false));
+        emit(const LoggedOutState(exception: null, isLoading: false));
       } else if (!user.isEmailVerified) {
-        emit(const RequiresEmailVerifiactionState());
+        emit(const RequiresEmailVerifiactionState(isLoading: false));
       } else {
-        emit(LoggedInState(user));
+        emit(LoggedInState(user: user, isLoading: false));
       }
     });
 
@@ -31,7 +31,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state);
       } on FirebaseAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.code}");
-        emit(RequiresEmailVerifiactionState());
+        emit(RequiresEmailVerifiactionState(isLoading: false));
       }
     });
 
@@ -39,16 +39,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthForgotPasswordEvent>((event, emit) async {
       try {
         await provider.resetPassword(email: event.email);
-        emit(LoggedOutState(null, false));
+        emit(LoggedOutState(exception: null, isLoading: false));
       } on FirebaseAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.code}");
-        emit(ForgotPasswordState());
+        emit(ForgotPasswordState(isLoading: false));
       }
     });
     // for going to the foget password view page
     on<AuthHasForgotPassworEvent>((event, emit) {
       devtools.log("Is Entering the Forgot page");
-      emit(ForgotPasswordState());
+      emit(ForgotPasswordState(isLoading: false));
     });
 
     // Logging in the user
@@ -57,18 +57,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final String password = event.password;
 
       try {
-        emit(LoggedOutState(null, true));
-        await Future.delayed(Duration(seconds: 3));
+        emit(LoggedOutState(exception: null, isLoading: true));
         final user = await provider.login(emailId: email, password: password);
         if (user.isEmailVerified) {
-          emit(LoggedOutState(null, false));
-          emit(LoggedInState(user));
+          emit(LoggedOutState(exception: null, isLoading: false));
+          emit(LoggedInState(user: user, isLoading: false));
         } else {
-          emit(const LoggedOutState(null, false));
-          emit(RequiresEmailVerifiactionState());
+          emit(const LoggedOutState(exception: null, isLoading: false));
+          emit(RequiresEmailVerifiactionState(isLoading: false));
         }
       } on Exception catch (e) {
-        emit(LoggedOutState(e, false));
+        emit(LoggedOutState(exception: e, isLoading: false));
       }
     });
 
@@ -76,10 +75,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthUserLogOutEvent>((event, emit) async {
       try {
         await provider.logout();
-        emit(LoggedOutState(null, false));
+        emit(LoggedOutState(exception: null, isLoading: false));
       } on GenericAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.toString()}");
-        emit(LoggedOutState(e, false));
+        emit(LoggedOutState(exception: e, isLoading: false));
       }
     });
 
@@ -90,15 +89,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         await provider.signup(emailId: email, password: password);
         provider.sendEmailVerification();
-        emit(RequiresEmailVerifiactionState());
+        emit(RequiresEmailVerifiactionState(isLoading: false));
       } on FirebaseAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.code}");
-        emit(RegisteringState(e));
+        emit(RegisteringState(exception: e, isLoading: false));
       }
     });
 
     on<AuthUserShouldRegisterEvent>((event, emit) async {
-      emit(RegisteringState(null));
+      emit(RegisteringState(exception: null, isLoading: false));
     });
   }
 }

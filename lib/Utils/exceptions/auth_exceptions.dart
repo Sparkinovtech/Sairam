@@ -11,3 +11,5 @@ class UserNotFoundAuthException implements Exception {}
 class WrongPasswordAuthException implements Exception {}
 
 class GenericAuthException implements Exception {}
+
+class InvalidEmailFormatException implements Exception {}
