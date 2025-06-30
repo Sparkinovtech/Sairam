@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Auth/View/identity_details.dart';
 import 'package:sairam_incubation/Auth/View/skill_set.dart';
 import 'package:sairam_incubation/Auth/View/work_preference_edit.dart';
 
@@ -27,7 +28,9 @@ class _ProfileListState extends State<ProfileList>
             icon: Icons.arrow_forward_ios_rounded,
             text: "Identity details",
             subText: "Basic personal and academic information",
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, PageTransition(type: PageTransitionType.fade , child:IdentityDetails()));
+            },
           ),
           SizedBox(height: size.height * 0.06),
           _buildListWidget(
