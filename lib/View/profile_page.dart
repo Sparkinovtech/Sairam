@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sairam_incubation/Auth/View/edit_profile.dart';
 import 'package:sairam_incubation/Utils/profile_list.dart';
 import '../Auth/bloc/auth_bloc.dart';
 import '../Auth/bloc/auth_event.dart';
@@ -129,7 +131,9 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                 Material(
                                   borderRadius: BorderRadius.circular(10),
                                   child: InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: EditProfile()));
+                                    },
                                     child: Container(
                                       height: size.height * .05,
                                       width: size.width * .48,

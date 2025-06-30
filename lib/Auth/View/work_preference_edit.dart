@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../Utils/work_preference_dorp_down_field.dart';
 class WorkpreferenceEdit extends StatefulWidget {
   const WorkpreferenceEdit({super.key});
 
@@ -10,6 +8,19 @@ class WorkpreferenceEdit extends StatefulWidget {
 }
 
 class _WorkpreferenceEditState extends State<WorkpreferenceEdit> {
+
+  bool _isExpanded = false;
+  List<String> _selectedPerference = [];
+  final List<String> _options = [
+    "Graphics Designer",
+    "UI/UX Designer",
+    "Web Developer",
+    "Mobile Application Developer",
+    "Architecture Designer",
+    "Machine Learning",
+    "Prompt Engineer",
+    "Others",
+  ];
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -21,28 +32,108 @@ class _WorkpreferenceEditState extends State<WorkpreferenceEdit> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 20),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(onPressed: (){
                       Navigator.pop(context);
-                    }, icon:Icon(Icons.arrow_back_ios_new)),
+                    }, icon: Icon(Icons.arrow_back_ios_new,color: Colors.black,)),
+
                   ],
                 ),
               ),
               SizedBox(height: size.height * .01,),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30 ,),
+                padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Work Preferences",style: GoogleFonts.lato(color: Colors.black,fontSize: 27,fontWeight: FontWeight.w700),),
+                    Text("Work Preferences",style: GoogleFonts.lato(color: Colors.black,fontSize: 26,fontWeight: FontWeight.w500),),
                   ],
                 ),
               ),
-              SizedBox(height: size.height * .03,),
-              WorkpreferenceDorpDownField(),
+              SizedBox(height: size.height * .02,),
+              GestureDetector(
+                onTap: () => setState(() => _isExpanded =  !_isExpanded),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.symmetric(horizontal: 30 , vertical: 10),
+
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Add your Work Preferences",style: GoogleFonts.inter(color: Colors.grey,fontSize: 15,fontWeight: FontWeight.w500),),
+                      IconButton(onPressed: (){}, icon:Icon(_isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down)),
+                    ],
+                  ),
+                ),
+              ),
+              if(_isExpanded)...[
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 40),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade200,width: 1),
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _options.length,
+                    itemBuilder: (context , index){
+                      final option =  _options[index];
+                      final selected = _selectedPerference.contains(option);
+                      return ListTile(
+                        title: Text(option ,style: GoogleFonts.inter(color: Colors.grey,fontSize: 15,fontWeight: FontWeight.w500),),
+                        trailing: selected ? Icon(Icons.check,color: Colors.green,) : null,
+                        onTap: (){
+                          setState(() {
+                            if(selected){
+                              _selectedPerference.remove(option);
+                            }else{
+                              _selectedPerference.add(option);
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+
+              if(_selectedPerference.isNotEmpty)...[
+               Wrap(
+                 spacing: 10,
+                 runSpacing: 10,
+                 children: _selectedPerference.map((pref) => Chip(
+                   label: Text(pref),
+                   deleteIcon: Icon(Icons.close,color: Colors.black,),
+                   onDeleted: () => _selectedPerference.remove(pref),
+
+                 )).toList(),
+               ),
+              ]
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 20),
+        child: MaterialButton(
+          elevation: 0,
+          onPressed: (){
+            Navigator.pop(context , _selectedPerference);
+          },
+          height: size.height * .06,
+          color: Colors.blue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text("Save",style: GoogleFonts.lato(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w500),),
         ),
       ),
     );
