@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Auth/View/skill_set.dart';
 import 'package:sairam_incubation/Auth/View/work_preference_edit.dart';
 
 class ProfileList extends StatefulWidget {
@@ -12,35 +13,14 @@ class ProfileList extends StatefulWidget {
 
 class _ProfileListState extends State<ProfileList>
     with SingleTickerProviderStateMixin {
-  // late AnimationController _animationController;
-  // late Animation<double> _opacity;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _animationController = AnimationController(
-  //     vsync: this,
-  //     duration: Duration(milliseconds: 700),
-  //   )..repeat(reverse: true);
-  //   _opacity = Tween<double>(
-  //     begin: 1.0,
-  //     end: 0.2,
-  //   ).animate(_animationController);
-  // }
-  //
-  // @override
-  // void dispose() {
-  //   _animationController.dispose();
-  //   super.dispose();
-  // }
-  //
   final List<String> _workPreferences = [];
   final List<String> _skillSet = [];
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           _buildList(
@@ -49,46 +29,65 @@ class _ProfileListState extends State<ProfileList>
             subText: "Basic personal and academic information",
             onTap: () {},
           ),
-          SizedBox(height: size.height * .06),
+          SizedBox(height: size.height * 0.06),
           _buildListWidget(
             icon: Icons.edit_outlined,
             text: "Work Preference",
             subText: "Your desired roles and availability",
             tags: _workPreferences,
             onTap: () async {
-              // final update = await Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: WorkpreferenceEdit()));
-              Navigator.push(
+              final update = await Navigator.push(
                 context,
                 PageTransition(
                   type: PageTransitionType.fade,
-                  child: WorkpreferenceEdit(),
+                  child: const WorkpreferenceEdit(),
                 ),
               );
+              if (update != null && update is List<String>) {
+                setState(() {
+                  _workPreferences.clear();
+                  _workPreferences.addAll(update);
+                });
+              }
             },
           ),
-          SizedBox(height: size.height * .04),
+          SizedBox(height: size.height * 0.04),
           _buildListWidget(
             icon: Icons.edit_outlined,
             text: "Skill Set",
             subText: "Highlight your tools and capability",
             tags: _skillSet,
-            onTap: () {},
+            onTap: () async {
+              final update = await Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: const SkillSet(),
+                ),
+              );
+              if (update != null && update is List<String>) {
+                setState(() {
+                  _skillSet.clear();
+                  _skillSet.addAll(update);
+                });
+              }
+            },
           ),
-          SizedBox(height: size.height * .04),
+          SizedBox(height: size.height * 0.04),
           _buildList(
             icon: Icons.arrow_forward_ios_rounded,
             text: "Portfolio",
             subText: "Showcase your best design work",
             onTap: () {},
           ),
-          SizedBox(height: size.height * .04),
+          SizedBox(height: size.height * 0.04),
           _buildList(
             icon: Icons.arrow_forward_ios_rounded,
             text: "Earned Certificates",
             subText: "Proof of learning and achievement",
             onTap: () {},
           ),
-          SizedBox(height: size.height * .03),
+          SizedBox(height: size.height * 0.03),
         ],
       ),
     );
@@ -105,56 +104,49 @@ class _ProfileListState extends State<ProfileList>
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
       color: Colors.white,
-      margin: EdgeInsets.symmetric(vertical: 1),
       child: Container(
         width: double.infinity,
-        height: size.height * .107,
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.fromLTRB(10, 20, 10, 25),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: Colors.grey.withValues(alpha: .2),
+            color: Colors.grey.withOpacity(0.2),
             width: 1,
           ),
         ),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        text,
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
-                        ),
-                      ),
-                      Text(
-                        subText,
-                        style: GoogleFonts.lato(
-                          color: Colors.grey,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    onPressed: onTap,
-                    icon: Icon(
-                      Icons.arrow_forward_ios_rounded,
+                  Text(
+                    text,
+                    style: GoogleFonts.lato(
                       color: Colors.black,
-                      size: 20,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                    ),
+                  ),
+                  Text(
+                    subText,
+                    style: GoogleFonts.lato(
+                      color: Colors.grey,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
+              ),
+            ),
+            IconButton(
+              onPressed: onTap,
+              icon: const Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Colors.black,
+                size: 20,
               ),
             ),
           ],
@@ -174,62 +166,57 @@ class _ProfileListState extends State<ProfileList>
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-      margin: EdgeInsets.symmetric(vertical: 1),
       color: Colors.white,
       child: Container(
         width: double.infinity,
-        height: size.height * .2,
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: Colors.grey.withValues(alpha: .2),
+            color: Colors.grey.withOpacity(0.2),
             width: 1,
           ),
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        text,
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                       ),
-                      Text(
-                        subText,
-                        style: GoogleFonts.lato(
-                          color: Colors.grey.withValues(alpha: .5),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    ),
+                    Text(
+                      subText,
+                      style: GoogleFonts.lato(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
                       ),
-                    ],
-                  ),
-                  IconButton(
-                    onPressed: onTap,
-                    icon: Icon(Icons.edit_outlined, color: Colors.grey),
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: onTap,
+                  icon: const Icon(Icons.edit_outlined, color: Colors.grey),
+                ),
+              ],
             ),
-            SizedBox(height: size.height * .03),
+            const SizedBox(height: 12),
             tags.isEmpty
-                ? Text("No Preference is Selected")
+                ? const Text("No Preference is Selected")
                 : Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: tags.map((tag) => _buildTags(tag)).toList(),
-                  ),
+              spacing: 8,
+              runSpacing: 8,
+              children: tags.map((tag) => _buildTags(tag)).toList(),
+            ),
           ],
         ),
       ),
@@ -238,18 +225,18 @@ class _ProfileListState extends State<ProfileList>
 
   Widget _buildTags(String text) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.black, width: 1),
+        border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(13),
       ),
       child: Text(
         text,
         style: GoogleFonts.openSans(
-          color: Colors.black,
           fontSize: 12,
-          fontWeight: FontWeight.w400,
+          color: Colors.black,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
