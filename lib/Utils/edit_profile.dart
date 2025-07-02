@@ -121,7 +121,7 @@ class _EditProfileState extends State<EditProfile> {
               )
             ],
           ),
-        ),
+        )
       ),
       bottomNavigationBar: Row(
         children: [

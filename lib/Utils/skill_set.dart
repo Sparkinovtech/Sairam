@@ -10,6 +10,7 @@ class SkillSet extends StatefulWidget {
 class _SkillSetState extends State<SkillSet> {
   bool _isExpanded = false;
   List<String> _selectedSkills = [];
+
   final List<String> _options = [
     "Graphics Designer",
     "UI/UX Designer",
@@ -145,20 +146,23 @@ class _SkillSetState extends State<SkillSet> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 25),
                     child: MaterialButton(
+                      elevation: 0,
+
                         onPressed: (){},
                       minWidth: double.infinity,
                       height: size.height * .05,
-                      color: Colors.blue,
+                      color: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: Colors.blue),
                       ),
                       splashColor: Colors.white.withOpacity(.7),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.file_upload_outlined,color: Colors.white,),
+                          Icon(Icons.file_upload_outlined,color: Colors.blue,),
                           SizedBox(width: size.width * .02,),
-                          Text("Upload Resume (pdf/.jpeg)",style: GoogleFonts.lato( color: Colors.white,fontSize: 15,fontWeight: FontWeight.w500),),
+                          Text("Upload Resume (pdf/.jpeg)",style: GoogleFonts.lato( color: Colors.blue,fontSize: 15,fontWeight: FontWeight.w500),),
                         ],
                       ),
                     ),

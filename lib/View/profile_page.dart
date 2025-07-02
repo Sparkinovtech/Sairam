@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sairam_incubation/Auth/View/edit_profile.dart';
+import 'package:sairam_incubation/Utils/edit_profile.dart';
 import 'package:sairam_incubation/Utils/profile_list.dart';
 import '../Auth/bloc/auth_bloc.dart';
 import '../Auth/bloc/auth_event.dart';
@@ -20,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
+
   File? _imageFile;
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
@@ -96,8 +97,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                 ? FileImage(_imageFile!)
                                 : NetworkImage(
                                         "https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg",
-                                      )
-                                      as ImageProvider,
+                                      ) as ImageProvider,
                           ),
                         ),
                         SizedBox(width: size.width * .03),

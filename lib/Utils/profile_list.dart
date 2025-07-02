@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/View/identity_details.dart';
-import 'package:sairam_incubation/Auth/View/skill_set.dart';
+import 'package:sairam_incubation/Utils/identity_details.dart';
+import 'package:sairam_incubation/Utils/portfolio_page.dart';
+import 'package:sairam_incubation/Utils/skill_set.dart';
 import 'package:sairam_incubation/Auth/View/work_preference_edit.dart';
 
 class ProfileList extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ProfileListState extends State<ProfileList>
               Navigator.push(context, PageTransition(type: PageTransitionType.fade , child:IdentityDetails()));
             },
           ),
-          SizedBox(height: size.height * 0.06),
+          SizedBox(height: size.height * 0.03),
           _buildListWidget(
             icon: Icons.edit_outlined,
             text: "Work Preference",
@@ -54,7 +55,7 @@ class _ProfileListState extends State<ProfileList>
               }
             },
           ),
-          SizedBox(height: size.height * 0.04),
+          SizedBox(height: size.height * 0.03),
           _buildListWidget(
             icon: Icons.edit_outlined,
             text: "Skill Set",
@@ -76,14 +77,16 @@ class _ProfileListState extends State<ProfileList>
               }
             },
           ),
-          SizedBox(height: size.height * 0.04),
+          SizedBox(height: size.height * 0.03),
           _buildList(
             icon: Icons.arrow_forward_ios_rounded,
             text: "Portfolio",
             subText: "Showcase your best design work",
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: PortfolioPage()));
+            },
           ),
-          SizedBox(height: size.height * 0.04),
+          SizedBox(height: size.height * 0.03),
           _buildList(
             icon: Icons.arrow_forward_ios_rounded,
             text: "Earned Certificates",
