@@ -19,10 +19,10 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _openPhoneStorage() async{
     requestPermission();
     final picker = ImagePicker();
-    final _pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if(_pickedFile != null){
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if(pickedFile != null){
       setState(() {
-        _file = File(_pickedFile.path);
+        _file = File(pickedFile.path);
       });
     }
   }

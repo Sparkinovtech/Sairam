@@ -14,7 +14,7 @@ Future<bool> showLogoutDialog(BuildContext context) {
           borderRadius: BorderRadius.circular(20),
         ),
         child:BackdropFilter(
-          filter: ImageFilter.blur(sigmaY: 5 , sigmaX: 5),
+          filter: ImageFilter.blur(sigmaY: 1 , sigmaX: 1),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 15),
             width: MediaQuery.of(context).size.width * .3,

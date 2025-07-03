@@ -43,7 +43,7 @@ class _SignupPageState extends State<SignupPage> {
           } else if (state.exception is InvalidEmailFormatException) {
             await showErrorDialog(
               context,
-              "Only SEC account registeration allowed",
+              "Only SEC / SIT account registration allowed",
             );
           }
         }
