@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
+
 class RequestForm extends StatefulWidget {
   const RequestForm({super.key});
 
@@ -21,7 +21,7 @@ class _RequestFormState extends State<RequestForm> {
     "The Trusty",
   ];
   bool _isTapped = false;
-  bool _isToggled  = false;
+  bool _isToggled = false;
   String? selected;
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class _RequestFormState extends State<RequestForm> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: SizedBox(
                   width: double.infinity,
                   child: Stack(
@@ -43,9 +43,18 @@ class _RequestFormState extends State<RequestForm> {
                         alignment: Alignment.centerLeft,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(context, PageTransition(type: PageTransitionType.fade ,child: BottomNavBar()));
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.fade,
+                                child: BottomNavBar(),
+                              ),
+                            );
                           },
-                          icon: Icon(Icons.arrow_back_ios_new, color: Colors.black),
+                          icon: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       Center(
@@ -60,29 +69,42 @@ class _RequestFormState extends State<RequestForm> {
                       ),
                     ],
                   ),
-                )
+                ),
               ),
-              SizedBox(height: size.height * .04,),
+              SizedBox(height: size.height * .04),
               Form(
                 key: _key,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: Column(
                     children: [
-                      _dropField(hintText: "To", selectedValue: selected, list:_list, onChange:(val){
-                        setState(() {
-                          selected = val;
-                        });
-                      }),
-                      SizedBox(height: size.height * .03,),
-                      _textField(controller: _dataController, hintText: "Date", text: TextInputType.text),
-                      SizedBox(height: size.height * .03,),
-                      _textField(controller:_reasonController , hintText: "Reason", text: TextInputType.text),
+                      _dropField(
+                        hintText: "To",
+                        selectedValue: selected,
+                        list: _list,
+                        onChange: (val) {
+                          setState(() {
+                            selected = val;
+                          });
+                        },
+                      ),
+                      SizedBox(height: size.height * .03),
+                      _textField(
+                        controller: _dataController,
+                        hintText: "Date",
+                        text: TextInputType.text,
+                      ),
+                      SizedBox(height: size.height * .03),
+                      _textField(
+                        controller: _reasonController,
+                        hintText: "Reason",
+                        text: TextInputType.text,
+                      ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: size.height * .04,),
+              SizedBox(height: size.height * .04),
               Column(
                 children: [
                   Padding(
@@ -90,27 +112,47 @@ class _RequestFormState extends State<RequestForm> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Stay Duration",style: GoogleFonts.inter(color: Colors.black,fontSize: 15,fontWeight: FontWeight.w500),),
-                        _toggleButton(isToggled: _isTapped, onChange: (val){
-                          setState(() {
-                            _isTapped = val;
-                          });
-                        })
+                        Text(
+                          "Stay Duration",
+                          style: GoogleFonts.inter(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        _toggleButton(
+                          isToggled: _isTapped,
+                          onChange: (val) {
+                            setState(() {
+                              _isTapped = val;
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
-                  SizedBox(height: size.height * .03,),
+                  SizedBox(height: size.height * .03),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Residence Type",style: GoogleFonts.inter(color: Colors.black,fontSize: 15,fontWeight: FontWeight.w500),),
-                        _toggleButton(isToggled: _isToggled, onChange: (val){
-                          setState(() {
-                            _isToggled = val;
-                          });
-                        })
+                        Text(
+                          "Residence Type",
+                          style: GoogleFonts.inter(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        _toggleButton(
+                          isToggled: _isToggled,
+                          onChange: (val) {
+                            setState(() {
+                              _isToggled = val;
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -121,22 +163,35 @@ class _RequestFormState extends State<RequestForm> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         child: MaterialButton(
           elevation: 0,
-          onPressed: (){},
+          onPressed: () {},
           color: Colors.blue,
           minWidth: double.infinity,
           height: size.height * .05,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Text("Submit" , style: GoogleFonts.lato(color: Colors.white,fontSize: 16,fontWeight: FontWeight.w500),),
+          child: Text(
+            "Submit",
+            style: GoogleFonts.lato(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ),
     );
   }
-  Widget _dropField({required String hintText , required String? selectedValue , required List<String> list , required ValueChanged<String?> onChange}){
+
+  Widget _dropField({
+    required String hintText,
+    required String? selectedValue,
+    required List<String> list,
+    required ValueChanged<String?> onChange,
+  }) {
     return DropdownButtonFormField<String>(
       onChanged: onChange,
       value: list.contains(selectedValue) ? selectedValue : null,
@@ -146,20 +201,29 @@ class _RequestFormState extends State<RequestForm> {
           borderSide: BorderSide.none,
         ),
         hintText: hintText,
-        hintStyle: GoogleFonts.inter(color: Colors.grey,fontSize: 15,fontWeight: FontWeight.w500),
+        hintStyle: GoogleFonts.inter(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
         contentPadding: EdgeInsets.all(14),
         fillColor: Colors.grey.withOpacity(.1),
         filled: true,
       ),
-      items: list.map((item){
+      items: list.map((item) {
         return DropdownMenuItem<String>(
           value: item,
-          child: Text(item , overflow: TextOverflow.ellipsis,),
+          child: Text(item, overflow: TextOverflow.ellipsis),
         );
       }).toList(),
     );
   }
-  Widget _textField({required TextEditingController controller , required String hintText , required TextInputType text}){
+
+  Widget _textField({
+    required TextEditingController controller,
+    required String hintText,
+    required TextInputType text,
+  }) {
     return TextFormField(
       controller: controller,
       keyboardType: text,
@@ -169,7 +233,11 @@ class _RequestFormState extends State<RequestForm> {
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(10),
         ),
-        hintStyle: GoogleFonts.inter(color: Colors.grey,fontSize: 15,fontWeight: FontWeight.w500),
+        hintStyle: GoogleFonts.inter(
+          color: Colors.grey,
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+        ),
         hintText: hintText,
         contentPadding: EdgeInsets.all(14),
         filled: true,
@@ -177,10 +245,14 @@ class _RequestFormState extends State<RequestForm> {
       ),
     );
   }
-  Widget _toggleButton({required bool isToggled , required ValueChanged<bool> onChange}){
+
+  Widget _toggleButton({
+    required bool isToggled,
+    required ValueChanged<bool> onChange,
+  }) {
     return Switch(
-        value: isToggled,
-        onChanged: onChange,
+      value: isToggled,
+      onChanged: onChange,
       activeColor: Colors.blue,
       inactiveThumbColor: Colors.blue,
       inactiveTrackColor: Colors.white,
