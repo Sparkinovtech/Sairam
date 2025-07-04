@@ -91,7 +91,6 @@ class _AddMediaState extends State<AddMedia> {
                   final mediaItems = MediaItems(title: _title.text, file: widget.file);
                   Navigator.pop(context, mediaItems);
                 }
-
               },
               color: Colors.blue,
               minWidth: size.width * .4,
