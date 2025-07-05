@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import "package:intl/intl.dart";
 import 'package:page_transition/page_transition.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Utils/certificate_page.dart';
 class AddCertificates extends StatefulWidget {
 
@@ -14,13 +18,12 @@ class AddCertificates extends StatefulWidget {
 }
 
 class _AddCertificatesState extends State<AddCertificates> {
-
   DateTime? _selectedDate;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
-
+  File? file;
   Future<void> _pickMonthYear(BuildContext context) async{
     DateTime now = DateTime.now();
     final DateTime? picked =  await showDatePicker(
@@ -51,6 +54,28 @@ class _AddCertificatesState extends State<AddCertificates> {
         widget.onDateSelected!(picked);
       }
     }
+  }
+  Future<void> requestPermission() async{
+     await [Permission.photos , Permission.storage , Permission.camera  , Permission.accessMediaLocation].request();
+  }
+  Future<void> _openPhoneStorage() async{
+     await requestPermission();
+     final picker =  ImagePicker();
+     final pickerStorage = await picker.pickImage(source: ImageSource.gallery);
+
+     if(pickerStorage != null ){
+       setState(() {
+         file = File(pickerStorage.path);
+       });
+     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _nameController.dispose();
+    file = null;
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -119,24 +144,43 @@ class _AddCertificatesState extends State<AddCertificates> {
               SizedBox(height:  size.height * .04,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
-                child: MaterialButton(
-                  onPressed: (){},
-                  minWidth: size.width * .7,
-                  height: size.height * .05,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.blue,width: 1),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-
-                    children: [
-                      IconButton(onPressed: (){}, icon: Icon(Icons.upload,color: Colors.blue,)),
-                       Text("Upload certificate (.jpg / .pdf)",
-                         style: GoogleFonts.lato(color: Colors.blue, fontWeight: FontWeight.w500 ,fontSize: 15),),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if(file != null)...[
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        margin: EdgeInsets.only(bottom: 20),
+                        color: Colors.white,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(file! , width: double.infinity, height: size.height * .35,fit: BoxFit.cover,),
+                        ),
+                      ),
                     ],
-                  ),
+                    MaterialButton(
+                      onPressed: (){
+                        _openPhoneStorage();
+                      },
+                      minWidth: size.width * .7,
+                      height: size.height * .05,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.blue,width: 1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(onPressed: (){}, icon: Icon(Icons.upload,color: Colors.blue,)),
+                           Text( "Upload certificate (.jpg / .pdf)",
+                             style: GoogleFonts.lato(color: Colors.blue, fontWeight: FontWeight.w500 ,fontSize: 15),),
+                        ],
+                      ),
 
+                    ),
+                  ],
                 ),
               )
             ],
@@ -149,7 +193,9 @@ class _AddCertificatesState extends State<AddCertificates> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             MaterialButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.pop(context);
+              },
               color: Colors.grey[100],
               minWidth:size.width * .4,
               height: size.height * .05,

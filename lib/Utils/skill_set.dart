@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SkillSet extends StatefulWidget {
   const SkillSet({super.key});
@@ -7,11 +11,11 @@ class SkillSet extends StatefulWidget {
   @override
   State<SkillSet> createState() => _SkillSetState();
 }
+File? file;
 
 class _SkillSetState extends State<SkillSet> {
   bool _isExpanded = false;
   List<String> _selectedSkills = [];
-
   final List<String> _options = [
     "Graphics Designer",
     "UI/UX Designer",
@@ -26,6 +30,27 @@ class _SkillSetState extends State<SkillSet> {
     "Ruby On Rails Developer",
     "Others",
   ];
+
+  Future<void> requestPermission() async{
+    await [Permission.camera , Permission.storage , Permission.photos , Permission.accessMediaLocation].request();
+  }
+  Future<void> _openPhoneStorage() async{
+     await requestPermission();
+     final picker = ImagePicker();
+     final pickedStorage =  await picker.pickImage(source: ImageSource.gallery);
+
+     if(pickedStorage != null){
+       setState(() {
+          file = File(pickedStorage.path);
+       });
+     }
+  }
+
+  @override
+  void dispose() {
+    file = null;
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -98,9 +123,7 @@ class _SkillSetState extends State<SkillSet> {
                         ),
                       ),
                       Icon(
-                        _isExpanded
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down,
+                        _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                       ),
                     ],
                   ),
@@ -109,7 +132,6 @@ class _SkillSetState extends State<SkillSet> {
               if (_isExpanded)
                 Container(
                   margin: EdgeInsets.fromLTRB(30, 25, 20, 30),
-
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -132,8 +154,7 @@ class _SkillSetState extends State<SkillSet> {
                           ),
                         ),
                         trailing: selected
-                            ? Icon(Icons.check, color: Colors.green)
-                            : null,
+                            ? Icon(Icons.check, color: Colors.green) : null,
                         onTap: () {
                           setState(() {
                             if (selected) {
@@ -198,33 +219,53 @@ class _SkillSetState extends State<SkillSet> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 25),
-                    child: MaterialButton(
-                      elevation: 0,
-
-                      onPressed: () {},
-                      minWidth: double.infinity,
-                      height: size.height * .05,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: BorderSide(color: Colors.blue),
-                      ),
-                      splashColor: Colors.white.withValues(alpha: .7),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.file_upload_outlined, color: Colors.blue),
-                          SizedBox(width: size.width * .02),
-                          Text(
-                            "Upload Resume (pdf/.jpeg)",
-                            style: GoogleFonts.lato(
-                              color: Colors.blue,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if(file != null)...[
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 4,
+                            margin: EdgeInsets.only(bottom: 20),
+                            color: Colors.white,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.file(file! , width: double.infinity, height: size.height * .35, fit: BoxFit.cover,),
                             ),
                           ),
                         ],
-                      ),
+                        MaterialButton(
+                          elevation: 0,
+                          onPressed: () {
+                            _openPhoneStorage();
+                          },
+                          minWidth: double.infinity,
+                          height: size.height * .05,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(color: Colors.blue),
+                          ),
+                          splashColor: Colors.white.withValues(alpha: .7),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.file_upload_outlined, color: Colors.blue),
+                              SizedBox(width: size.width * .02),
+                              Text(
+                                file != null ? "Replace Resume" : "Upload Resume (pdf/.jpeg)",
+                                style: GoogleFonts.lato(
+                                  color: Colors.blue,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -20,7 +20,12 @@ class _RequestFormState extends State<RequestForm> {
     "The Dean Innovation",
     "The Trusty",
   ];
-  bool _isTapped = false;
+  final List<String> _stay = [
+    "Evening Stay",
+    "Night Stay",
+  ];
+
+  String? type;
   bool _isToggled = false;
   String? selected;
   @override
@@ -100,37 +105,23 @@ class _RequestFormState extends State<RequestForm> {
                         hintText: "Reason",
                         text: TextInputType.text,
                       ),
+                      SizedBox(height: size.height * .04,),
+
+                      _dropField(hintText: "Type of Stay", selectedValue:type , list: _stay,
+                          onChange: (val) {
+                        setState(() {
+                          type =val;
+                        });
+                      }),
+
                     ],
                   ),
                 ),
               ),
               SizedBox(height: size.height * .04),
               Column(
+
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Stay Duration",
-                          style: GoogleFonts.inter(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        _toggleButton(
-                          isToggled: _isTapped,
-                          onChange: (val) {
-                            setState(() {
-                              _isTapped = val;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
                   SizedBox(height: size.height * .03),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 30),
@@ -138,7 +129,7 @@ class _RequestFormState extends State<RequestForm> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Residence Type",
+                          "Hosteler",
                           style: GoogleFonts.inter(
                             color: Colors.black,
                             fontSize: 15,
@@ -214,6 +205,7 @@ class _RequestFormState extends State<RequestForm> {
         return DropdownMenuItem<String>(
           value: item,
           child: Text(item, overflow: TextOverflow.ellipsis),
+          
         );
       }).toList(),
     );

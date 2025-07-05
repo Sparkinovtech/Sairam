@@ -212,9 +212,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                       Row(
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                            ),
+                                            padding: EdgeInsets.symmetric(horizontal: 10,),
                                             child: MaterialButton(
                                               onPressed: () {},
                                               elevation: 0,
@@ -235,8 +233,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                             ),
                                             child: MaterialButton(
                                               onPressed: () {
-                                                if (_key.currentState!
-                                                    .validate()) {
+                                                if (_key.currentState!.validate()) {
                                                   Navigator.pop(context);
                                                 }
                                               },
