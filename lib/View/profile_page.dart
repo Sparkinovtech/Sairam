@@ -1,6 +1,5 @@
 import 'dart:developer' as devtools;
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +11,7 @@ import 'package:sairam_incubation/Utils/profile_list.dart';
 import '../Auth/bloc/auth_bloc.dart';
 import '../Auth/bloc/auth_event.dart';
 import '../Utils/dialogs/logout_dialog.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -19,18 +19,18 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStateMixin {
-
+class _ProfilePageState extends State<ProfilePage>
+    with SingleTickerProviderStateMixin {
   File? _imageFile;
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
   }
 
-  Future<void> _openPhoneStorage() async{
+  Future<void> _openPhoneStorage() async {
     await requestPermission();
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if(pickedFile != null){
+    if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
@@ -97,7 +97,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                 ? FileImage(_imageFile!)
                                 : NetworkImage(
                                         "https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg",
-                                      ) as ImageProvider,
+                                      )
+                                      as ImageProvider,
                           ),
                         ),
                         SizedBox(width: size.width * .03),
@@ -132,7 +133,13 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                   borderRadius: BorderRadius.circular(10),
                                   child: InkWell(
                                     onTap: () {
-                                      Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: EditProfile()));
+                                      Navigator.push(
+                                        context,
+                                        PageTransition(
+                                          type: PageTransitionType.fade,
+                                          child: EditProfile(),
+                                        ),
+                                      );
                                     },
                                     child: Container(
                                       height: size.height * .05,

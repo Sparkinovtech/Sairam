@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +39,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
     if (pickedFile != null) {
       final File selectedFile = File(pickedFile.path);
       if (!mounted) return;
-
       final result = await Navigator.push(
         context,
         PageTransition(

@@ -31,7 +31,13 @@ class _ProfileListState extends State<ProfileList>
             text: "Identity details",
             subText: "Basic personal and academic information",
             onTap: () {
-              Navigator.push(context, PageTransition(type: PageTransitionType.fade , child:IdentityDetails()));
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: IdentityDetails(),
+                ),
+              );
             },
           ),
           SizedBox(height: size.height * 0.03),
@@ -84,7 +90,13 @@ class _ProfileListState extends State<ProfileList>
             text: "Portfolio",
             subText: "Showcase your best design work",
             onTap: () {
-              Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: PortfolioPage()));
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: PortfolioPage(),
+                ),
+              );
             },
           ),
           SizedBox(height: size.height * 0.03),
@@ -120,7 +132,7 @@ class _ProfileListState extends State<ProfileList>
           color: Colors.white,
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -182,7 +194,7 @@ class _ProfileListState extends State<ProfileList>
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(13),
           border: Border.all(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -222,10 +234,10 @@ class _ProfileListState extends State<ProfileList>
             tags.isEmpty
                 ? const Text("No Preference is Selected")
                 : Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: tags.map((tag) => _buildTags(tag)).toList(),
-            ),
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: tags.map((tag) => _buildTags(tag)).toList(),
+                  ),
           ],
         ),
       ),
