@@ -31,17 +31,13 @@ extension DomainName on Domains {
       case Domains.promptEngineering:
         return "Prompt Engineering";
       case Domains.threeDModelDevelopment:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return "3D Model Development";
       case Domains.arvrDevelopment:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return "ARVR Development";
       case Domains.marketingManagement:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return "Marketing Management";
       case Domains.rubyOnRails:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return "Ruby On Rails";
       case Domains.others:
         return "Others";
     }

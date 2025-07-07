@@ -2,25 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:sairam_incubation/Profile/Model/certificate.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
+import 'package:flutter/foundation.dart'; // For @immutable
 
 @immutable
 class Profile {
-  final String name;
-  final String emailAddresss;
-  final String phoneNumber;
-  final Department department;
-  final String dateOfBirth;
-  final String id;
-  final String profilePicture;
-  final int yearOfGraduation;
-  final int currentYear;
-  final String currentMentor;
-  final String collegeIdPhoto;
-  final List<Domains> domains;
-  final List<Domains> skillSet;
-  final List<Certificate> certificates;
+  final String? name;
+  final String? emailAddresss;
+  final String? phoneNumber;
+  final Department? department;
+  final String? dateOfBirth;
+  final String? id;
+  final String? profilePicture;
+  final int? yearOfGraduation;
+  final int? currentYear;
+  final String? currentMentor;
+  final String? collegeIdPhoto;
+  final List<Domains>? domains;
+  final List<Domains>? skillSet;
+  final List<Certificate>? certificates;
 
-  Profile(
+  const Profile({
     this.name,
     this.emailAddresss,
     this.phoneNumber,
@@ -35,5 +36,5 @@ class Profile {
     this.domains,
     this.skillSet,
     this.certificates,
-  );
+  });
 }
