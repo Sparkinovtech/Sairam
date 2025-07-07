@@ -5,11 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sairam_incubation/Auth/Service/authentication_provider.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
+import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthenticationProvider provider)
-    : super(const AuthStateUninitialized(isLoading: false)) {
+  AuthBloc(
+    AuthenticationProvider provider,
+    ProfileCloudFirestoreProvider cloudProvider,
+  ) : super(const AuthStateUninitialized(isLoading: false)) {
     // Initialise the Firebase app
     on<AuthInitialiseEvent>((event, emit) async {
       await provider.initialise();
@@ -88,7 +91,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final password = event.password;
       try {
         emit(RegisteringState(exception: null, isLoading: true));
-        await provider.signup(emailId: email, password: password);
+        final user = await provider.signup(emailId: email, password: password);
+        await cloudProvider.createNewProfile(user: user);
         provider.sendEmailVerification();
         emit(RequiresEmailVerifiactionState(isLoading: false));
       } on FirebaseAuthException catch (e) {

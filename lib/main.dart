@@ -9,6 +9,7 @@ import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/View/forget_page.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
+import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Auth/View/verify_page.dart';
@@ -27,9 +28,9 @@ void main() async {
   ]);
   runApp(
     MaterialApp(
-
       home: BlocProvider<AuthBloc>(
-        create: (context) => AuthBloc(FirebaseAuthProvider()),
+        create: (context) =>
+            AuthBloc(FirebaseAuthProvider(), ProfileCloudFirestoreProvider()),
         child: const MyApp(),
       ),
     ),

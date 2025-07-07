@@ -37,4 +37,50 @@ class Profile {
     this.skillSet,
     this.certificates,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'emailAddresss': emailAddresss,
+      'phoneNumber': phoneNumber,
+      'department': department?.name,
+      'dateOfBirth': dateOfBirth,
+      'id': id,
+      'profilePicture': profilePicture,
+      'yearOfGraduation': yearOfGraduation,
+      'currentYear': currentYear,
+      'currentMentor': currentMentor,
+      'collegeIdPhoto': collegeIdPhoto,
+      'domains': domains?.map((d) => d.name).toList(),
+      'skillSet': skillSet?.map((s) => s.name).toList(),
+      'certificates': certificates?.map((c) => c.toJson()).toList(),
+    };
+  }
+
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    return Profile(
+      name: json['name'] as String?,
+      emailAddresss: json['emailAddresss'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      department: json['department'] != null
+          ? Department.values.byName(json['department'])
+          : null,
+      dateOfBirth: json['dateOfBirth'] as String?,
+      id: json['id'] as String?,
+      profilePicture: json['profilePicture'] as String?,
+      yearOfGraduation: json['yearOfGraduation'] as int?,
+      currentYear: json['currentYear'] as int?,
+      currentMentor: json['currentMentor'] as String?,
+      collegeIdPhoto: json['collegeIdPhoto'] as String?,
+      domains: (json['domains'] as List<dynamic>?)
+          ?.map((d) => Domains.values.byName(d))
+          .toList(),
+      skillSet: (json['skillSet'] as List<dynamic>?)
+          ?.map((s) => Domains.values.byName(s))
+          .toList(),
+      certificates: (json['certificates'] as List<dynamic>?)
+          ?.map((c) => Certificate.fromJson(c))
+          .toList(),
+    );
+  }
 }
