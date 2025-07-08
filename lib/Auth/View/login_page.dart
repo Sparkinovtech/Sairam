@@ -25,13 +25,13 @@ class _LoginPageState extends State<LoginPage> {
         if (state is LoggedOutState) {
           // Show error if any
           if (state.exception is UserNotFoundAuthException) {
-            await showErrorDialog(context, "User Not Found");
+            await showErrorDialog(context, "User Not Found" ,"");
           } else if (state.exception is WrongPasswordAuthException) {
-            await showErrorDialog(context, "Wrong credentials");
+            await showErrorDialog(context, "Wrong credentials","Please Enter the valid Password");
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialog(context, "Authentication error");
+            await showErrorDialog(context, "Authentication error","");
           } else if (state.exception is InvalidEmailAuthException) {
-            await showErrorDialog(context, "Invalid email entered");
+            await showErrorDialog(context, "Invalid email entered","");
           }
         }
       },

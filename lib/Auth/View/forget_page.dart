@@ -150,6 +150,7 @@ class _ForgetPageState extends State<ForgetPage> {
                       showErrorDialog(
                         context,
                         "Enter your college mail please",
+                        ""
                       );
                       return;
                     }

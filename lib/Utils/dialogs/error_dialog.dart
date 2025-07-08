@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-Future<Future> showErrorDialog(BuildContext context , String text) async {
+Future<Future> showErrorDialog(BuildContext context , String text , String subText) async {
   var size = MediaQuery.of(context).size;
   return showDialog(
     context: context,
@@ -35,7 +35,14 @@ Future<Future> showErrorDialog(BuildContext context , String text) async {
                       GoogleFonts.lato(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),
                     ],
                   ),
-                SizedBox(height: size.height * .027,),
+                SizedBox(height: size.height * .016,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(subText , style: GoogleFonts.lato(color: Colors.grey , fontSize: 12,fontWeight: FontWeight.w700),),
+                  ],
+                ),
+                SizedBox(height: size.height * .01,),
 
                 Center(
                   child: MaterialButton(

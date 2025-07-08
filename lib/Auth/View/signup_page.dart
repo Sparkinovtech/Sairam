@@ -33,17 +33,18 @@ class _SignupPageState extends State<SignupPage> {
           if (!context.mounted) return;
           devtools.log("From Register Page : ${state.exception}");
           if (state.exception is WeakPasswordAuthException) {
-            await showErrorDialog(context, "Weak Password");
+            await showErrorDialog(context, "Weak Password","");
           } else if (state.exception is EmailAlreadyInUseAuthException) {
-            await showErrorDialog(context, "Email Already in use");
+            await showErrorDialog(context, "Email Already in use","");
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialog(context, "Failed to register");
+            await showErrorDialog(context, "Failed to register","");
           } else if (state.exception is InvalidEmailAuthException) {
-            await showErrorDialog(context, "Invalid email");
+            await showErrorDialog(context, "Invalid email","");
           } else if (state.exception is InvalidEmailFormatException) {
             await showErrorDialog(
               context,
               "Only SEC / SIT account registration allowed",
+              ""
             );
           }
         }

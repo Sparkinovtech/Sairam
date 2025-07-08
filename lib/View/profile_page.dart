@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "John Doe",
+                              "Sujin Danial",
                               style: GoogleFonts.inter(
                                 color: Colors.black,
                                 fontSize: 21,
