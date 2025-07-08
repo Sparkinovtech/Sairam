@@ -107,21 +107,18 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _activityCard(
+                      title: "Ongoing",
                       value: "10",
                       label: "Projects",
                       icon: CupertinoIcons.cube,
                       context: context,
                     ),
+                    SizedBox(width: size.width * .07,),
                     _activityCard(
+                      title: "Completed",
                       value: "17",
                       label: "Night Stay",
                       icon: CupertinoIcons.moon_stars_fill,
-                      context: context,
-                    ),
-                    _activityCard(
-                      value: "20",
-                      label: "Evening Stay",
-                      icon: CupertinoIcons.sun_dust_fill,
                       context: context,
                     ),
                   ],
@@ -129,33 +126,72 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: size.height * .06),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  "Stay Request",
-                  style: GoogleFonts.inter(
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("Schedule",style: GoogleFonts.lato(color: Colors.black,fontSize:25,fontWeight: FontWeight.w800),),
+                  ],
+                ),
+              ),
+              SizedBox(height: size.height * .03,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Card(
+                  elevation: 20,
+                  color: Colors.white,
+                  child: Container(
+                    width: size.width * .8,
+                    height: size.height * .16,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: size.height * .03),
-              StayRequestContainer(size: size),
-              SizedBox(height: size.height * .05),
+              SizedBox(height: size.height * .03,),
+
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Achievements",
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Card(
+                  elevation: 10,
+                  color: Colors.white,
+                  child: Container(
+                    width: size.width * .8,
+                    height: size.height * .17,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    InkWell(onTap: () {}, child: Text("Add +")),
-                  ],
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20  , vertical: 30),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text("Want To Work Over ?",style:
+                                  GoogleFonts.lato(color: Colors.black,fontSize: 20,fontWeight: FontWeight.w800),),
+                                  SizedBox(width: size.width * .01,),
+                                ],
+                              ),
+                              SizedBox(height: size.height * .03,),
+
+                              Row(
+                                children: [
+                                  Text("Dreams don't work unless you do."),
+                                ],
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -166,6 +202,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _activityCard({
+    required String title,
     required String value,
     required String label,
     required IconData icon,
@@ -185,45 +222,33 @@ class _HomePageState extends State<HomePage> {
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.blueGrey.withValues(alpha: .6),
-                      radius: 25,
-                      child: Icon(icon, size: 24, color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(height: size.height * .03),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      value,
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text(title , style: GoogleFonts.lato(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w800),),
                   ],
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      label,
-                      style: GoogleFonts.inter(
-                        fontSize: 15,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    Text("Project",style: GoogleFonts.lato(color: Colors.grey ,fontWeight: FontWeight.w500,fontSize: 14),),
+                  ],
+                ),
+                SizedBox(height: size.height * .01,),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(value,style:
+                    GoogleFonts.inter(color: Colors.black,fontSize: 27,fontWeight: FontWeight.bold),),
+                    SizedBox(width: size.width * .01,),
+                    Text("Projects",style:
+                    GoogleFonts.lato(color: Colors.grey,fontSize: 14,fontWeight: FontWeight.w500),),
                   ],
                 ),
               ],
-            ),
+            )
           ),
         ),
       ),
