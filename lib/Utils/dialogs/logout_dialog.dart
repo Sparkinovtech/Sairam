@@ -15,7 +15,7 @@ Future<bool> showLogoutDialog(BuildContext context) {
           filter: ImageFilter.blur(sigmaY: 1, sigmaX: 1),
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            width: MediaQuery.of(context).size.width * .3,
+            width: MediaQuery.of(context).size.width * .3 ,
             height: MediaQuery.of(context).size.height * .5,
             decoration: BoxDecoration(
               color: Colors.white,

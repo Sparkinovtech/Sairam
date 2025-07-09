@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:developer' as devtools;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
+import 'package:sairam_incubation/Auth/Service/network_service.dart';
 import 'package:sairam_incubation/Auth/View/forget_page.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
@@ -16,6 +19,7 @@ import 'package:sairam_incubation/Auth/View/verify_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
+import 'package:sairam_incubation/Utils/dialogs/network_dialog.dart';
 import 'package:sairam_incubation/View/splash_screen.dart';
 import 'package:sairam_incubation/firebase_options.dart';
 
@@ -36,7 +40,9 @@ void main() async {
     ),
   );
 }
-
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+NetworkServices services =  NetworkServices();
+NetworkDialog dialog = NetworkDialog();
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -45,8 +51,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late StreamSubscription<bool> _streamSubscription;
   @override
   void initState() {
+    _streamSubscription =  services.connectionStream.listen((isConnected){
+       final context = navigatorKey.currentContext;
+
+       if(context == null) return;
+       if(!isConnected){
+         dialog.showNetworkDialog(context);
+       }else{
+         dialog.hide(context);
+       }
+    });
     context.read<AuthBloc>().add(AuthInitialiseEvent());
     super.initState();
   }
@@ -57,6 +74,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
+        navigatorKey: navigatorKey,
         home: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state.isLoading) {
@@ -64,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                 context: context,
                 text: state.loadingText ?? "Please Wait a moment...",
               );
-            } else {
+            } else{
               LoadingScreen().hide();
             }
           },

@@ -80,7 +80,7 @@ class _ForgetPageState extends State<ForgetPage> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "we have shared a link to your registered email for verfication!",
+                                        "we have shared a link to your registered email for verification!",
                                         style: GoogleFonts.poppins(
                                           color: Colors.black,
                                           fontSize: 13,

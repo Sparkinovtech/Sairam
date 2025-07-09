@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Utils/calender_page.dart';
+import 'package:sairam_incubation/Utils/components_form.dart';
 import 'package:sairam_incubation/View/request_form.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -87,20 +88,20 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Text(
-                        "See more",
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w300,
-                          decoration: TextDecoration.underline,
-                          decorationThickness: 1,
-                          decorationColor: Colors.grey,
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {},
+                    //   child: Text(
+                    //     "See more",
+                    //     style: GoogleFonts.inter(
+                    //       fontSize: 14,
+                    //       color: Colors.grey,
+                    //       fontWeight: FontWeight.w300,
+                    //       decoration: TextDecoration.underline,
+                    //       decorationThickness: 1,
+                    //       decorationColor: Colors.grey,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -200,12 +201,13 @@ class _HomePageState extends State<HomePage> {
                           calendarStyle: CalendarStyle(
                             isTodayHighlighted: true,
                             selectedDecoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: Colors.red,
                               shape: BoxShape.circle,
                             ),
                             todayDecoration: BoxDecoration(
                               color: Colors.blue,
                               shape: BoxShape.circle,
+
                             ),
                             outsideDaysVisible: false,
                           ),
@@ -217,132 +219,104 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: size.height * .01,),
 
-              Padding(
-                padding:  EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
-                child: Card(
-                  elevation: 5,
-                  color: Colors.white,
-                  child: Container(
-                    width: size.width * .85,
-                    height: size.height * .18,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15  , vertical: 20),
-                          child: Center(
-                            child: Column(
-                              children: [
-                                SizedBox(height: size.height * .02,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Want To Work Over ?",style:
-                                    GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 19),),
-                                    SizedBox(width: size.width * .02,),
-                                    Icon(CupertinoIcons.moon_zzz_fill,color: Colors.blue,),
-                                  ],
-                                ),
-                                SizedBox(height: size.height * .01,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("Dreams does not work unless you do.",style:
-                                    GoogleFonts.inter(color: Colors.grey , fontSize: 12,fontWeight: FontWeight.bold),),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    InkWell(
-                                      onTap: (){
-                                        Navigator.push(context,PageTransition(type: PageTransitionType.fade ,child: RequestForm()));
-                                      },
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(18),
-                                        ),
-                                        child: CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          radius: 18,
-                                          child: Icon(CupertinoIcons.arrow_right,color: Colors.black,size: 20,),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: RequestForm()));
+                },
+                child: Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+                  child: Card(
+                    elevation: 5,
+                    color: Colors.white,
+                    child: Container(
+                      width: size.width * .85,
+                      height: size.height * .18,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15  , vertical: 20),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  SizedBox(height: size.height * .02,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text("Want To Work Over ?",style:
+                                      GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 19),),
+                                      SizedBox(width: size.width * .02,),
+                                      Icon(CupertinoIcons.moon_zzz_fill,color: Colors.blue,),
+                                    ],
+                                  ),
+                                  SizedBox(height: size.height * .01,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text("Dreams does not work unless you do.",style:
+                                      GoogleFonts.inter(color: Colors.grey , fontSize: 12,fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
               SizedBox(height: size.height * .01,),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
-                child: Card(
-                  elevation: 10,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  color: Colors.white,
-                  child: Container(
-                    height: size.height * .17,
-                    width: size.width * .85,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: ComponentsForm()));
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15 , vertical: 20),
-                        child: Column(
-                          children: [
-                            SizedBox(height: size.height * .02,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("Request for Components",style:
-                                GoogleFonts.lato(color: Colors.black,fontSize: 19,fontWeight: FontWeight.w700),),
-                                SizedBox(width: size.width * .02,),
-                                Icon(Icons.settings,color: Colors.blue,),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text("Enhance your work smarter",style:
-                                GoogleFonts.lato(color: Colors.grey ,fontSize: 12,fontWeight: FontWeight.bold),),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: (){},
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:BorderRadius.circular(18),
-                                    ),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 18,
-                                      child: Icon(CupertinoIcons.arrow_right,color: Colors.black,),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
+                    color: Colors.white,
+                    child: Container(
+                      height: size.height * .17,
+                      width: size.width * .85,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                    )
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15 , vertical: 20),
+                          child: Column(
+                            children: [
+                              SizedBox(height: size.height * .02,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text("Request for Components",style:
+                                  GoogleFonts.lato(color: Colors.black,fontSize: 19,fontWeight: FontWeight.w700),),
+                                  SizedBox(width: size.width * .02,),
+                                  Icon(Icons.settings,color: Colors.blue,),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text("Enhance your work smarter",style:
+                                  GoogleFonts.lato(color: Colors.grey ,fontSize: 12,fontWeight: FontWeight.bold),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ),
                   ),
                 ),
               ),
@@ -376,9 +350,11 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title , style: GoogleFonts.lato(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w800),),
+                    Text(title , style:
+                    GoogleFonts.lato(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w800),),
+                    Icon(icon ,color: Colors.grey,),
                   ],
                 ),
                 Row(
@@ -388,7 +364,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 SizedBox(height: size.height * .01,),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
