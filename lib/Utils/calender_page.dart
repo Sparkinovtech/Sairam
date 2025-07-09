@@ -18,53 +18,90 @@ class _CalenderPageState extends State<CalenderPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal:20 , vertical: 30),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(onPressed: (){
-                        Navigator.pop(context);
-                      }, icon: Icon(Icons.arrow_back_ios,color: Colors.black,)),
-                      Text("Calender",style: GoogleFonts.lato(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w800),),
-                    ],
-                  ),
-                  SizedBox(height: size.height * .01,),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal:20 , vertical: 30),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, icon: Icon(Icons.arrow_back_ios,color: Colors.black,)),
+                        Text("Calender",style: GoogleFonts.lato(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w800),),
+                      ],
+                    ),
+                    SizedBox(height: size.height * .01,),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: size.height * .01,),
-            MonthyCalender(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20 , vertical: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Tasks",style: GoogleFonts.lato(color: Colors.black,fontSize: 21,fontWeight: FontWeight.bold),),
-                ],
+              SizedBox(height: size.height * .01,),
+              MonthyCalender(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30 , vertical: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("Tasks",style: GoogleFonts.lato(color: Colors.black,fontSize: 21,fontWeight: FontWeight.bold),),
+                  ],
+                ),
               ),
-            ),
-            // _taskManager(title: "", tasks: "", icon: Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,)),
-          ],
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 0),
+                child: Column(
+                  children: [
+                    _taskManager(onTap: (){}, title: "Login Page Completion", deadline: "22/07",
+                        color: Colors.blue[200]!, textColor: Colors.blue[700]!),
+                    SizedBox(height: size.height * .02,),
+                    _taskManager(onTap: (){}, title: "Home Page Completion", deadline: "25/07",
+                        color: Colors.orange[200]!, textColor: Colors.orange[700]!),
+                    SizedBox(height: size.height * .02,),
+                    _taskManager(onTap: (){}, title: "Profile Page Completion", deadline: "29/07", color: Colors.pink[200]!, textColor: Colors.pink[700]!),
+                    SizedBox(height: size.height * .07,),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
-  Widget _taskManager({required String title ,required String tasks  , required IconData icon}){
-    return Card(
-      elevation: 10,
-      color: Colors.red,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Text(title, style: GoogleFonts.lato(color: Colors.black,fontSize: 1),)
-        ],
+  Widget _taskManager({
+    required VoidCallback onTap ,
+    required String title ,
+    required String deadline  ,
+    required Color color ,
+    required Color textColor}){
+    var size = MediaQuery.of(context).size;
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 0,
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Container(
+          height: size.height * .07,
+          width: size.width * .9,
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: GoogleFonts.lato(color: textColor,fontSize: 15,fontWeight: FontWeight.w500),),
+              Text(deadline , style: GoogleFonts.lato(color: textColor , fontSize: 15,fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ),
       ),
     );
   }

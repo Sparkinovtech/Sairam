@@ -50,7 +50,7 @@ class _LoginFormState extends State<LoginForm> {
                 controller: _password,
                 hintText: "Enter Password",
                 icon: CupertinoIcons.lock,
-                isVisible: _isPasswordVisible,
+                isVisible:! _isPasswordVisible,
                 toggleVisible: () =>
                     setState(() => _isPasswordVisible = !_isPasswordVisible),
                 validator: (v) =>
