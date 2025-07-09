@@ -25,17 +25,22 @@ class _LoginPageState extends State<LoginPage> {
         if (state is LoggedOutState) {
           // Show error if any
           if (state.exception is UserNotFoundAuthException) {
-            await showErrorDialog(context, "User Not Found" ,"");
+            await showErrorDialog(context, "User Not Found", "");
           } else if (state.exception is WrongPasswordAuthException) {
-            await showErrorDialog(context, "Wrong credentials","Please Enter the valid Password");
+            await showErrorDialog(
+              context,
+              "Wrong credentials",
+              "Please Enter the valid Password",
+            );
           } else if (state.exception is GenericAuthException) {
-            await showErrorDialog(context, "Authentication error","");
+            await showErrorDialog(context, "Authentication error", "");
           } else if (state.exception is InvalidEmailAuthException) {
-            await showErrorDialog(context, "Invalid email entered","");
+            await showErrorDialog(context, "Invalid email entered", "");
           }
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
             Positioned.fill(child: Image.asset(background, fit: BoxFit.cover)),
@@ -50,32 +55,38 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: size.height * .04),
-                  Center(child: Image.asset(mainlogo)),
-                  SizedBox(height: size.height * .02),
-                  Text(
-                    "Welcome Back",
-                    style: GoogleFonts.inter(
-                      color: Colors.blue,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: size.height * .04),
+                    Center(child: Image.asset(mainlogo)),
+                    SizedBox(height: size.height * .02),
+                    Text(
+                      "Welcome Back",
+                      style: GoogleFonts.inter(
+                        color: Colors.blue,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: size.height * .02),
-                  Text(
-                    "Login to continue",
-                    style: GoogleFonts.inter(
-                      color: Colors.blue,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                    SizedBox(height: size.height * .02),
+                    Text(
+                      "Login to continue",
+                      style: GoogleFonts.inter(
+                        color: Colors.blue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Center(child: LoginForm()),
-                ],
+                    SizedBox(height: 20),
+                    LoginForm(),
+                    SizedBox(
+                      height: MediaQuery.of(context).viewInsets.bottom,
+                    ), // avoid overlap with keyboard
+                  ],
+                ),
               ),
             ),
           ],

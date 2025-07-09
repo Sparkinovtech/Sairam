@@ -40,7 +40,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // );
         emit(ProfileInformationDoneState(isLoading: false));
       } catch (e) {
-        emit(ProfileErrorState(errorMessage: e.toString(), isLoading: false));
+        // In case of an error, you might want to emit a specific error state.
+        emit(InitialProfileState(isLoading: false));
       }
     });
 
@@ -64,7 +65,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // );
         emit(IdentityDetailsDoneState(isLoading: false));
       } catch (e) {
-        emit(ProfileErrorState(errorMessage: e.toString(), isLoading: false));
+        emit(InitialProfileState(isLoading: false));
       }
     });
 
@@ -83,7 +84,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // );
         emit(WorkPreferencesDoneState(isLoading: false));
       } catch (e) {
-        emit(ProfileErrorState(errorMessage: e.toString(), isLoading: false));
+        emit(InitialProfileState(isLoading: false));
       }
     });
 
@@ -102,7 +103,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // );
         emit(SkillSetDoneState(isLoading: false));
       } catch (e) {
-        emit(ProfileErrorState(errorMessage: e.toString(), isLoading: false));
+        emit(InitialProfileState(isLoading: false));
       }
     });
 
@@ -120,7 +121,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // );
         emit(PortfolioDoneState(isLoading: false));
       } catch (e) {
-        emit(ProfileErrorState(errorMessage: e.toString(), isLoading: false));
+        emit(InitialProfileState(isLoading: false));
       }
     });
 
@@ -138,7 +139,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         // );
         emit(CertificateDoneState(isLoading: false));
       } catch (e) {
-        emit(ProfileErrorState(errorMessage: e.toString(), isLoading: false));
+        emit(InitialProfileState(isLoading: false));
       }
     });
   }
