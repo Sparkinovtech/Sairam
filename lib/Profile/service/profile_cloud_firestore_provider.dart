@@ -55,21 +55,13 @@ class ProfileCloudFirestoreProvider {
 
     if (currentProfile == null) throw UserProfileNotFoundException();
 
-    final updated = Profile(
+    final updated = currentProfile.copyWith(
+      profilePicture: profilePic,
+      phoneNumber: phoneNumber,
       name: fullName,
       emailAddresss: emailAddress,
-      phoneNumber: phoneNumber,
-      department: department,
       dateOfBirth: dateOfBirth,
-      id: currentProfile.id,
-      profilePicture: profilePic ?? currentProfile.profilePicture,
-      yearOfGraduation: currentProfile.yearOfGraduation,
-      currentYear: currentProfile.currentYear,
-      currentMentor: currentProfile.currentMentor,
-      collegeIdPhoto: currentProfile.collegeIdPhoto,
-      certificates: currentProfile.certificates,
-      domains: currentProfile.domains,
-      skillSet: currentProfile.skillSet,
+      department: department,
     );
 
     await students.doc(studentId).set(updated.toJson());

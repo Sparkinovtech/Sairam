@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/Service/network_service.dart';
@@ -40,9 +39,11 @@ void main() async {
     ),
   );
 }
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-NetworkServices services =  NetworkServices();
+NetworkServices services = NetworkServices();
 NetworkDialog dialog = NetworkDialog();
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -54,15 +55,15 @@ class _MyAppState extends State<MyApp> {
   late StreamSubscription<bool> _streamSubscription;
   @override
   void initState() {
-    _streamSubscription =  services.connectionStream.listen((isConnected){
-       final context = navigatorKey.currentContext;
+    _streamSubscription = services.connectionStream.listen((isConnected) {
+      final context = navigatorKey.currentContext;
 
-       if(context == null) return;
-       if(!isConnected){
-         dialog.showNetworkDialog(context);
-       }else{
-         dialog.hide(context);
-       }
+      if (context == null) return;
+      if (!isConnected) {
+        dialog.showNetworkDialog(context);
+      } else {
+        dialog.hide(context);
+      }
     });
     context.read<AuthBloc>().add(AuthInitialiseEvent());
     super.initState();
@@ -82,7 +83,7 @@ class _MyAppState extends State<MyApp> {
                 context: context,
                 text: state.loadingText ?? "Please Wait a moment...",
               );
-            } else{
+            } else {
               LoadingScreen().hide();
             }
           },

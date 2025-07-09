@@ -84,3 +84,39 @@ class Profile {
     );
   }
 }
+
+extension ProfileCopyWith on Profile {
+  Profile copyWith({
+    String? name,
+    String? emailAddresss,
+    String? phoneNumber,
+    Department? department,
+    String? dateOfBirth,
+    String? id,
+    String? profilePicture,
+    int? yearOfGraduation,
+    int? currentYear,
+    String? currentMentor,
+    String? collegeIdPhoto,
+    List<Domains>? domains,
+    List<Domains>? skillSet,
+    List<Certificate>? certificates,
+  }) {
+    return Profile(
+      name: name ?? this.name,
+      emailAddresss: emailAddresss ?? this.emailAddresss,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      department: department ?? this.department,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      id: id ?? this.id,
+      profilePicture: profilePicture ?? this.profilePicture,
+      yearOfGraduation: yearOfGraduation ?? this.yearOfGraduation,
+      currentYear: currentYear ?? this.currentYear,
+      currentMentor: currentMentor ?? this.currentMentor,
+      collegeIdPhoto: collegeIdPhoto ?? this.collegeIdPhoto,
+      domains: domains ?? this.domains,
+      skillSet: skillSet ?? this.skillSet,
+      certificates: certificates ?? this.certificates,
+    );
+  }
+}
