@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
+import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 
 /// A BLoC (Business Logic Component) for managing the user's profile.
 ///
@@ -16,7 +17,10 @@ import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 /// It receives [ProfileEvent]s and transforms them into [ProfileState]s.
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   /// Initializes the BLoC with an initial [InitialProfileState].
-  ProfileBloc() : super(InitialProfileState(isLoading: false)) {
+  ProfileBloc(ProfileCloudFirestoreProvider cloudProvider)
+    : super(
+        InitialProfileState(isLoading: false, profile: cloudProvider.profile),
+      ) {
     // Register event handlers for each profile-related event.
 
     /// Handles the [RegisterProfileInformationEvent].
@@ -26,10 +30,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     /// then (in a real application) it would call a service to save the data.
     /// Finally, it emits a [ProfileInformationDoneState] upon successful completion.
     on<RegisterProfileInformationEvent>((event, emit) async {
-      emit(EditingProfileState(isLoading: true));
+      emit(EditingProfileState(isLoading: true, profile: null));
       try {
-        // TODO: Call the profile service provider to save the profile information.
-        // Example:
+        final profile = await cloudProvider.saveProfileInformation(
+          profilePic: event.profilePic,
+          dateOfBirth: event.dateOfBirth,
+          fullName: event.fullName,
+          phoneNumber: event.phoneNumber,
+          department: event.department,
+          emailAddress: event.emailAddress,
+        );
+        // Example:,
         // await _profileServiceProvider.saveProfileInformation(
         //   profilePic: event.profilePic,
         //   fullName: event.fullName,
@@ -38,10 +49,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         //   department: event.department,
         //   dateOfBirth: event.dateOfBirth,
         // );
-        emit(ProfileInformationDoneState(isLoading: false));
+        emit(ProfileInformationDoneState(isLoading: false, profile: profile));
       } catch (e) {
         // In case of an error, you might want to emit a specific error state.
-        emit(InitialProfileState(isLoading: false));
+        emit(InitialProfileState(isLoading: false, profile: null));
       }
     });
 
@@ -51,9 +62,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     /// It emits an [EditingIdentityDetailState] while processing the data,
     /// and a [IdentityDetailsDoneState] upon success.
     on<RegisterIdentityDetailsEvent>((event, emit) async {
-      emit(EditingIdentityDetailState(isLoading: true));
+      emit(EditingIdentityDetailState(isLoading: true, profile: null));
       try {
-        // TODO: Call the profile service provider to save the identity details.
+        final profile = await cloudProvider.saveIdentityDetails(
+          studentId: event.studentId,
+          department: event.department,
+          currentYear: event.currentYear,
+          yearOfGraduation: event.yearOfGraduation,
+          mentorName: event.mentorName,
+          idCardPhoto: event.idCardPhoto,
+        );
         // Example:
         // await _profileServiceProvider.saveIdentityDetails(
         //   studentId: event.studentId,
@@ -63,9 +81,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         //   mentorName: event.mentorName,
         //   idCardPhoto: event.idCardPhoto,
         // );
-        emit(IdentityDetailsDoneState(isLoading: false));
+        emit(IdentityDetailsDoneState(isLoading: false, profile: profile));
       } catch (e) {
-        emit(InitialProfileState(isLoading: false));
+        emit(InitialProfileState(isLoading: false, profile: null));
       }
     });
 
@@ -75,16 +93,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     /// It emits an [EditingWorkPreferencesState] during processing and a
     /// [WorkPreferencesDoneState] when the data is saved.
     on<RegisterWorkPreferencesEvent>((event, emit) async {
-      emit(EditingWorkPreferencesState(isLoading: true));
+      emit(EditingWorkPreferencesState(isLoading: true, profile: null));
       try {
-        // TODO: Call the profile service provider to save the work preferences.
+        final profile = await cloudProvider.saveDomainPreferences(
+          event.domains ?? List.empty(),
+        );
         // Example:
         // await _profileServiceProvider.saveWorkPreferences(
         //   domains: event.domains,
         // );
-        emit(WorkPreferencesDoneState(isLoading: false));
+        emit(WorkPreferencesDoneState(isLoading: false, profile: profile));
       } catch (e) {
-        emit(InitialProfileState(isLoading: false));
+        emit(InitialProfileState(isLoading: false, profile: null));
       }
     });
 
@@ -93,17 +113,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     /// Triggered when the user submits their skills and resume.
     /// Emits [EditingSkillSetState] and [SkillSetDoneState] to reflect the state.
     on<RegisterSkillSetEvent>((event, emit) async {
-      emit(EditingSkillSetState(isLoading: true));
+      emit(EditingSkillSetState(isLoading: true, profile: null));
       try {
-        // TODO: Call the profile service provider to save the skill set.
+        final profile = await cloudProvider.saveSkillSet(
+          skills: event.domains,
+          resumeFile: event.resumeFile,
+        );
         // Example:
         // await _profileServiceProvider.saveSkillSet(
         //   domains: event.domains,
         //   resumeFile: event.resumeFile,
         // );
-        emit(SkillSetDoneState(isLoading: false));
+        emit(SkillSetDoneState(isLoading: false, profile: profile));
       } catch (e) {
-        emit(InitialProfileState(isLoading: false));
+        emit(InitialProfileState(isLoading: false, profile: null));
       }
     });
 
@@ -112,16 +135,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     /// Triggered when the user adds links to their portfolio.
     /// Emits [EditingPortfolioState] and [PortfolioDoneState] to manage the state.
     on<RegisterPortfolioEvent>((event, emit) async {
-      emit(EditingPortfolioState(isLoading: true));
+      emit(EditingPortfolioState(isLoading: true, profile: null));
       try {
-        // TODO: Call the profile service provider to save the portfolio links.
+        final profile = await cloudProvider.savePortfolioLinks(
+          links: event.links,
+        );
         // Example:
         // await _profileServiceProvider.savePortfolio(
         //   links: event.links,
         // );
-        emit(PortfolioDoneState(isLoading: false));
+        emit(PortfolioDoneState(isLoading: false, profile: profile));
       } catch (e) {
-        emit(InitialProfileState(isLoading: false));
+        emit(InitialProfileState(isLoading: false, profile: null));
       }
     });
 
@@ -130,16 +155,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     /// Triggered when the user uploads their certificates.
     /// Emits [EditingCertificatesState] and [CertificateDoneState] to show progress.
     on<RegisterCertificateEvent>((event, emit) async {
-      emit(EditingCertificatesState(isLoading: true));
+      emit(EditingCertificatesState(isLoading: true, profile: null));
       try {
-        // TODO: Call the profile service provider to save the certificates.
+        final profile = await cloudProvider.saveCertificates(
+          certificates: event.certificates,
+        );
         // Example:
         // await _profileServiceProvider.saveCertificates(
         //   certificates: event.certificates,
         // );
-        emit(CertificateDoneState(isLoading: false));
+        emit(CertificateDoneState(isLoading: false, profile: profile));
       } catch (e) {
-        emit(InitialProfileState(isLoading: false));
+        emit(InitialProfileState(isLoading: false, profile: null));
       }
     });
   }
