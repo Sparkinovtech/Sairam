@@ -5,12 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loader_overlay/loader_overlay.dart';
 import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/Service/network_service.dart';
 import 'package:sairam_incubation/Auth/View/forget_page.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
@@ -31,9 +31,18 @@ void main() async {
   ]);
   runApp(
     MaterialApp(
-      home: BlocProvider<AuthBloc>(
-        create: (context) =>
-            AuthBloc(FirebaseAuthProvider(), ProfileCloudFirestoreProvider()),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AuthBloc(
+              FirebaseAuthProvider(),
+              ProfileCloudFirestoreProvider(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => ProfileBloc(ProfileCloudFirestoreProvider()),
+          ),
+        ],
         child: const MyApp(),
       ),
     ),
@@ -71,38 +80,36 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalLoaderOverlay(
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        navigatorKey: navigatorKey,
-        home: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state.isLoading) {
-              LoadingScreen().show(
-                context: context,
-                text: state.loadingText ?? "Please Wait a moment...",
-              );
-            } else {
-              LoadingScreen().hide();
-            }
-          },
-          builder: (context, state) {
-            devtools.log("From the Splash screen : $state");
-            if (state is LoggedInState) {
-              return BottomNavBar();
-            } else if (state is LoggedOutState) {
-              return LoginPage();
-            } else if (state is ForgotPasswordState) {
-              return ForgetPage();
-            } else if (state is RequiresEmailVerifiactionState) {
-              return VerifyEmailPage();
-            } else if (state is RegisteringState) {
-              return SignupPage();
-            }
-            return SplashScreen();
-          },
-        ),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
+      home: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state.isLoading) {
+            LoadingScreen().show(
+              context: context,
+              text: state.loadingText ?? "Please Wait a moment...",
+            );
+          } else {
+            LoadingScreen().hide();
+          }
+        },
+        builder: (context, state) {
+          devtools.log("From the Splash screen : $state");
+          if (state is LoggedInState) {
+            return BottomNavBar();
+          } else if (state is LoggedOutState) {
+            return LoginPage();
+          } else if (state is ForgotPasswordState) {
+            return ForgetPage();
+          } else if (state is RequiresEmailVerifiactionState) {
+            return VerifyEmailPage();
+          } else if (state is RegisteringState) {
+            return SignupPage();
+          }
+          return SplashScreen();
+        },
       ),
     );
   }

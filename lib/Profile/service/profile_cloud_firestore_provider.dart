@@ -125,7 +125,7 @@ class ProfileCloudFirestoreProvider {
   }
 
   /// Saves portfolio links
-  Future<Profile> savePortfolioLinks(List<Link> links) async {
+  Future<Profile> savePortfolioLinks({required List<Link> links}) async {
     final currentProfile = _studentProfile;
     if (currentProfile == null) throw UserProfileNotFoundException();
 
@@ -137,7 +137,9 @@ class ProfileCloudFirestoreProvider {
   }
 
   /// Saves certificates
-  Future<Profile> saveCertificates(List<Certificate> certificates) async {
+  Future<Profile> saveCertificates({
+    required List<Certificate> certificates,
+  }) async {
     final currentProfile = _studentProfile;
     if (currentProfile == null) throw UserProfileNotFoundException();
 

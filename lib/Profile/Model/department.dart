@@ -13,8 +13,8 @@ enum Department {
 }
 
 extension DepartmentName on Department {
-  String departmentName(Department department) {
-    switch (department) {
+  String get departmentName {
+    switch (this) {
       case Department.cse:
         return "Computer Science And Engineering";
       case Department.iot:

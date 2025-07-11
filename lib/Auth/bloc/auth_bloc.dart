@@ -22,6 +22,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else if (!user.isEmailVerified) {
         emit(const RequiresEmailVerifiactionState(isLoading: false));
       } else {
+        devtools.log("Auth Bloc : trying to fetch profile from firestore");
+        final profile = await cloudProvider.getProfile(user: user);
+        devtools.log("Auth Bloc : Profile is $profile");
+        if (profile == null) {
+          devtools.log("Auth Bloc : Profile is null, trying to create new one");
+          final newProfile = await cloudProvider.createNewProfile(user: user);
+          devtools.log("Auth Bloc : created new Profile : $newProfile");
+        }
+        devtools.log("Auth Bloc : Finally entering the logged in state");
         emit(LoggedInState(user: user, isLoading: false));
       }
     });
@@ -64,6 +73,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await provider.login(emailId: email, password: password);
         if (user.isEmailVerified) {
           emit(LoggedOutState(exception: null, isLoading: false));
+          devtools.log("Auth Bloc : trying to fetch profile from firestore");
+          final profile = await cloudProvider.getProfile(user: user);
+          devtools.log("Auth Bloc : Profile is $profile");
+          if (profile == null) {
+            devtools.log(
+              "Auth Bloc : Profile is null, trying to create new one",
+            );
+            final newProfile = await cloudProvider.createNewProfile(user: user);
+            devtools.log("Auth Bloc : created new Profile : $newProfile");
+          }
+          devtools.log("Auth Bloc : Finally entering the logged in state");
           emit(LoggedInState(user: user, isLoading: false));
         } else {
           emit(const LoggedOutState(exception: null, isLoading: false));
