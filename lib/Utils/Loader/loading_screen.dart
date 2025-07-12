@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_overlay_controller.dart';
 
 class LoadingScreen {
@@ -16,9 +18,11 @@ class LoadingScreen {
     controller = _showOverlay(context: context, text: text);
   }
 
-  void hide() {
-    controller?.close();
-    controller = null;
+  void hide({Duration delay = const Duration(milliseconds: 500)}) {
+    Future.delayed(delay, () {
+      controller?.close();
+      controller = null;
+    });
   }
 
   LoadingScreenController _showOverlay({
@@ -39,11 +43,8 @@ class LoadingScreen {
           color: Colors.black.withAlpha(150),
           child: Center(
             child: Container(
-              constraints: BoxConstraints(
-                maxWidth: size.width * 0.8,
-                maxHeight: size.height * 0.8,
-                minWidth: size.width * 0.5,
-              ),
+              width: size.width * .8,
+              height: size.height * .4,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -55,9 +56,7 @@ class LoadingScreen {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 10),
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 20),
+                      Lottie.asset("assets/loader.json", repeat: true),
                       StreamBuilder(
                         stream: _text.stream,
                         builder: (context, snapshot) {
@@ -65,6 +64,7 @@ class LoadingScreen {
                             return Text(
                               snapshot.data as String,
                               textAlign: TextAlign.center,
+                              style: GoogleFonts.lato(color: Colors.black , fontSize: 16,fontWeight: FontWeight.w800),
                             );
                           }
                           return Container();
@@ -80,7 +80,6 @@ class LoadingScreen {
       },
     );
     state.insert(overlay);
-
     return LoadingScreenController(
       close: () {
         _text.close();

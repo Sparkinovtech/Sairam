@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
                 child: Card(
-                  elevation: 8,
+                  elevation: 3,
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding:  EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
                   child: Card(
-                    elevation: 5,
+                    elevation: 3,
                     color: Colors.white,
                     child: Container(
                       width: size.width * .85,
@@ -278,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
                   child: Card(
-                    elevation: 10,
+                    elevation: 3,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -339,7 +339,7 @@ class _HomePageState extends State<HomePage> {
       width: size.width * .4,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 5,
+        elevation: 3,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,

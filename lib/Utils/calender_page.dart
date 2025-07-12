@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Utils/model/task.dart';
 import 'package:sairam_incubation/Utils/monthy_calender.dart';
+import 'package:sairam_incubation/Utils/task_details.dart';
 import 'package:table_calendar/table_calendar.dart';
 class CalenderPage extends StatefulWidget {
   const CalenderPage({super.key});
@@ -53,7 +56,24 @@ class _CalenderPageState extends State<CalenderPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 0),
                 child: Column(
                   children: [
-                    _taskManager(onTap: (){}, title: "Login Page Completion", deadline: "22/07",
+                    _taskManager(onTap: (){
+                      Navigator.push(context, PageTransition(type: PageTransitionType.fade , child:
+                      TaskDetailsPage(
+                          task: Task(
+                            title: "Login Page Completion",
+                            description: "A Login Page Allow user to securely access the website or application by entering their  details.\nIt is the typically includes fields for username/email or password. ",
+                            steps: [
+                            "Design basic layout with input fields",
+                            "Implemented front-end form validation",
+                            "Styled  the form through responsive and accessibility",
+                            "Integrated backend authentication logics",
+                            "Testing login functionality and Error handling",
+                            "Added 'Forget Password' features for better and user experiences",
+                              "Connecting to Database"
+                          ],
+                          ),
+                      )));
+                    }, title: "Login Page Completion", deadline: "22/07",
                         color: Colors.blue[200]!, textColor: Colors.blue[700]!),
                     SizedBox(height: size.height * .02,),
                     _taskManager(onTap: (){}, title: "Home Page Completion", deadline: "25/07",
