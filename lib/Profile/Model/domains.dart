@@ -14,8 +14,8 @@ enum Domains {
 }
 
 extension DomainName on Domains {
-  String domainName(Domains domain) {
-    switch (domain) {
+  String get domainName {
+    switch (this) {
       case Domains.graphicsDesigner:
         return "Graphics Designer";
       case Domains.uiUxDesigner:
