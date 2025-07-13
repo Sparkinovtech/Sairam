@@ -6,8 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
-import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Utils/edit_profile.dart';
 import 'package:sairam_incubation/Utils/profile_list.dart';
 import '../Auth/bloc/auth_bloc.dart';
