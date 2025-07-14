@@ -10,7 +10,6 @@ import 'package:sairam_incubation/Auth/Service/network_service.dart';
 import 'package:sairam_incubation/Auth/View/forget_page.dart';
 import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
-import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
@@ -44,7 +43,7 @@ void main() async {
             create: (context) => ProfileBloc(ProfileCloudFirestoreProvider()),
           ),
         ],
-        child: const MyApp(profile: ,),
+        child: const MyApp(),
       ),
     ),
   );
@@ -55,18 +54,17 @@ NetworkServices services = NetworkServices();
 NetworkDialog dialog = NetworkDialog();
 
 class MyApp extends StatefulWidget {
-  final Profile profile;
-  const MyApp({super.key, required this.profile});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  late StreamSubscription<bool> _streamSubscription;
+  late StreamSubscription<bool> streamSubscription;
   @override
   void initState() {
-    _streamSubscription = services.connectionStream.listen((isConnected) {
+    streamSubscription = services.connectionStream.listen((isConnected) {
       final context = navigatorKey.currentContext;
 
       if (context == null) return;
@@ -100,7 +98,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, state) {
           devtools.log("From the Splash screen : $state");
           if (state is LoggedInState) {
-            return BottomNavBar(profile:widget.profile,);
+            return BottomNavBar();
           } else if (state is LoggedOutState) {
             return LoginPage();
           } else if (state is ForgotPasswordState) {

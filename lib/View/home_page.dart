@@ -11,16 +11,16 @@ import 'package:table_calendar/table_calendar.dart';
 import '../Utils/stay_request_container.dart';
 
 class HomePage extends StatefulWidget {
-  final Profile profile;
-  const HomePage({super.key, required this.profile});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
+
 class _HomePageState extends State<HomePage> {
   final String name = "Sujin Danial";
   DateTime? _dateTime;
-  DateTime _focusedDay  = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                       icon: CupertinoIcons.cube,
                       context: context,
                     ),
-                    SizedBox(width: size.width * .07,),
+                    SizedBox(width: size.width * .07),
                     _activityCard(
                       title: "Completed",
                       value: "17",
@@ -138,13 +138,23 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Schedule",style: GoogleFonts.lato(color: Colors.black,fontSize:25,fontWeight: FontWeight.w800),),
+                    Text(
+                      "Schedule",
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: size.height * .01,),
+              SizedBox(height: size.height * .01),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 0,
+                ),
                 child: Card(
                   elevation: 3,
                   color: Colors.white,
@@ -154,21 +164,36 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 10),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 10,
+                        ),
                         child: Row(
                           children: [
                             Text(
-                              "${_focusedDay.month == 1 ? "January" :
-                              _focusedDay.month == 2 ? "February" :
-                              _focusedDay.month == 3 ? "March" :
-                              _focusedDay.month == 4 ? "April" :
-                              _focusedDay.month == 5 ? "May" :
-                              _focusedDay.month == 6 ? "June" :
-                              _focusedDay.month == 7 ? "July" :
-                              _focusedDay.month == 8 ? "August" :
-                              _focusedDay.month == 9 ? "September" :
-                              _focusedDay.month == 10 ? "October" :
-                              _focusedDay.month == 11 ? "November" : "December"} ${_focusedDay.year}",
+                              "${_focusedDay.month == 1
+                                  ? "January"
+                                  : _focusedDay.month == 2
+                                  ? "February"
+                                  : _focusedDay.month == 3
+                                  ? "March"
+                                  : _focusedDay.month == 4
+                                  ? "April"
+                                  : _focusedDay.month == 5
+                                  ? "May"
+                                  : _focusedDay.month == 6
+                                  ? "June"
+                                  : _focusedDay.month == 7
+                                  ? "July"
+                                  : _focusedDay.month == 8
+                                  ? "August"
+                                  : _focusedDay.month == 9
+                                  ? "September"
+                                  : _focusedDay.month == 10
+                                  ? "October"
+                                  : _focusedDay.month == 11
+                                  ? "November"
+                                  : "December"} ${_focusedDay.year}",
                               style: GoogleFonts.lato(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
@@ -176,57 +201,71 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Spacer(),
-                            IconButton(onPressed: (){
-                              Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: CalenderPage()));
-                            }, icon: Icon(CupertinoIcons.calendar),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: CalenderPage(),
+                                  ),
+                                );
+                              },
+                              icon: Icon(CupertinoIcons.calendar),
                             ),
                           ],
                         ),
                       ),
-                        SizedBox(height: size.height* .02,),
+                      SizedBox(height: size.height * .02),
 
-                        TableCalendar(
-                          firstDay: DateTime.utc(2020, 1, 1),
-                          lastDay: DateTime.utc(2030, 12, 31),
-                          focusedDay: _focusedDay,
-                          selectedDayPredicate: (day) => isSameDay(_dateTime, day),
-                          calendarFormat: CalendarFormat.week,
-                          onDaySelected: (selectedDay, focusedDay) {
-                            setState(() {
-                              _dateTime = selectedDay;
-                              _focusedDay = focusedDay;
-                            });
-                          },
-                          headerVisible: false,
-                          availableGestures: AvailableGestures.none,
-                          daysOfWeekVisible: true,
-                          calendarStyle: CalendarStyle(
-                            isTodayHighlighted: true,
-                            selectedDecoration: BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                            ),
-                            todayDecoration: BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
-
-                            ),
-                            outsideDaysVisible: false,
+                      TableCalendar(
+                        firstDay: DateTime.utc(2020, 1, 1),
+                        lastDay: DateTime.utc(2030, 12, 31),
+                        focusedDay: _focusedDay,
+                        selectedDayPredicate: (day) =>
+                            isSameDay(_dateTime, day),
+                        calendarFormat: CalendarFormat.week,
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _dateTime = selectedDay;
+                            _focusedDay = focusedDay;
+                          });
+                        },
+                        headerVisible: false,
+                        availableGestures: AvailableGestures.none,
+                        daysOfWeekVisible: true,
+                        calendarStyle: CalendarStyle(
+                          isTodayHighlighted: true,
+                          selectedDecoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
                           ),
+                          todayDecoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          outsideDaysVisible: false,
                         ),
-                      SizedBox(height: size.height * .04,),
+                      ),
+                      SizedBox(height: size.height * .04),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: size.height * .01,),
+              SizedBox(height: size.height * .01),
 
               GestureDetector(
-                onTap: (){
-                  Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: RequestForm(profile:widget.profile ,)));
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.fade,
+                      child: RequestForm(profile: widget.profile),
+                    ),
+                  );
                 },
                 child: Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   child: Card(
                     elevation: 3,
                     color: Colors.white,
@@ -240,26 +279,44 @@ class _HomePageState extends State<HomePage> {
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15  , vertical: 20),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15,
+                              vertical: 20,
+                            ),
                             child: Center(
                               child: Column(
                                 children: [
-                                  SizedBox(height: size.height * .02,),
+                                  SizedBox(height: size.height * .02),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text("Want To Work Over ?",style:
-                                      GoogleFonts.lato(color: Colors.black,fontWeight: FontWeight.w700,fontSize: 19),),
-                                      SizedBox(width: size.width * .02,),
-                                      Icon(CupertinoIcons.moon_zzz_fill,color: Colors.blue,),
+                                      Text(
+                                        "Want To Work Over ?",
+                                        style: GoogleFonts.lato(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 19,
+                                        ),
+                                      ),
+                                      SizedBox(width: size.width * .02),
+                                      Icon(
+                                        CupertinoIcons.moon_zzz_fill,
+                                        color: Colors.blue,
+                                      ),
                                     ],
                                   ),
-                                  SizedBox(height: size.height * .01,),
+                                  SizedBox(height: size.height * .01),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text("Dreams does not work unless you do.",style:
-                                      GoogleFonts.inter(color: Colors.grey , fontSize: 12,fontWeight: FontWeight.bold),),
+                                      Text(
+                                        "Dreams does not work unless you do.",
+                                        style: GoogleFonts.inter(
+                                          color: Colors.grey,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -272,13 +329,19 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: size.height * .01,),
+              SizedBox(height: size.height * .01),
               GestureDetector(
-                onTap: (){
-                  Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: ComponentsForm()));
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.fade,
+                      child: ComponentsForm(),
+                    ),
+                  );
                 },
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   child: Card(
                     elevation: 3,
                     shape: RoundedRectangleBorder(
@@ -294,30 +357,45 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Center(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15 , vertical: 20),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 20,
+                          ),
                           child: Column(
                             children: [
-                              SizedBox(height: size.height * .02,),
+                              SizedBox(height: size.height * .02),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text("Request for Components",style:
-                                  GoogleFonts.lato(color: Colors.black,fontSize: 19,fontWeight: FontWeight.w700),),
-                                  SizedBox(width: size.width * .02,),
-                                  Icon(Icons.settings,color: Colors.blue,),
+                                  Text(
+                                    "Request for Components",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  SizedBox(width: size.width * .02),
+                                  Icon(Icons.settings, color: Colors.blue),
                                 ],
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text("Enhance your work smarter",style:
-                                  GoogleFonts.lato(color: Colors.grey ,fontSize: 12,fontWeight: FontWeight.bold),),
+                                  Text(
+                                    "Enhance your work smarter",
+                                    style: GoogleFonts.lato(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ),
                   ),
                 ),
@@ -354,30 +432,55 @@ class _HomePageState extends State<HomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title , style:
-                    GoogleFonts.lato(color: Colors.black,fontSize: 18,fontWeight: FontWeight.w800),),
-                    Icon(icon ,color: Colors.grey,),
+                    Text(
+                      title,
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Icon(icon, color: Colors.grey),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Project",style: GoogleFonts.lato(color: Colors.grey ,fontWeight: FontWeight.w500,fontSize: 14),),
+                    Text(
+                      "Project",
+                      style: GoogleFonts.lato(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(height: size.height * .01,),
+                SizedBox(height: size.height * .01),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(value,style:
-                    GoogleFonts.inter(color: Colors.black,fontSize: 27,fontWeight: FontWeight.bold),),
-                    SizedBox(width: size.width * .01,),
-                    Text("Projects",style:
-                    GoogleFonts.lato(color: Colors.grey,fontSize: 14,fontWeight: FontWeight.w500),),
+                    Text(
+                      value,
+                      style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(width: size.width * .01),
+                    Text(
+                      "Projects",
+                      style: GoogleFonts.lato(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ],
-            )
+            ),
           ),
         ),
       ),
