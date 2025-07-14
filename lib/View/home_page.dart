@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/calender_page.dart';
 import 'package:sairam_incubation/Utils/components_form.dart';
 import 'package:sairam_incubation/View/request_form.dart';
@@ -10,7 +11,8 @@ import 'package:table_calendar/table_calendar.dart';
 import '../Utils/stay_request_container.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Profile profile;
+  const HomePage({super.key, required this.profile});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -221,7 +223,7 @@ class _HomePageState extends State<HomePage> {
 
               GestureDetector(
                 onTap: (){
-                  Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: RequestForm()));
+                  Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: RequestForm(profile:widget.profile ,)));
                 },
                 child: Padding(
                   padding:  EdgeInsets.symmetric(horizontal: 10 , vertical: 0),

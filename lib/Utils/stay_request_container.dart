@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 
 import '../View/request_form.dart';
 import 'images.dart';
 
 class StayRequestContainer extends StatelessWidget {
-  const StayRequestContainer({super.key, required this.size});
+  final Profile profile;
+  const StayRequestContainer({super.key, required this.size, required this.profile});
   final Size size;
   @override
   Widget build(BuildContext context) {
@@ -125,7 +127,7 @@ class StayRequestContainer extends StatelessWidget {
                                     context,
                                     PageTransition(
                                       type: PageTransitionType.fade,
-                                      child: RequestForm(),
+                                      child: RequestForm(profile: profile,),
                                     ),
                                   );
                                 },

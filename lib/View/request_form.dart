@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 
 class RequestForm extends StatefulWidget {
-  const RequestForm({super.key});
+  final Profile profile;
+  const RequestForm({super.key, required this.profile});
 
   @override
   State<RequestForm> createState() => _RequestFormState();
@@ -52,7 +54,7 @@ class _RequestFormState extends State<RequestForm> {
                               context,
                               PageTransition(
                                 type: PageTransitionType.fade,
-                                child: BottomNavBar(),
+                                child: BottomNavBar(profile:widget.profile,),
                               ),
                             );
                           },

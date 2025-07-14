@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/View/home_page.dart';
 import 'package:sairam_incubation/View/profile_page.dart';
 import 'package:sairam_incubation/View/teams_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  final Profile profile;
+  const BottomNavBar({super.key, required this.profile});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -15,11 +17,17 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [HomePage(), TeamsPage(), ProfilePage()];
+  late  final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
+    _pages = [
+      HomePage(profile: widget.profile,),
+      TeamsPage(),
+      ProfilePage(profile: widget.profile),
+
+    ];
   }
 
   @override

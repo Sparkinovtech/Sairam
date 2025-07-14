@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
@@ -16,8 +17,8 @@ import '../Auth/bloc/auth_event.dart';
 import '../Utils/dialogs/logout_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+  final Profile profile;
+  const ProfilePage({super.key, required this.profile});
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -226,7 +227,8 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                   SizedBox(height: size.height * .04),
-                  ProfileList(profile: ,),
+                  ProfileList(profile: widget.profile ,),
+
                 ],
               ),
             ),
