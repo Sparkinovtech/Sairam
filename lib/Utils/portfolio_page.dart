@@ -1,12 +1,18 @@
+// TODO Still not fully linked this Page with the backend. Requires some UI changes.
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Auth/Model/media_items.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
+import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
 import 'package:sairam_incubation/Utils/add_media.dart';
+import 'package:sairam_incubation/Profile/Model/link.dart';
 
 class PortfolioPage extends StatefulWidget {
   const PortfolioPage({super.key});
@@ -18,9 +24,11 @@ class PortfolioPage extends StatefulWidget {
 File? file;
 
 class _PortfolioPageState extends State<PortfolioPage> {
+  bool _initialized = false;
   final TextEditingController _linkedIn = TextEditingController();
   final TextEditingController _gitHub = TextEditingController();
   List<MediaItems> mediaList = [];
+  List<Link>? _linkList;
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   Future<void> requestPermission() async {
     await [
@@ -57,173 +65,148 @@ class _PortfolioPageState extends State<PortfolioPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.arrow_back_ios_new),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25),
-                child: Row(
-                  children: [
-                    Text(
-                      "Portfolio",
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 27,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: size.height * .03),
+    return BlocConsumer<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        if (state.isLoading) {
+          LoadingScreen().show(context: context, text: "Loading...");
+        } else {
+          LoadingScreen().hide();
+        }
 
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    _textField(
-                      controller: _linkedIn,
-                      hintText: "Linked In",
-                      validator: (v) => null,
+        if (state is PortfolioDoneState) {
+          Navigator.of(context).pop();
+        }
+      },
+      builder: (context, state) {
+        final profile = state.profile;
+        if (!_initialized && profile != null) {
+          _linkList = profile.links ?? List.empty();
+          _initialized = true;
+        }
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back_ios_new),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: size.height * .03),
-                    _textField(
-                      controller: _gitHub,
-                      hintText: "GitHub",
-                      validator: (v) => null,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: size.height * .03),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        // Bottom Sheet
-                        final TextEditingController _title =
-                            TextEditingController();
-                        final TextEditingController _links =
-                            TextEditingController();
-                        showModalBottomSheet(
-                          context: context,
-                          isDismissible: false,
-                          isScrollControlled: true,
-                          barrierColor: Colors.grey.withValues(alpha: .2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30),
-                              topRight: Radius.circular(30),
-                            ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Portfolio",
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 27,
+                            fontWeight: FontWeight.w800,
                           ),
-                          builder: (_) => BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(
-                                  context,
-                                ).viewInsets.bottom,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: size.height * .03),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        _textField(
+                          controller: _linkedIn,
+                          hintText: "Linked In",
+                          validator: (v) => null,
+                        ),
+                        SizedBox(height: size.height * .03),
+                        _textField(
+                          controller: _gitHub,
+                          hintText: "GitHub",
+                          validator: (v) => null,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: size.height * .03),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        MaterialButton(
+                          onPressed: () {
+                            // Bottom Sheet
+                            final TextEditingController _title =
+                                TextEditingController();
+                            final TextEditingController _links =
+                                TextEditingController();
+                            showModalBottomSheet(
+                              context: context,
+                              isDismissible: false,
+                              isScrollControlled: true,
+                              barrierColor: Colors.grey.withValues(alpha: .2),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
+                                ),
                               ),
-                              child: SingleChildScrollView(
-                                child: Container(
-                                  padding: EdgeInsets.all(16),
-                                  width: double.infinity,
-                                  height: size.height * .4,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(30),
-                                      topLeft: Radius.circular(30),
-                                    ),
+                              builder: (_) => BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(
+                                      context,
+                                    ).viewInsets.bottom,
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 10,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Add Links",
-                                              style: GoogleFonts.lato(
-                                                color: Colors.black,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Spacer(),
-                                            IconButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              icon: Icon(Icons.close),
-                                            ),
-                                          ],
+                                  child: SingleChildScrollView(
+                                    child: Container(
+                                      padding: EdgeInsets.all(16),
+                                      width: double.infinity,
+                                      height: size.height * .4,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(30),
+                                          topLeft: Radius.circular(30),
                                         ),
                                       ),
-                                      SizedBox(height: size.height * .03),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                        ),
-                                        child: Form(
-                                          key: _key,
-                                          child: Column(
-                                            children: [
-                                              _textField(
-                                                controller: _title,
-                                                hintText: "Title",
-                                                validator: (v) => null,
-                                              ),
-                                              SizedBox(
-                                                height: size.height * .015,
-                                              ),
-                                              _textField(
-                                                controller: _links,
-                                                hintText: "Links",
-                                                validator: (v) => null,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: size.height * .03),
-                                      Row(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 10,),
-                                            child: MaterialButton(
-                                              onPressed: () {},
-                                              elevation: 0,
-                                              color: Colors.grey[100]!,
-                                              minWidth: size.width * .3,
-                                              height: size.height * .05,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Text("Cancel"),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 10,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "Add Links",
+                                                  style: GoogleFonts.lato(
+                                                    color: Colors.black,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                IconButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  icon: Icon(Icons.close),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                           SizedBox(height: size.height * .03),
@@ -231,155 +214,210 @@ class _PortfolioPageState extends State<PortfolioPage> {
                                             padding: EdgeInsets.symmetric(
                                               horizontal: 10,
                                             ),
-                                            child: MaterialButton(
-                                              onPressed: () {
-                                                if (_key.currentState!.validate()) {
-                                                  Navigator.pop(context);
-                                                }
-                                              },
-                                              color: Colors.blue,
-                                              minWidth: size.width * .45,
-                                              height: size.height * .05,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                              ),
-                                              child: Text(
-                                                "Save changes",
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                ),
+                                            child: Form(
+                                              key: _key,
+                                              child: Column(
+                                                children: [
+                                                  _textField(
+                                                    controller: _title,
+                                                    hintText: "Title",
+                                                    validator: (v) => null,
+                                                  ),
+                                                  SizedBox(
+                                                    height: size.height * .015,
+                                                  ),
+                                                  _textField(
+                                                    controller: _links,
+                                                    hintText: "Links",
+                                                    validator: (v) => null,
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
+                                          SizedBox(height: size.height * .03),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                ),
+                                                child: MaterialButton(
+                                                  onPressed: () {},
+                                                  elevation: 0,
+                                                  color: Colors.grey[100]!,
+                                                  minWidth: size.width * .3,
+                                                  height: size.height * .05,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Text("Cancel"),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: size.height * .03,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                ),
+                                                child: MaterialButton(
+                                                  onPressed: () {
+                                                    if (_key.currentState!
+                                                        .validate()) {
+                                                      Navigator.pop(context);
+                                                    }
+                                                  },
+                                                  color: Colors.blue,
+                                                  minWidth: size.width * .45,
+                                                  height: size.height * .05,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    "Save changes",
+                                                    style: GoogleFonts.lato(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            );
+                          },
+                          color: Colors.white,
+                          minWidth: size.width * .3,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.blue),
                           ),
-                        );
-                      },
-                      color: Colors.white,
-                      minWidth: size.width * .3,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.blue),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.add, color: Colors.blue),
-                          Text(
-                            "Add Link",
-                            style: GoogleFonts.lato(
-                              color: Colors.blue,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.add, color: Colors.blue),
+                              Text(
+                                "Add Link",
+                                style: GoogleFonts.lato(
+                                  color: Colors.blue,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: size.height * .03),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "Media",
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: size.height * .02),
-
-              //Adding the preview card  of the Media Files
-              ...mediaList.map(
-                (item) => _mediaData(
-                  context,
-                  item,
-                  () async {
-                    final image = ImagePicker();
-                    final picker = await image.pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    if (picker != null) {
-                      final File sourcePath = File(picker.path);
-                      final result = await Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: AddMedia(file: sourcePath),
                         ),
-                      );
-
-                      if (result != null) {
-                        setState(() {
-                          final index = mediaList.indexOf(item);
-                          mediaList[index] = result;
-                        });
-                      }
-                    }
-                  },
-                  () {
-                    setState(() {
-                      mediaList.remove(item);
-                    });
-                  },
-                ),
-              ),
-              SizedBox(height: size.height * .03),
-
-              //Media Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        _openPhoneStorage();
-                      },
-                      color: Colors.white,
-                      minWidth: size.width * .3,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.blue),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.add, color: Colors.blue),
-                          Text(
-                            "Add Media",
-                            style: GoogleFonts.lato(
-                              color: Colors.blue,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: size.height * .03),
-                        ],
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(height: size.height * .03),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Media",
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: size.height * .02),
+
+                  //Adding the preview card  of the Media Files
+                  ...mediaList.map(
+                    (item) => _mediaData(
+                      context,
+                      item,
+                      () async {
+                        final image = ImagePicker();
+                        final picker = await image.pickImage(
+                          source: ImageSource.gallery,
+                        );
+                        if (picker != null) {
+                          final File sourcePath = File(picker.path);
+                          final result = await Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              child: AddMedia(file: sourcePath),
+                            ),
+                          );
+
+                          if (result != null) {
+                            setState(() {
+                              final index = mediaList.indexOf(item);
+                              mediaList[index] = result;
+                            });
+                          }
+                        }
+                      },
+                      () {
+                        setState(() {
+                          mediaList.remove(item);
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(height: size.height * .03),
+
+                  //Media Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        MaterialButton(
+                          onPressed: () {
+                            _openPhoneStorage();
+                          },
+                          color: Colors.white,
+                          minWidth: size.width * .3,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.blue),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.add, color: Colors.blue),
+                              Text(
+                                "Add Media",
+                                style: GoogleFonts.lato(
+                                  color: Colors.blue,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: size.height * .03),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

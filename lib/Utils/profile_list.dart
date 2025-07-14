@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/certificate_page.dart';
 import 'package:sairam_incubation/Utils/identity_details.dart';
 import 'package:sairam_incubation/Utils/portfolio_page.dart';
 import 'package:sairam_incubation/Utils/skill_set.dart';
-import 'package:sairam_incubation/Auth/View/work_preference_edit.dart';
+import 'package:sairam_incubation/Utils/work_preference_edit.dart';
 
 class ProfileList extends StatefulWidget {
-  const ProfileList({super.key});
-
+  final Profile? profile;
+  const ProfileList({super.key, required this.profile});
   @override
   State<ProfileList> createState() => _ProfileListState();
 }
@@ -105,7 +106,13 @@ class _ProfileListState extends State<ProfileList>
             text: "Earned Certificates",
             subText: "Proof of learning and achievement",
             onTap: () {
-              Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: CertificatePage()));
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: CertificatePage(),
+                ),
+              );
             },
           ),
           SizedBox(height: size.height * 0.03),
