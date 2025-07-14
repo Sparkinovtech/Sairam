@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
@@ -17,16 +16,15 @@ import '../Auth/bloc/auth_event.dart';
 import '../Utils/dialogs/logout_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
-  final Profile profile;
-  const ProfilePage({super.key, required this.profile});
+  const ProfilePage({super.key});
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-
-      
+  bool _initialized = false;
   File? _imageFile;
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
@@ -61,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage>
       builder: (context, state) {
         final profile = state.profile;
 
-
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -72,7 +69,10 @@ class _ProfilePageState extends State<ProfilePage>
                     children: [
                       SizedBox(height: size.height * 0.03),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 5,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -86,9 +86,8 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             IconButton(
                               onPressed: () async {
-                                final bool shouldLogOut = await showLogoutDialog(
-                                  context,
-                                );
+                                final bool shouldLogOut =
+                                    await showLogoutDialog(context);
                                 devtools.log(shouldLogOut.toString());
                                 if (!context.mounted) return;
                                 if (shouldLogOut) {
@@ -97,7 +96,10 @@ class _ProfilePageState extends State<ProfilePage>
                                   );
                                 }
                               },
-                              icon: Icon(Icons.logout_outlined, color: Colors.grey),
+                              icon: Icon(
+                                Icons.logout_outlined,
+                                color: Colors.grey,
+                              ),
                             ),
                           ],
                         ),
@@ -149,7 +151,8 @@ class _ProfilePageState extends State<ProfilePage>
                                 ),
                                 SizedBox(height: size.height * .01),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Material(
                                       borderRadius: BorderRadius.circular(10),
@@ -180,7 +183,9 @@ class _ProfilePageState extends State<ProfilePage>
                                               begin: Alignment.topLeft,
                                               end: Alignment.bottomCenter,
                                             ),
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
                                           ),
                                           child: Center(
                                             child: Text(
@@ -202,7 +207,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         height: size.height * .04,
                                         width: size.width * .08,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
                                           border: Border.all(
                                             color: Colors.blue,
                                             width: 2,
@@ -227,8 +234,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                   SizedBox(height: size.height * .04),
-                  ProfileList(profile: widget.profile ,),
-
+                  ProfileList(profile: profile),
                 ],
               ),
             ),

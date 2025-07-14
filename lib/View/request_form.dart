@@ -5,8 +5,7 @@ import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 
 class RequestForm extends StatefulWidget {
-  final Profile profile;
-  const RequestForm({super.key, required this.profile});
+  const RequestForm({super.key});
 
   @override
   State<RequestForm> createState() => _RequestFormState();
@@ -22,10 +21,7 @@ class _RequestFormState extends State<RequestForm> {
     "The Dean Innovation",
     "The Trusty",
   ];
-  final List<String> _stay = [
-    "Evening Stay",
-    "Night Stay",
-  ];
+  final List<String> _stay = ["Evening Stay", "Night Stay"];
 
   String? type;
   bool _isToggled = false;
@@ -54,7 +50,7 @@ class _RequestFormState extends State<RequestForm> {
                               context,
                               PageTransition(
                                 type: PageTransitionType.fade,
-                                child: BottomNavBar(profile:widget.profile,),
+                                child: BottomNavBar(),
                               ),
                             );
                           },
@@ -107,22 +103,24 @@ class _RequestFormState extends State<RequestForm> {
                         hintText: "Reason",
                         text: TextInputType.text,
                       ),
-                      SizedBox(height: size.height * .04,),
+                      SizedBox(height: size.height * .04),
 
-                      _dropField(hintText: "Type of Stay", selectedValue:type , list: _stay,
-                          onChange: (val) {
-                        setState(() {
-                          type =val;
-                        });
-                      }),
-
+                      _dropField(
+                        hintText: "Type of Stay",
+                        selectedValue: type,
+                        list: _stay,
+                        onChange: (val) {
+                          setState(() {
+                            type = val;
+                          });
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
               SizedBox(height: size.height * .04),
               Column(
-
                 children: [
                   SizedBox(height: size.height * .03),
                   Padding(
@@ -207,7 +205,6 @@ class _RequestFormState extends State<RequestForm> {
         return DropdownMenuItem<String>(
           value: item,
           child: Text(item, overflow: TextOverflow.ellipsis),
-          
         );
       }).toList(),
     );

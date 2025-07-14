@@ -64,16 +64,6 @@ class _MyAppState extends State<MyApp> {
   late StreamSubscription<bool> streamSubscription;
   @override
   void initState() {
-    streamSubscription = services.connectionStream.listen((isConnected) {
-      final context = navigatorKey.currentContext;
-
-      if (context == null) return;
-      if (!isConnected) {
-        dialog.showNetworkDialog(context);
-      } else {
-        dialog.hide(context);
-      }
-    });
     context.read<AuthBloc>().add(AuthInitialiseEvent());
     super.initState();
   }
@@ -94,6 +84,17 @@ class _MyAppState extends State<MyApp> {
           } else {
             LoadingScreen().hide();
           }
+
+          streamSubscription = services.connectionStream.listen((isConnected) {
+            final context = navigatorKey.currentContext;
+
+            if (context == null) return;
+            if (!isConnected && state is! AuthInitialiseState) {
+              dialog.showNetworkDialog(context);
+            } else {
+              dialog.hide(context);
+            }
+          });
         },
         builder: (context, state) {
           devtools.log("From the Splash screen : $state");

@@ -26,6 +26,7 @@ class AddCertificates extends StatefulWidget {
 }
 
 class _AddCertificatesState extends State<AddCertificates> {
+  bool _initialized = false;
   DateTime? _selectedDate;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -108,6 +109,10 @@ class _AddCertificatesState extends State<AddCertificates> {
         }
       },
       builder: (context, state) {
+        final profile = state.profile;
+        if (!_initialized && profile != null) {
+          _initialized = true;
+        }
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(

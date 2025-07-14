@@ -9,7 +9,11 @@ import 'images.dart';
 
 class StayRequestContainer extends StatelessWidget {
   final Profile profile;
-  const StayRequestContainer({super.key, required this.size, required this.profile});
+  const StayRequestContainer({
+    super.key,
+    required this.size,
+    required this.profile,
+  });
   final Size size;
   @override
   Widget build(BuildContext context) {
@@ -127,7 +131,7 @@ class StayRequestContainer extends StatelessWidget {
                                     context,
                                     PageTransition(
                                       type: PageTransitionType.fade,
-                                      child: RequestForm(profile: profile,),
+                                      child: RequestForm(),
                                     ),
                                   );
                                 },

@@ -7,8 +7,7 @@ import 'package:sairam_incubation/View/teams_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class BottomNavBar extends StatefulWidget {
-  final Profile profile;
-  const BottomNavBar({super.key, required this.profile});
+  const BottomNavBar({super.key});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -17,17 +16,12 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
-  late  final List<Widget> _pages;
+  late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _pages = [
-      HomePage(profile: widget.profile,),
-      TeamsPage(),
-      ProfilePage(profile: widget.profile),
-
-    ];
+    _pages = [HomePage(), TeamsPage(), ProfilePage()];
   }
 
   @override
