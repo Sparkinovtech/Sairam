@@ -82,7 +82,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 validator: (v) =>
                     v == null || v.isEmpty ? "Enter Password" : null,
               ),
-              SizedBox(height: size.height * .05),
+              SizedBox(height: size.height * .03),
               _buildPasswordField(
                 controller: _confirmPassword,
                 hintText: "Enter Confirm Password",
@@ -106,7 +106,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     );
                   }
                 },
-                color: Colors.blue,
+                color: Colors.blueGrey,
                 minWidth: size.width * .65,
                 height: size.height * .05,
                 shape: RoundedRectangleBorder(

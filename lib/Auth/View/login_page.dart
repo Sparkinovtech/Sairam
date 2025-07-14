@@ -41,56 +41,58 @@ class _LoginPageState extends State<LoginPage> {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        body: Stack(
-          children: [
-            Positioned.fill(child: Image.asset(background, fit: BoxFit.cover)),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withValues(alpha: .8),
-                    Colors.white.withValues(alpha: .9),
-                  ],
-                ),
-              ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.blueGrey[800]!,
+                Colors.blueGrey[600]!,
+                Colors.blueGrey[400]!,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: size.height * .04),
-                    Center(child: Image.asset(mainlogo)),
-                    SizedBox(height: size.height * .02),
-                    Text(
-                      "Welcome Back",
-                      style: GoogleFonts.inter(
-                        color: Colors.blue,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text("Login", style: GoogleFonts.inconsolata(fontSize: 45, color: Colors.white)),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: size.height * .02),
-                    Text(
-                      "Login to continue",
-                      style: GoogleFonts.inter(
-                        color: Colors.blue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                      Row(
+                        children: [
+                          Text("Welcome Back", style: GoogleFonts.inconsolata(fontSize: 35, color: Colors.white)),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    LoginForm(),
-                    SizedBox(
-                      height: MediaQuery.of(context).viewInsets.bottom,
-                    ), // avoid overlap with keyboard
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+                Spacer(),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child:Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color:Colors.white,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
+                    ),
+                    padding: EdgeInsets.only(top: 40, left: 20 , right: 20 , bottom: 20),
+                    child: SingleChildScrollView(
+                      child: LoginForm(),
+                    ),
+                  ) ,
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        )
       ),
     );
   }

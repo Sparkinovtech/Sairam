@@ -81,7 +81,7 @@ class _LoginFormState extends State<LoginForm> {
                     );
                   }
                 },
-                color: Colors.blue,
+                color: Colors.blueGrey,
                 minWidth: size.width * .67,
                 height: size.height * .06,
                 shape: RoundedRectangleBorder(
