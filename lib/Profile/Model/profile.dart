@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sairam_incubation/Profile/Model/certificate.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
-import 'package:flutter/foundation.dart'; // For @immutable
+import 'package:flutter/foundation.dart';
+import 'package:sairam_incubation/Profile/Model/link.dart'; // For @immutable
 
 @immutable
 class Profile {
@@ -19,6 +20,7 @@ class Profile {
   final String? collegeIdPhoto;
   final List<Domains>? domains;
   final List<Domains>? skillSet;
+  final List<Link>? links;
   final List<Certificate>? certificates;
 
   const Profile({
@@ -35,6 +37,7 @@ class Profile {
     this.collegeIdPhoto,
     this.domains,
     this.skillSet,
+    this.links,
     this.certificates,
   });
 
@@ -100,6 +103,7 @@ extension ProfileCopyWith on Profile {
     String? collegeIdPhoto,
     List<Domains>? domains,
     List<Domains>? skillSet,
+    List<Link>? links,
     List<Certificate>? certificates,
   }) {
     return Profile(
