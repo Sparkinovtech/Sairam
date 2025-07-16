@@ -115,6 +115,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _activityCard(
+                      onTap: (){},
                       title: "Ongoing",
                       value: "10",
                       label: "Projects",
@@ -123,6 +124,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: size.width * .07),
                     _activityCard(
+                      onTap: (){},
                       title: "Completed",
                       value: "17",
                       label: "Night Stay",
@@ -413,73 +415,77 @@ class _HomePageState extends State<HomePage> {
     required String label,
     required IconData icon,
     required BuildContext context,
+    required VoidCallback onTap
   }) {
     var size = MediaQuery.of(context).size;
-    return SizedBox(
-      width: size.width * .4,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 3,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: size.width * .4,
+        child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          elevation: 3,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    Icon(icon, color: Colors.grey),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Project",
-                      style: GoogleFonts.lato(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
+                      Icon(icon, color: Colors.grey),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Project",
+                        style: GoogleFonts.lato(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: size.height * .01),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      value,
-                      style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontSize: 27,
-                        fontWeight: FontWeight.bold,
+                    ],
+                  ),
+                  SizedBox(height: size.height * .01),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        value,
+                        style: GoogleFonts.inter(
+                          color: Colors.black,
+                          fontSize: 27,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: size.width * .01),
-                    Text(
-                      "Projects",
-                      style: GoogleFonts.lato(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      SizedBox(width: size.width * .01),
+                      Text(
+                        "Projects",
+                        style: GoogleFonts.lato(
+                          color: Colors.grey,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
