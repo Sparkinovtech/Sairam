@@ -6,7 +6,10 @@ import 'package:sairam_incubation/View/profile_page.dart';
 import 'package:sairam_incubation/View/teams_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import 'model/projects.dart';
+
 class BottomNavBar extends StatefulWidget {
+
   const BottomNavBar({super.key});
 
   @override
@@ -15,9 +18,34 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
-
   late final List<Widget> _pages;
 
+  // final List<Projects> myTeams = [
+  //   Projects(
+  //       name: "Rover",
+  //       mentor: "Sam",
+  //       category: "Hardware",
+  //       imagePath: ""
+  //   ),
+  //   Projects(
+  //       name: "Telepresence robot",
+  //       mentor: "Jayantha",
+  //       category: "Hardware",
+  //       imagePath: ""
+  //   ),
+  //   Projects(
+  //     name: "Child Safety",
+  //     mentor: "Jayantha",
+  //     category: "Software",
+  //     imagePath: "",
+  //   ),
+  //   Projects(
+  //     name: "GamifyX",
+  //     mentor:"Sam",
+  //     category: "Software",
+  //     imagePath: "",
+  //   ),
+  // ];
   @override
   void initState() {
     super.initState();

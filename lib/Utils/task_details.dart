@@ -137,6 +137,8 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                                 final steps = widget.task.steps[index];
                                 final isChecked = widget.task.completedSteps.contains(index);
                                 return CheckboxListTile(
+                                  checkColor: Colors.white,
+                                  activeColor: Colors.blue,
                                   value: isChecked,
                                   title: Text(steps , style:GoogleFonts.lato(color: Colors.black,fontSize: 12,fontWeight: FontWeight.w500),),
                                   onChanged: (_) => _toggleSteps(index),

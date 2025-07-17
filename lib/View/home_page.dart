@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/calender_page.dart';
 import 'package:sairam_incubation/Utils/components_form.dart';
+import 'package:sairam_incubation/Utils/model/projects.dart';
+import 'package:sairam_incubation/Utils/project_card.dart';
 import 'package:sairam_incubation/View/request_form.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,6 +22,41 @@ class _HomePageState extends State<HomePage> {
   final String name = "Sujin Danial";
   DateTime? _dateTime;
   DateTime _focusedDay = DateTime.now();
+
+  final List<Projects> ongoingProjects = [
+    Projects(
+        name: "Rover",
+        mentor: "Sam",
+        category: "Hardware",
+        imagePath: ""
+    ),
+    Projects(
+        name: "Telepresence robot",
+        mentor: "Jayantha",
+        category: "Hardware",
+        imagePath: ""
+    ),
+    Projects(
+        name: "Child Safety",
+        mentor: "Jayantha",
+        category: "Software",
+        imagePath: "",
+    ),
+    Projects(
+        name: "GamifyX",
+        mentor:"Sam",
+        category: "Software",
+        imagePath: "",
+    ),
+  ];
+  final List<Projects> completedProjects = [
+    Projects(
+        name: "Skoolinq",
+        mentor: "Juno Bella",
+        category: "Software",
+        imagePath:"",
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -115,18 +151,22 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _activityCard(
-                      onTap: (){},
+                      onTap: (){
+                        Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: ProjectCard(projects: ongoingProjects,)));
+                      },
                       title: "Ongoing",
-                      value: "10",
+                      value: "${ongoingProjects.length}",
                       label: "Projects",
                       icon: CupertinoIcons.cube,
                       context: context,
                     ),
                     SizedBox(width: size.width * .07),
                     _activityCard(
-                      onTap: (){},
+                      onTap: (){
+                        Navigator.push(context, PageTransition(type: PageTransitionType.fade ,child: ProjectCard(projects: completedProjects)));
+                      },
                       title: "Completed",
-                      value: "17",
+                      value: "${completedProjects.length}",
                       label: "Night Stay",
                       icon: CupertinoIcons.moon_stars_fill,
                       context: context,
