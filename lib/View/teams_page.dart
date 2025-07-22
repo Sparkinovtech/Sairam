@@ -57,7 +57,7 @@ class _TeamsPageState extends State<TeamsPage> {
                   Text("Your Teams", style: GoogleFonts.lato(color: Colors.black ,fontSize: 24,fontWeight: FontWeight.w800),),
                   CircleAvatar(
                     backgroundColor: Colors.grey.withOpacity(.2),
-                    child: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.add_circled)),
+                    child: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.add_circled , color: Colors.grey,)),
                   ),
                 ],
               ),
