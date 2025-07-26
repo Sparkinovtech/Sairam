@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,7 +10,6 @@ import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
 import 'package:sairam_incubation/Utils/certificate_page.dart';
-
 class AddCertificates extends StatefulWidget {
   final String hintText;
   final Function(DateTime)? onDateSelected;
@@ -20,7 +18,6 @@ class AddCertificates extends StatefulWidget {
     required this.hintText,
     this.onDateSelected,
   });
-
   @override
   State<AddCertificates> createState() => _AddCertificatesState();
 }

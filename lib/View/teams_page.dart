@@ -18,6 +18,7 @@ class _TeamsPageState extends State<TeamsPage> {
   ];
   final List<Teams> myTeam = [];
   void _showTeamPicker() async{
+
     final Teams? selected = await showModalBottomSheet<Teams>(context: context, builder: (_) {
        return ListView(
          children: availableTeams.map((team) => Card(
@@ -39,6 +40,7 @@ class _TeamsPageState extends State<TeamsPage> {
          )).toList(),
        );
     });
+
   }
   @override
   Widget build(BuildContext context) {
