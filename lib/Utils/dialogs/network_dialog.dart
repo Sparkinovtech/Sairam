@@ -35,7 +35,7 @@ class NetworkDialog {
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaY: 0 , sigmaX: 0),
-          child: Container(
+          child: AnimatedContainer(duration: Duration(seconds: 5),curve: Curves.easeInOut,
             width: size.width * .3,
             height: size.height * .34,
             decoration: BoxDecoration(

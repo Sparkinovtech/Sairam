@@ -26,7 +26,7 @@ class _ProjectCardState extends State<ProjectCard> {
                     Navigator.pop(context);
                   }, icon: Icon(Icons.arrow_back_ios_new ,color: Colors.black,)),
 
-                  Text("Ongoing Project ",
+                  Text("Ongoing Project",
                     style: GoogleFonts.lato(color: Colors.black , fontSize: 23,fontWeight: FontWeight.w400),),
                 ],
               ),

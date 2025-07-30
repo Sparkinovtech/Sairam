@@ -13,7 +13,9 @@ Future<bool> showLogoutDialog(BuildContext context) {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaY: 1, sigmaX: 1),
-          child: Container(
+          child: AnimatedContainer(
+            duration: Duration(seconds: 1),
+            curve: Curves.easeInOut,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
             width: MediaQuery.of(context).size.width * .3 ,
             height: MediaQuery.of(context).size.height * .5,

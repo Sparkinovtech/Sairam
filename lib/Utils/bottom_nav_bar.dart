@@ -56,7 +56,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
-      bottomNavigationBar: Container(
+      bottomNavigationBar: AnimatedContainer(
+        duration: Duration(seconds: 3),
+        curve: Curves.easeInOut,
         color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         child: GNav(

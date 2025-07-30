@@ -1,5 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Utils/Tracker/progress_tracker.dart';
+import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 class ComponentsForm extends StatefulWidget {
   const ComponentsForm({super.key});
 
@@ -28,12 +32,17 @@ class _ComponentsFormState extends State<ComponentsForm> {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(onPressed: (){
-                          Navigator.pop(context);
+                          Navigator.pushReplacement(context,
+                              PageTransition(type: PageTransitionType.fade , curve: Curves.easeInOut , child: BottomNavBar()));
                         }, icon: Icon(Icons.arrow_back_ios ,color: Colors.black,)),
                         Text("Components",style: GoogleFonts.lato(color: Colors.black,fontSize: 24,fontWeight: FontWeight.w800),),
+                        CircleAvatar(backgroundColor: Colors.grey.shade200, child:
+                        IconButton(onPressed: () async {
+                          final bool progress = await showProgress(context);
+                        }, icon: Icon(CupertinoIcons.cube_box_fill,color: Colors.black,)), ),
                       ],
                     ),
                     SizedBox(height: size.height * .01,),
@@ -61,11 +70,7 @@ class _ComponentsFormState extends State<ComponentsForm> {
                 ),
               ),
               SizedBox(height: size.height * .02,),
-              Row(
-                children: [
 
-                ],
-              )
             ],
           ),
         ),

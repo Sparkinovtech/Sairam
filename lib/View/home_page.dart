@@ -12,8 +12,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../Utils/stay_request_container.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+  const HomePage({super.key, });
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   final String name = "Sujin Danial";
   DateTime? _dateTime;
   DateTime _focusedDay = DateTime.now();
-
+  late final ScrollController _controller;
   final List<Projects> ongoingProjects = [
     Projects(
         name: "Rover",
@@ -57,6 +56,16 @@ class _HomePageState extends State<HomePage> {
         imagePath:"",
     ),
   ];
+  @override
+  void initState() {
+    super.initState();
+    _controller = ScrollController();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -105,10 +114,13 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  CircleAvatar(
-                    backgroundColor: Colors.grey.withValues(alpha: .2),
-                    radius: 20,
-                    child: Icon(CupertinoIcons.bell, color: Colors.grey),
+                  InkWell(
+                    onTap: (){},
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey.withValues(alpha: .2),
+                      radius: 20,
+                      child: Icon(CupertinoIcons.bell, color: Colors.grey),
+                    ),
                   ),
                 ],
               ),
@@ -126,26 +138,13 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    // InkWell(
-                    //   onTap: () {},
-                    //   child: Text(
-                    //     "See more",
-                    //     style: GoogleFonts.inter(
-                    //       fontSize: 14,
-                    //       color: Colors.grey,
-                    //       fontWeight: FontWeight.w300,
-                    //       decoration: TextDecoration.underline,
-                    //       decorationThickness: 1,
-                    //       decorationColor: Colors.grey,
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
               SizedBox(height: size.height * .05),
 
               SingleChildScrollView(
+
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -294,161 +293,35 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: size.height * .01),
+              SizedBox(height: size.height * .05),
+              SizedBox(
+                height: size.height * .4,
+                child: GridView.count(
+                  childAspectRatio: 1.2,
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 7,
+                  crossAxisSpacing: 7,
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  children: [
+                    _componentCard(title: "Progress", icon: CupertinoIcons.chart_bar_alt_fill, onTap: (){}),
+                    _componentCard(title: "Components", icon: CupertinoIcons.settings, onTap: (){
+                      Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade , child: ComponentsForm() , curve: Curves.easeInOut));
+                    }),
+                    _componentCard(title: "Night Stay", icon:CupertinoIcons.moon_stars_fill, onTap: (){
+                      Navigator.pushReplacement(context,PageTransition(type: PageTransitionType.fade , child: RequestForm()));
+                    }),
+                    _componentCard(title: "OD", icon: CupertinoIcons.square_list_fill, onTap: (){}),
+                  ],
+                ),
+              ),
 
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: RequestForm(),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                  child: Card(
-                    elevation: 3,
-                    color: Colors.white,
-                    child: Container(
-                      width: size.width * .85,
-                      height: size.height * .18,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 20,
-                            ),
-                            child: Center(
-                              child: Column(
-                                children: [
-                                  SizedBox(height: size.height * .02),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Want To Work Over ?",
-                                        style: GoogleFonts.lato(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 19,
-                                        ),
-                                      ),
-                                      SizedBox(width: size.width * .02),
-                                      Icon(
-                                        CupertinoIcons.moon_zzz_fill,
-                                        color: Colors.blue,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: size.height * .01),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Dreams does not work unless you do.",
-                                        style: GoogleFonts.inter(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: size.height * .01),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                      type: PageTransitionType.fade,
-                      child: ComponentsForm(),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                  child: Card(
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    color: Colors.white,
-                    child: Container(
-                      height: size.height * .17,
-                      width: size.width * .85,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 20,
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(height: size.height * .02),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Request for Components",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.black,
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  SizedBox(width: size.width * .02),
-                                  Icon(Icons.settings, color: Colors.blue),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Enhance your work smarter",
-                                    style: GoogleFonts.lato(
-                                      color: Colors.grey,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
       ),
     );
   }
-
   Widget _activityCard({
     required String title,
     required String value,
@@ -524,6 +397,44 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  Widget _componentCard({ required String title , required IconData icon , required VoidCallback onTap  }){
+    var size = MediaQuery.of(context).size;
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding:  EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+        child: Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: AnimatedContainer(
+            curve: Curves.easeInOutCubic,
+            duration: Duration(seconds: 1),
+            child: Container(
+              width: size.width * .18,
+              height: size.height * .008,
+              padding: EdgeInsets.symmetric(horizontal: 00),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Icon(icon , color: Colors.white,size: 60,),
+                  ),
+                  SizedBox(height: size.height * .01,),
+                  Text(title , style: GoogleFonts.lato(color: Colors.white ,fontSize: 18,fontWeight: FontWeight.w800),),
                 ],
               ),
             ),
