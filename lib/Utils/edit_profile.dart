@@ -19,14 +19,20 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   bool _initialized = false;
-
   File? _file;
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
+  final TextEditingController _dob = TextEditingController();
+  Department? _selected;
+
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
   }
 
   Future<void> _openPhoneStorage() async {
-    requestPermission();
+    await requestPermission();
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -35,14 +41,6 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
   }
-
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  final TextEditingController _name = TextEditingController();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _phone = TextEditingController();
-  final TextEditingController _dob = TextEditingController();
-
-  Department? _selected;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +52,12 @@ class _EditProfileState extends State<EditProfile> {
         } else {
           LoadingScreen().hide();
         }
-
         if (state is ProfileInformationDoneState) {
           Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
         final profile = state.profile;
-
         if (!_initialized && profile != null) {
           _name.text = profile.name ?? "";
           _email.text = profile.emailAddresss ?? "";
@@ -120,76 +116,80 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       SizedBox(height: size.height * .04),
                       InkWell(
-                        onTap: () {
-                          _openPhoneStorage();
-                        },
+                        onTap: _openPhoneStorage,
                         child: Text(
                           "Change Profile Picture",
                           style: GoogleFonts.inter(
                             color: Colors.blue,
-                            fontSize: 15,
                             fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: size.height * .02),
+                      Form(
+                        key: _key,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 25),
+                          child: Column(
+                            children: [
+                              _buildLabeledTextField(
+                                "Full Name",
+                                _name,
+                                TextInputType.name,
+                                (v) {
+                                  if (v == null || v.isEmpty)
+                                    return "Enter your name";
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: size.height * .03),
+                              _buildLabeledTextField(
+                                "Email Address",
+                                _email,
+                                TextInputType.emailAddress,
+                                (v) {
+                                  if (v == null || v.isEmpty)
+                                    return "Enter the Email Address";
+                                  if (!v.contains('@'))
+                                    return "Invalid Email Address";
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: size.height * .03),
+                              _buildLabeledTextField(
+                                "Phone Number",
+                                _phone,
+                                TextInputType.phone,
+                                (v) {
+                                  if (v == null || v.isEmpty)
+                                    return "Enter the Phone Number";
+                                  if (v.length < 10)
+                                    return "Enter the valid Phone Number";
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: size.height * .03),
+                              _dropField<Department>(
+                                selectedValue: _selected,
+                                options: Department.values,
+                                onChange: (val) =>
+                                    setState(() => _selected = val),
+                                hintText: 'Select your department',
+                                itemLabelBuilder: (dept) => dept.departmentName,
+                              ),
+                              SizedBox(height: size.height * .03),
+                              _buildLabelDatePicker(
+                                "Date of Birth",
+                                context,
+                                _dob,
+                                size,
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ],
-                  ),
-                  SizedBox(height: size.height * .02),
-                  Form(
-                    key: _key,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: Column(
-                        children: [
-                          _buildTextField(
-                            controller: _name,
-                            text: "Full Name",
-                            validator: (v) => v == null || v.isEmpty
-                                ? "Enter your name"
-                                : null,
-                            key: TextInputType.name,
-                          ),
-                          SizedBox(height: size.height * .03),
-                          _buildTextField(
-                            controller: _email,
-                            text: profile?.emailAddresss ?? "Email Address",
-                            key: TextInputType.emailAddress,
-                            validator: (v) => v == null || v.isEmpty
-                                ? "Enter the Email Address"
-                                : !v.contains('@')
-                                ? "Invalid Email Address "
-                                : null,
-                          ),
-                          SizedBox(height: size.height * .03),
-                          _buildTextField(
-                            controller: _phone,
-                            text: profile?.phoneNumber ?? "Phone Number",
-                            key: TextInputType.phone,
-                            validator: (v) => v == null || v.isEmpty
-                                ? "Enter the Phone Number"
-                                : v.length < 10
-                                ? "Enter the valid Phone Number"
-                                : null,
-                          ),
-                          SizedBox(height: size.height * .03),
-                          _dropField<Department>(
-                            selectedValue: _selected,
-                            options: Department.values,
-                            onChange: (val) => setState(() => _selected = val),
-                            hintText: 'Select your department',
-                            itemLabelBuilder: (dept) => dept.departmentName,
-                          ),
-                          SizedBox(height: size.height * .03),
-                          _buildTextField(
-                            controller: _dob,
-                            text: profile?.dateOfBirth ?? "Date Of Birth",
-                            key: TextInputType.number,
-                            validator: (v) =>
-                                v == null || v.isEmpty ? "Enter the DOB" : null,
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -198,16 +198,13 @@ class _EditProfileState extends State<EditProfile> {
           bottomNavigationBar: Row(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: MaterialButton(
                   elevation: 0,
-                  onPressed: () {},
+                  onPressed: () => Navigator.pop(context),
                   minWidth: size.width * .3,
                   height: size.height * .05,
-                  color: Colors.grey[100]!,
+                  color: Colors.grey[100],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -222,31 +219,31 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 20,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
                 child: MaterialButton(
                   elevation: 0,
                   onPressed: () {
-                    if (_name.text.isEmpty ||
-                        _email.text.isEmpty ||
-                        _phone.text.isEmpty ||
-                        _dob.text.isEmpty ||
-                        _selected == null) {
-                      // Show error message using a SnackBar
+                    if (!_key.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Please fill in all required fields."),
+                          content: Text("Please fill all fields correctly."),
                           backgroundColor: Colors.red,
                         ),
                       );
                       return;
                     }
-                    // If all validations pass, dispatch the event
+                    if (_selected == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please select your department."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
                     context.read<ProfileBloc>().add(
                       RegisterProfileInformationEvent(
-                        profilePic: _file?.path, // Optional
+                        profilePic: _file?.path,
                         fullName: _name.text,
                         emailAddress: _email.text,
                         phoneNumber: _phone.text,
@@ -261,7 +258,7 @@ class _EditProfileState extends State<EditProfile> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  splashColor: Colors.white.withValues(alpha: .4),
+                  splashColor: Colors.white.withOpacity(0.4),
                   child: Text(
                     "Save Changes",
                     style: GoogleFonts.lato(
@@ -279,40 +276,49 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String text,
-    required TextInputType key,
-    required String? Function(String?) validator,
-  }) {
-    return TextFormField(
-      cursorColor: Colors.grey,
-      controller: controller,
-      keyboardType: key,
-      validator: validator,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide.none,
+  Widget _buildLabeledTextField(
+    String label,
+    TextEditingController controller,
+    TextInputType keyboardType,
+    String? Function(String?)? validator,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
         ),
-        filled: true,
-        fillColor: Colors.grey.withValues(alpha: .1),
-        hintText: text,
-        hintStyle: TextStyle(
-          color: Colors.grey,
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          validator: validator,
+          cursorColor: Colors.grey,
+          decoration: InputDecoration(
+            hintText: label,
+            filled: true,
+            fillColor: Colors.grey.withOpacity(0.1),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.all(13),
+          ),
         ),
-        contentPadding: EdgeInsets.all(13),
-      ),
+      ],
     );
   }
 
   Widget _dropField<T>({
-    required String hintText,
     required T? selectedValue,
     required List<T> options,
     required ValueChanged<T?> onChange,
+    required String hintText,
     required String Function(T) itemLabelBuilder,
   }) {
     return DropdownButtonFormField<T>(
@@ -321,26 +327,89 @@ class _EditProfileState extends State<EditProfile> {
       isExpanded: true,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(
-          color: Colors.grey,
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(11),
-        ),
         filled: true,
-        fillColor: Colors.grey.withValues(alpha: 0.1),
-        contentPadding: EdgeInsets.all(13),
+        fillColor: Colors.grey.withOpacity(0.1),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        ),
       ),
-      icon: Icon(Icons.keyboard_arrow_down),
-      items: options.map((item) {
-        return DropdownMenuItem<T>(
-          value: item,
-          child: Text(itemLabelBuilder(item), overflow: TextOverflow.ellipsis),
-        );
-      }).toList(),
+      icon: const Icon(Icons.arrow_drop_down),
+      items: options
+          .map(
+            (e) => DropdownMenuItem<T>(
+              value: e,
+              child: Text(itemLabelBuilder(e), overflow: TextOverflow.ellipsis),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildLabelDatePicker(
+    String label,
+    BuildContext context,
+    TextEditingController controller,
+    Size size,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: () async {
+            DateTime initialDate;
+            try {
+              initialDate = DateTime.parse(controller.text);
+            } catch (_) {
+              initialDate = DateTime(2000, 1, 1);
+            }
+            DateTime? picked = await showDatePicker(
+              context: context,
+              initialDate: initialDate,
+              firstDate: DateTime(1900),
+              lastDate: DateTime.now(),
+            );
+            if (picked != null) {
+              setState(() {
+                controller.text =
+                    "${picked.year.toString().padLeft(4, '0')}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+              });
+            }
+          },
+          child: AbsorbPointer(
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                hintText: 'Select your date of birth',
+                suffixIcon: const Icon(Icons.calendar_today),
+                filled: true,
+                fillColor: Colors.grey.withOpacity(0.1),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.all(13),
+              ),
+              validator: (v) => v == null || v.isEmpty
+                  ? 'Please select your date of birth'
+                  : null,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
