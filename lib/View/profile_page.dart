@@ -24,7 +24,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  bool _initialized = false;
   File? _imageFile;
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
@@ -50,10 +49,6 @@ class _ProfilePageState extends State<ProfilePage>
           LoadingScreen().show(context: context, text: "Loading...");
         } else {
           LoadingScreen().hide();
-        }
-
-        if (state is WorkPreferencesDoneState) {
-          Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
@@ -130,7 +125,7 @@ class _ProfilePageState extends State<ProfilePage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Sujin Danial",
+                                  profile?.name ?? "Student",
                                   style: GoogleFonts.inter(
                                     color: Colors.black,
                                     fontSize: 21,
@@ -140,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 Row(
                                   children: [
                                     Text(
-                                      "SEC22CB080",
+                                      profile?.id ?? "SEC ID",
                                       style: GoogleFonts.inter(
                                         color: Colors.grey,
                                         fontWeight: FontWeight.w500,

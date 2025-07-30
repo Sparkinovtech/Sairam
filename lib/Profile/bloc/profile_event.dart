@@ -3,6 +3,7 @@ import 'package:sairam_incubation/Profile/Model/certificate.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
+import 'package:sairam_incubation/Profile/Model/media_items.dart';
 
 @immutable
 abstract class ProfileEvent {
@@ -63,12 +64,25 @@ class RegisterSkillSetEvent extends ProfileEvent {
 
 class RegisterPortfolioEvent extends ProfileEvent {
   final List<Link> links;
+  final List<MediaItems> mediaList;
 
-  const RegisterPortfolioEvent({required this.links});
+  const RegisterPortfolioEvent({required this.links, required this.mediaList});
 }
 
 class RegisterCertificateEvent extends ProfileEvent {
   final List<Certificate> certificates;
 
   const RegisterCertificateEvent({required this.certificates});
+}
+
+class AddPortfolioLinkEvent extends ProfileEvent {
+  final Link link;
+
+  const AddPortfolioLinkEvent({required this.link});
+}
+
+class DeletePortfolioLinkEvent extends ProfileEvent {
+  final Link link;
+
+  const DeletePortfolioLinkEvent({required this.link});
 }

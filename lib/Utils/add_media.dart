@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sairam_incubation/Auth/Model/media_items.dart';
+import 'package:sairam_incubation/Profile/Model/media_items.dart';
 
 class AddMedia extends StatefulWidget {
   const AddMedia({super.key, required this.file});
@@ -19,7 +19,8 @@ class _AddMediaState extends State<AddMedia> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    final isImage = widget.file.path.endsWith('.jpg') || widget.file.path.endsWith('.png');
+    final isImage =
+        widget.file.path.endsWith('.jpg') || widget.file.path.endsWith('.png');
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

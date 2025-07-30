@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sairam_incubation/Profile/Model/certificate.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
-import 'package:flutter/foundation.dart';
-import 'package:sairam_incubation/Profile/Model/link.dart'; // For @immutable
+import 'package:sairam_incubation/Profile/Model/link.dart';
+import 'package:sairam_incubation/Profile/Model/media_items.dart';
 
 @immutable
 class Profile {
@@ -21,6 +22,7 @@ class Profile {
   final List<Domains>? domains;
   final List<Domains>? skillSet;
   final List<Link>? links;
+  final List<MediaItems>? mediaList;
   final List<Certificate>? certificates;
 
   const Profile({
@@ -37,6 +39,7 @@ class Profile {
     this.collegeIdPhoto,
     this.domains,
     this.skillSet,
+    this.mediaList,
     this.links,
     this.certificates,
   });
@@ -56,6 +59,8 @@ class Profile {
       'collegeIdPhoto': collegeIdPhoto,
       'domains': domains?.map((d) => d.name).toList(),
       'skillSet': skillSet?.map((s) => s.name).toList(),
+      'mediaList': mediaList?.map((m) => m.toJson()).toList(),
+      'links': links?.map((l) => l.toJson()).toList(),
       'certificates': certificates?.map((c) => c.toJson()).toList(),
     };
   }
@@ -81,10 +86,38 @@ class Profile {
       skillSet: (json['skillSet'] as List<dynamic>?)
           ?.map((s) => Domains.values.byName(s))
           .toList(),
+      mediaList: (json['mediaList'] as List<dynamic>?)
+          ?.map((m) => MediaItems.fromJson(m as Map<String, dynamic>))
+          .toList(),
+      links: (json['links'] as List<dynamic>?)
+          ?.map((l) => Link.fromJson(l as Map<String, dynamic>))
+          .toList(),
       certificates: (json['certificates'] as List<dynamic>?)
-          ?.map((c) => Certificate.fromJson(c))
+          ?.map((c) => Certificate.fromJson(c as Map<String, dynamic>))
           .toList(),
     );
+  }
+
+  @override
+  String toString() {
+    return 'Profile('
+        'name: $name, '
+        'emailAddresss: $emailAddresss, '
+        'phoneNumber: $phoneNumber, '
+        'department: ${department?.name}, '
+        'dateOfBirth: $dateOfBirth, '
+        'id: $id, '
+        'profilePicture: $profilePicture, '
+        'yearOfGraduation: $yearOfGraduation, '
+        'currentYear: $currentYear, '
+        'currentMentor: $currentMentor, '
+        'collegeIdPhoto: $collegeIdPhoto, '
+        'domains: ${domains?.map((d) => d.name).toList()}, '
+        'skillSet: ${skillSet?.map((s) => s.name).toList()}, '
+        'mediaList: ${mediaList?.length}, '
+        'links: ${links?.length}, '
+        'certificates: ${certificates?.length}'
+        ')';
   }
 }
 
@@ -103,6 +136,7 @@ extension ProfileCopyWith on Profile {
     String? collegeIdPhoto,
     List<Domains>? domains,
     List<Domains>? skillSet,
+    List<MediaItems>? mediaList,
     List<Link>? links,
     List<Certificate>? certificates,
   }) {
@@ -120,6 +154,8 @@ extension ProfileCopyWith on Profile {
       collegeIdPhoto: collegeIdPhoto ?? this.collegeIdPhoto,
       domains: domains ?? this.domains,
       skillSet: skillSet ?? this.skillSet,
+      mediaList: mediaList ?? this.mediaList,
+      links: links ?? this.links,
       certificates: certificates ?? this.certificates,
     );
   }

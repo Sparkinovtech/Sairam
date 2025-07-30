@@ -81,7 +81,7 @@ class DefaultFirebaseOptions {
     appId: '1:800199246089:web:c8e1e9e605223c0a86d3d8',
     messagingSenderId: '800199246089',
     projectId: 'sitc-dd9a9',
-    authDomain: 'sitc-dd9a9.firebaseapp.com',
+    authDomain: 'sitc-dd9a9.firebakseapp.com',
     storageBucket: 'sitc-dd9a9.firebasestorage.app',
     measurementId: 'G-Z6MDZ4VRSZ',
   );

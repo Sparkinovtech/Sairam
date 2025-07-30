@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/certificate_page.dart';
 import 'package:sairam_incubation/Utils/identity_details.dart';
@@ -17,12 +18,16 @@ class ProfileList extends StatefulWidget {
 
 class _ProfileListState extends State<ProfileList>
     with SingleTickerProviderStateMixin {
-  final List<String> _workPreferences = [];
-  final List<String> _skillSet = [];
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    final workPreference =
+        widget.profile?.domains?.map((domain) => domain.domainName).toList() ??
+        [];
+    final skillSet =
+        widget.profile?.skillSet?.map((domain) => domain.domainName).toList() ??
+        [];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -46,21 +51,15 @@ class _ProfileListState extends State<ProfileList>
             icon: Icons.edit_outlined,
             text: "Work Preference",
             subText: "Your desired roles and availability",
-            tags: _workPreferences,
+            tags: workPreference,
             onTap: () async {
-              final update = await Navigator.push(
+              await Navigator.push(
                 context,
                 PageTransition(
                   type: PageTransitionType.fade,
                   child: const WorkpreferenceEdit(),
                 ),
               );
-              if (update != null && update is List<String>) {
-                setState(() {
-                  _workPreferences.clear();
-                  _workPreferences.addAll(update);
-                });
-              }
             },
           ),
           SizedBox(height: size.height * 0.03),
@@ -68,21 +67,15 @@ class _ProfileListState extends State<ProfileList>
             icon: Icons.edit_outlined,
             text: "Skill Set",
             subText: "Highlight your tools and capability",
-            tags: _skillSet,
+            tags: skillSet,
             onTap: () async {
-              final update = await Navigator.push(
+              await Navigator.push(
                 context,
                 PageTransition(
                   type: PageTransitionType.fade,
                   child: const SkillSet(),
                 ),
               );
-              if (update != null && update is List<String>) {
-                setState(() {
-                  _skillSet.clear();
-                  _skillSet.addAll(update);
-                });
-              }
             },
           ),
           SizedBox(height: size.height * 0.03),
@@ -127,7 +120,6 @@ class _ProfileListState extends State<ProfileList>
     required String subText,
     required VoidCallback onTap,
   }) {
-    var size = MediaQuery.of(context).size;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
@@ -190,7 +182,6 @@ class _ProfileListState extends State<ProfileList>
     required List<String> tags,
     required VoidCallback onTap,
   }) {
-    var size = MediaQuery.of(context).size;
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),

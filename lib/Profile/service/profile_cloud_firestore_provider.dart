@@ -4,6 +4,7 @@ import 'package:sairam_incubation/Profile/Model/certificate.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
+import 'package:sairam_incubation/Profile/Model/media_items.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/exceptions/profile_exceptions.dart';
 
@@ -125,12 +126,15 @@ class ProfileCloudFirestoreProvider {
   }
 
   /// Saves portfolio links
-  Future<Profile> savePortfolioLinks({required List<Link> links}) async {
+  Future<Profile> savePortfolioLinks({
+    required List<Link> links,
+    required List<MediaItems> mediaList,
+  }) async {
     final currentProfile = _studentProfile;
     if (currentProfile == null) throw UserProfileNotFoundException();
 
     // Assuming links stored in skillSet or extend Profile model to include "portfolioLinks"
-    final updated = currentProfile.copyWith();
+    final updated = currentProfile.copyWith(links: links, mediaList: mediaList);
     await students.doc(currentProfile.id!).update(updated.toJson());
     _studentProfile = updated;
     return updated;

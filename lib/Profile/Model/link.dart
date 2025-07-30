@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 @immutable
 class Link {
@@ -17,4 +17,19 @@ class Link {
       link: json['link'] as String,
     );
   }
+
+  @override
+  String toString() {
+    return "Link Name : $linkName \n Link : $link";
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Link && other.linkName == linkName && other.link == link;
+  }
+
+  @override
+  int get hashCode => linkName.hashCode ^ link.hashCode;
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Auth/Model/certificate_items.dart';
+import 'package:sairam_incubation/Profile/Model/certificate_items.dart';
 import 'package:sairam_incubation/Utils/add_certificates.dart';
 
 class CertificatePage extends StatefulWidget {
