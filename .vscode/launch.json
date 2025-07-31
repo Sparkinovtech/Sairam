@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Sairam-main",
+            "request": "launch",
+            "type": "dart",
+            "args": ["--dart-define=SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dG53ZHp2eWp2Y296ZXF1ZWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzQyNTAsImV4cCI6MjA2OTU1MDI1MH0.Su3HW6VXa07aiNXBNdOdDciuFQORvkBCZQdVg37fjbM"]
+        },
+        {
+            "name": "Sairam-main (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": ["--dart-define=SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dG53ZHp2eWp2Y296ZXF1ZWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzQyNTAsImV4cCI6MjA2OTU1MDI1MH0.Su3HW6VXa07aiNXBNdOdDciuFQORvkBCZQdVg37fjbM"]
+        },
+        {
+            "name": "Sairam-main (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": ["--dart-define=SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dG53ZHp2eWp2Y296ZXF1ZWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzQyNTAsImV4cCI6MjA2OTU1MDI1MH0.Su3HW6VXa07aiNXBNdOdDciuFQORvkBCZQdVg37fjbM"]
+
+        },
+        
+    ]
+}

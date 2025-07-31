@@ -86,3 +86,46 @@ class DeletePortfolioLinkEvent extends ProfileEvent {
 
   const DeletePortfolioLinkEvent({required this.link});
 }
+
+class AddPortfolioMediaEvent extends ProfileEvent {
+  final MediaItems mediaItem;
+
+  const AddPortfolioMediaEvent({required this.mediaItem});
+}
+
+class DeletePortfolioMediaEvent extends ProfileEvent {
+  final MediaItems mediaItem;
+
+  const DeletePortfolioMediaEvent({required this.mediaItem});
+}
+
+class UpdatePortfolioMediaEvent extends ProfileEvent {
+  final MediaItems mediaItem;
+
+  const UpdatePortfolioMediaEvent({required this.mediaItem});
+}
+
+/// Adds a single certificate to the user's profile (for immediate, incremental add)
+class AddCertificateEvent extends ProfileEvent {
+  final Certificate certificate;
+
+  const AddCertificateEvent({required this.certificate});
+}
+
+/// Updates (edits) an existing certificate in the user's profile
+class UpdateCertificateEvent extends ProfileEvent {
+  final Certificate oldCertificate;
+  final Certificate newCertificate;
+
+  const UpdateCertificateEvent({
+    required this.oldCertificate,
+    required this.newCertificate,
+  });
+}
+
+/// Deletes a single certificate from the user's profile
+class DeleteCertificateEvent extends ProfileEvent {
+  final Certificate certificate;
+
+  const DeleteCertificateEvent({required this.certificate});
+}

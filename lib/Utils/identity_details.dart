@@ -17,8 +17,6 @@ class IdentityDetails extends StatefulWidget {
   State<IdentityDetails> createState() => _IdentityDetailsState();
 }
 
-File? file;
-
 class _IdentityDetailsState extends State<IdentityDetails> {
   Department? _selected;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -27,6 +25,9 @@ class _IdentityDetailsState extends State<IdentityDetails> {
   final TextEditingController _graduation = TextEditingController();
   final TextEditingController _mentorName = TextEditingController();
   bool _initialized = false;
+
+  File? _file;
+  String? _currentIdCardUrl; // stores the current URL if from cloud
 
   Future<void> requestPermission() async {
     await [
@@ -42,7 +43,10 @@ class _IdentityDetailsState extends State<IdentityDetails> {
     final picker = ImagePicker();
     final pickedSource = await picker.pickImage(source: ImageSource.gallery);
     if (pickedSource != null) {
-      setState(() => file = File(pickedSource.path));
+      setState(() {
+        _file = File(pickedSource.path);
+        _currentIdCardUrl = null; // Use the newly picked local file for preview
+      });
     }
   }
 
@@ -52,7 +56,6 @@ class _IdentityDetailsState extends State<IdentityDetails> {
     _year.dispose();
     _graduation.dispose();
     _mentorName.dispose();
-    file = null;
     super.dispose();
   }
 
@@ -78,6 +81,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
           _year.text = profile.currentYear?.toString() ?? "";
           _graduation.text = profile.yearOfGraduation?.toString() ?? "";
           _mentorName.text = profile.currentMentor ?? "";
+          _currentIdCardUrl = profile.collegeIdPhoto;
           _initialized = true;
         }
 
@@ -307,7 +311,9 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                             ),
                           ),
                           SizedBox(height: size.height * .03),
-                          if (file != null)
+
+                          // Updated preview logic: show file image if picked, else the current URL if available
+                          if (_file != null)
                             Card(
                               color: Colors.white,
                               margin: const EdgeInsets.only(bottom: 15),
@@ -318,13 +324,45 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.file(
-                                  file!,
+                                  _file!,
                                   width: double.infinity,
                                   height: size.height * .35,
                                   fit: BoxFit.cover,
                                 ),
                               ),
+                            )
+                          else if (_currentIdCardUrl != null &&
+                              _currentIdCardUrl!.isNotEmpty)
+                            Card(
+                              color: Colors.white,
+                              margin: const EdgeInsets.only(bottom: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 3,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  _currentIdCardUrl!,
+                                  width: double.infinity,
+                                  height: size.height * .35,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Container(
+                                        color: Colors.grey[300],
+                                        height: size.height * .35,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'Could not load image',
+                                          style: GoogleFonts.lato(
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                ),
+                              ),
                             ),
+
                           MaterialButton(
                             elevation: 0,
                             onPressed: _openPhoneStorage,
@@ -336,7 +374,9 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                               side: const BorderSide(color: Colors.blue),
                             ),
                             child: Text(
-                              file != null
+                              _file != null ||
+                                      (_currentIdCardUrl != null &&
+                                          _currentIdCardUrl!.isNotEmpty)
                                   ? "Replace ID Card"
                                   : "Upload ID (PDF/JPG)",
                               style: GoogleFonts.lato(
@@ -397,7 +437,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                         currentYear: int.parse(_year.text.trim()),
                         yearOfGraduation: int.parse(_graduation.text.trim()),
                         mentorName: _mentorName.text.trim(),
-                        idCardPhoto: file?.path ?? "",
+                        idCardPhoto: _file?.path ?? (_currentIdCardUrl ?? ""),
                       ),
                     );
                   },

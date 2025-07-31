@@ -20,6 +20,8 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   bool _initialized = false;
   File? _file;
+  String? _profilePictureUrl;
+
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -38,6 +40,7 @@ class _EditProfileState extends State<EditProfile> {
     if (pickedFile != null) {
       setState(() {
         _file = File(pickedFile.path);
+        _profilePictureUrl = null; // Ensures preview switches to local File
       });
     }
   }
@@ -64,6 +67,7 @@ class _EditProfileState extends State<EditProfile> {
           _phone.text = profile.phoneNumber ?? "";
           _dob.text = profile.dateOfBirth ?? "";
           _selected = profile.department;
+          _profilePictureUrl = profile.profilePicture;
           _initialized = true;
         }
         return Scaffold(
@@ -107,8 +111,12 @@ class _EditProfileState extends State<EditProfile> {
                             backgroundColor: Colors.white,
                             backgroundImage: _file != null
                                 ? FileImage(_file!)
-                                : NetworkImage(
-                                        "https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg",
+                                : (_profilePictureUrl != null &&
+                                      _profilePictureUrl!.isNotEmpty)
+                                ? NetworkImage(_profilePictureUrl!)
+                                // Optionally, set a fallback default image asset with AssetImage if profile image is null/empty:
+                                : const AssetImage(
+                                        'assets/images/default_profile.png',
                                       )
                                       as ImageProvider,
                           ),
@@ -138,8 +146,9 @@ class _EditProfileState extends State<EditProfile> {
                                 _name,
                                 TextInputType.name,
                                 (v) {
-                                  if (v == null || v.isEmpty)
+                                  if (v == null || v.isEmpty) {
                                     return "Enter your name";
+                                  }
                                   return null;
                                 },
                               ),
@@ -149,10 +158,12 @@ class _EditProfileState extends State<EditProfile> {
                                 _email,
                                 TextInputType.emailAddress,
                                 (v) {
-                                  if (v == null || v.isEmpty)
+                                  if (v == null || v.isEmpty) {
                                     return "Enter the Email Address";
-                                  if (!v.contains('@'))
+                                  }
+                                  if (!v.contains('@')) {
                                     return "Invalid Email Address";
+                                  }
                                   return null;
                                 },
                               ),
@@ -162,10 +173,12 @@ class _EditProfileState extends State<EditProfile> {
                                 _phone,
                                 TextInputType.phone,
                                 (v) {
-                                  if (v == null || v.isEmpty)
+                                  if (v == null || v.isEmpty) {
                                     return "Enter the Phone Number";
-                                  if (v.length < 10)
+                                  }
+                                  if (v.length < 10) {
                                     return "Enter the valid Phone Number";
+                                  }
                                   return null;
                                 },
                               ),
@@ -243,7 +256,7 @@ class _EditProfileState extends State<EditProfile> {
                     }
                     context.read<ProfileBloc>().add(
                       RegisterProfileInformationEvent(
-                        profilePic: _file?.path,
+                        profilePic: _file?.path ?? _profilePictureUrl,
                         fullName: _name.text,
                         emailAddress: _email.text,
                         phoneNumber: _phone.text,
@@ -258,7 +271,7 @@ class _EditProfileState extends State<EditProfile> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  splashColor: Colors.white.withOpacity(0.4),
+                  splashColor: Colors.white.withValues(alpha: 0.4),
                   child: Text(
                     "Save Changes",
                     style: GoogleFonts.lato(
@@ -302,7 +315,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: InputDecoration(
             hintText: label,
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.1),
+            fillColor: Colors.grey.withValues(alpha: 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -328,7 +341,7 @@ class _EditProfileState extends State<EditProfile> {
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
-        fillColor: Colors.grey.withOpacity(0.1),
+        fillColor: Colors.grey.withValues(alpha: 0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -396,7 +409,7 @@ class _EditProfileState extends State<EditProfile> {
                 hintText: 'Select your date of birth',
                 suffixIcon: const Icon(Icons.calendar_today),
                 filled: true,
-                fillColor: Colors.grey.withOpacity(0.1),
+                fillColor: Colors.grey.withValues(alpha: 0.1),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,

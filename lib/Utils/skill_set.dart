@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
@@ -19,43 +18,40 @@ class SkillSet extends StatefulWidget {
   State<SkillSet> createState() => _SkillSetState();
 }
 
-File? file;
-
 class _SkillSetState extends State<SkillSet> {
   bool _isExpanded = false;
   bool _initialized = false;
-  List<Domains>? _selectedSkills;
+  List<Domains> _selectedSkills = [];
+  File? _file;
+  String? _resumeUrl;
+  String? _pickedFileExtension;
 
-  Future<void> requestPermission() async {
-    await [
-      Permission.camera,
-      Permission.storage,
-      Permission.photos,
-      Permission.accessMediaLocation,
-    ].request();
-  }
+  Future<void> _pickResumeFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'], // extend if needed
+      allowMultiple: false,
+    );
 
-  Future<void> _openPhoneStorage() async {
-    await requestPermission();
-    final picker = ImagePicker();
-    final pickedStorage = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedStorage != null) {
+    if (result != null && result.files.single.path != null) {
       setState(() {
-        file = File(pickedStorage.path);
+        _file = File(result.files.single.path!);
+        _pickedFileExtension = result.files.single.extension?.toLowerCase();
+        _resumeUrl = null; // reset remote url if local file picked
       });
     }
   }
 
   @override
   void dispose() {
-    file = null;
+    _file = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state.isLoading) {
@@ -65,71 +61,64 @@ class _SkillSetState extends State<SkillSet> {
         }
 
         if (state is SkillSetDoneState) {
+          // Close the screen after successful update
           Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
         final profile = state.profile;
+
         if (!_initialized && profile != null) {
-          _selectedSkills = profile.skillSet ?? List.empty();
+          _selectedSkills = profile.skillSet ?? [];
+          _resumeUrl = profile.resume;
           _initialized = true;
         }
+
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-              child: Flex(
-                direction: Axis.vertical,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 22,
+                  // Header with back button and title
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 22,
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.black,
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 0,
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Skill Set",
-                              style: GoogleFonts.lato(
-                                color: Colors.black,
-                                fontSize: 27,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Skill Set",
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 27,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Expandable skills selector
                   GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isExpanded = !_isExpanded;
-                      });
-                    },
+                    onTap: () => setState(() => _isExpanded = !_isExpanded),
                     child: Container(
                       padding: const EdgeInsets.all(20),
                       margin: const EdgeInsets.symmetric(
@@ -137,7 +126,7 @@ class _SkillSetState extends State<SkillSet> {
                         vertical: 20,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey.withValues(alpha: .1),
+                        color: Colors.grey.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
@@ -160,6 +149,7 @@ class _SkillSetState extends State<SkillSet> {
                       ),
                     ),
                   ),
+
                   if (_isExpanded)
                     Container(
                       margin: const EdgeInsets.fromLTRB(30, 25, 20, 30),
@@ -170,14 +160,16 @@ class _SkillSetState extends State<SkillSet> {
                       ),
                       child: buildSelectableListWithChips<Domains>(
                         options: Domains.values,
-                        selectedOptions: _selectedSkills!,
+                        selectedOptions: _selectedSkills,
                         labelBuilder: (domain) => domain.domainName,
-                        onSelectionChanged: (updated) => setState(() {
-                          _selectedSkills = updated;
-                        }),
+                        onSelectionChanged: (updated) =>
+                            setState(() => _selectedSkills = updated),
                       ),
                     ),
+
                   const SizedBox(height: 30),
+
+                  // Resume section
                   Column(
                     children: [
                       Padding(
@@ -203,7 +195,14 @@ class _SkillSetState extends State<SkillSet> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (file != null) ...[
+                            // Resume preview or filename for PDF
+                            if (_file != null &&
+                                _pickedFileExtension != null &&
+                                [
+                                  'jpg',
+                                  'jpeg',
+                                  'png',
+                                ].contains(_pickedFileExtension)) ...[
                               Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -214,17 +213,79 @@ class _SkillSetState extends State<SkillSet> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.file(
-                                    file!,
+                                    _file!,
                                     width: double.infinity,
                                     height: size.height * .35,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
                               ),
+                            ] else if (_file != null &&
+                                _pickedFileExtension == 'pdf') ...[
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 4,
+                                margin: const EdgeInsets.only(bottom: 20),
+                                color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.picture_as_pdf,
+                                        size: 32,
+                                        color: Colors.red,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          _file!.path.split('/').last,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ] else if ((_file == null) &&
+                                _resumeUrl != null &&
+                                _resumeUrl!.isNotEmpty) ...[
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 2,
+                                margin: const EdgeInsets.only(bottom: 20),
+                                color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.description,
+                                        color: Colors.blue,
+                                        size: 30,
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Text(
+                                          "View current resume",
+                                          style: GoogleFonts.lato(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
+
                             MaterialButton(
                               elevation: 0,
-                              onPressed: _openPhoneStorage,
+                              onPressed: _pickResumeFile,
                               minWidth: double.infinity,
                               height: size.height * .05,
                               color: Colors.white,
@@ -232,7 +293,7 @@ class _SkillSetState extends State<SkillSet> {
                                 borderRadius: BorderRadius.circular(10),
                                 side: const BorderSide(color: Colors.blue),
                               ),
-                              splashColor: Colors.white.withValues(alpha: .7),
+                              splashColor: Colors.white.withOpacity(.7),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -242,9 +303,11 @@ class _SkillSetState extends State<SkillSet> {
                                   ),
                                   SizedBox(width: size.width * .02),
                                   Text(
-                                    file != null
+                                    (_file != null ||
+                                            (_resumeUrl != null &&
+                                                _resumeUrl!.isNotEmpty))
                                         ? "Replace Resume"
-                                        : "Upload Resume (pdf/.jpeg)",
+                                        : "Upload Resume (pdf/.jpeg/.jpg/.png)",
                                     style: GoogleFonts.lato(
                                       color: Colors.blue,
                                       fontSize: 15,
@@ -263,24 +326,26 @@ class _SkillSetState extends State<SkillSet> {
               ),
             ),
           ),
+
+          // Save button Bottom Bar
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: MaterialButton(
               onPressed: () {
                 context.read<ProfileBloc>().add(
                   RegisterSkillSetEvent(
-                    domains: _selectedSkills!,
-                    resumeFile: "",
+                    domains: _selectedSkills,
+                    resumeFile: _file?.path ?? (_resumeUrl ?? ""),
                   ),
                 );
               },
               minWidth: double.infinity,
               height: size.height * .05,
-              color: Colors.blue.withValues(alpha: .6),
+              color: Colors.blue.withOpacity(.6),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              splashColor: Colors.white.withValues(alpha: .6),
+              splashColor: Colors.white.withOpacity(.6),
               child: Text(
                 "Save",
                 style: GoogleFonts.inter(

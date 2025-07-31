@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-import 'dart:developer' as devtools; // import developer for logs
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,28 +27,22 @@ class _PortfolioPageState extends State<PortfolioPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> requestPermission() async {
-    devtools.log(
-      "Requesting permissions for camera, photos, mediaLibrary, storage",
-    );
     await [
       Permission.camera,
       Permission.photos,
       Permission.mediaLibrary,
       Permission.storage,
     ].request();
-    devtools.log("Permission request completed");
   }
 
   Future<void> _openPhoneStorage(BuildContext context) async {
     await requestPermission();
-    devtools.log("Opening gallery for image picking...");
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final File selectedFile = File(pickedFile.path);
-      devtools.log("Picked image from gallery: ${pickedFile.path}");
-      // TODO: Dispatch action to open AddMedia, await result, then dispatch AddMedia event on success
+      if (!mounted) return;
       final result = await Navigator.push(
         context,
         PageTransition(
@@ -57,13 +50,12 @@ class _PortfolioPageState extends State<PortfolioPage> {
           child: AddMedia(file: selectedFile),
         ),
       );
-      devtools.log("Returned from AddMedia page with result: $result");
-      if (result != null) {
-        devtools.log("Dispatching AddPortfolioMediaEvent with new media item");
-        // e.g. context.read<ProfileBloc>().add(AddPortfolioMediaEvent(result));
+      if (result != null && result is MediaItems) {
+        if (!mounted) return;
+        context.read<ProfileBloc>().add(
+          AddPortfolioMediaEvent(mediaItem: result),
+        );
       }
-    } else {
-      devtools.log("No image picked from gallery");
     }
   }
 
@@ -72,7 +64,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
     double sizeHeight,
     double sizeWidth,
   ) async {
-    devtools.log("Opening Add Link bottom sheet");
     final TextEditingController title = TextEditingController();
     final TextEditingController links = TextEditingController();
 
@@ -95,10 +86,10 @@ class _PortfolioPageState extends State<PortfolioPage> {
           ),
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               width: double.infinity,
               height: sizeHeight * .4,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(30),
@@ -126,13 +117,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         const Spacer(),
                         IconButton(
                           onPressed: () {
-                            devtools.log(
-                              "Add Link sheet - Closed without saving",
-                            );
-                            Navigator.pop(
-                              context,
-                              null,
-                            ); // Return null on close
+                            Navigator.pop(context, null);
                           },
                           icon: const Icon(Icons.close),
                         ),
@@ -149,15 +134,13 @@ class _PortfolioPageState extends State<PortfolioPage> {
                           _textField(
                             controller: title,
                             hintText: "Title",
-                            validator: (v) =>
-                                null, // TODO: Validation if desired
+                            validator: null,
                           ),
                           SizedBox(height: sizeHeight * .015),
                           _textField(
                             controller: links,
                             hintText: "Links",
-                            validator: (v) =>
-                                null, // TODO: Validation if desired
+                            validator: null,
                           ),
                         ],
                       ),
@@ -170,13 +153,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: MaterialButton(
                           onPressed: () {
-                            devtools.log(
-                              "Add Link sheet - Cancel button pressed",
-                            );
-                            Navigator.pop(
-                              context,
-                              null,
-                            ); // Return null on cancel
+                            Navigator.pop(context, null);
                           },
                           elevation: 0,
                           color: Colors.grey[100]!,
@@ -192,13 +169,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: MaterialButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              devtools.log(
-                                "Add Link sheet - Save changes pressed",
-                              );
-                              devtools.log(
-                                "Adding link: Title='${title.text}', Links='${links.text}'",
-                              );
+                            if ((_formKey.currentState?.validate() ?? true)) {
                               final link = Link(
                                 linkName: title.text,
                                 link: links.text,
@@ -206,10 +177,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("Added Link")),
                               );
-                              Navigator.pop(
-                                context,
-                                link,
-                              ); // Return the created link
+                              Navigator.pop(context, link);
                             }
                           },
                           color: Colors.blue,
@@ -242,28 +210,28 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
-        devtools.log("ProfileBloc state changed: ${state.runtimeType}");
         if (state.isLoading) {
-          devtools.log("LoadingScreen showing...");
           LoadingScreen().show(context: context, text: "Loading...");
         } else {
-          devtools.log("LoadingScreen hiding...");
           LoadingScreen().hide();
         }
         if (state is PortfolioDoneState) {
-          devtools.log("Portfolio saved successfully, popping PortfolioPage");
-          Navigator.of(context).pop();
+          if (mounted) Navigator.of(context).pop();
         }
-        // TODO: handle other state changes as needed (show snackbar for error, etc)
+        if (state is ProfileErrorState) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage ?? "An error occurred."),
+              ),
+            );
+          }
+        }
       },
       builder: (context, state) {
         final profile = state.profile;
         final List<Link> linkList = profile?.links ?? [];
         final List<MediaItems> mediaList = profile?.mediaList ?? [];
-
-        devtools.log(
-          "Building PortfolioPage UI with ${linkList.length} links and ${mediaList.length} media items",
-        );
 
         return Scaffold(
           backgroundColor: Colors.white,
@@ -279,12 +247,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          onPressed: () {
-                            devtools.log(
-                              "Back button pressed, popping PortfolioPage",
-                            );
-                            Navigator.pop(context);
-                          },
+                          onPressed: () => Navigator.pop(context),
                           icon: const Icon(Icons.arrow_back_ios_new),
                         ),
                       ],
@@ -306,30 +269,21 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
                   ),
                   SizedBox(height: size.height * .03),
-                  // Add link button + link list
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
                         MaterialButton(
                           onPressed: () async {
-                            devtools.log("Add Link button pressed");
                             final newLink = await _showAddLinkSheet(
                               context,
                               size.height,
                               size.width,
                             );
-                            devtools.log(
-                              "Return from the method has the link $newLink",
-                            );
-
                             if (newLink != null) {
-                              devtools.log("Dispatching AddPortfolioLinkEvent");
                               context.read<ProfileBloc>().add(
                                 AddPortfolioLinkEvent(link: newLink),
                               );
-                            } else {
-                              devtools.log("No link was added from the sheet");
                             }
                           },
                           color: Colors.white,
@@ -356,7 +310,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       ],
                     ),
                   ),
-                  // List of existing links
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
@@ -372,10 +325,10 @@ class _PortfolioPageState extends State<PortfolioPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
-                      children: [
+                      children: const [
                         Text(
                           "Media",
-                          style: GoogleFonts.lato(
+                          style: TextStyle(
                             color: Colors.black,
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
@@ -385,24 +338,17 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
                   ),
                   SizedBox(height: size.height * .02),
-                  // Media preview cards
                   ...mediaList.map(
                     (item) => _mediaData(
                       context,
                       item,
                       () async {
-                        devtools.log(
-                          "Edit media button pressed for: ${item.title}",
-                        );
                         final image = ImagePicker();
                         final picker = await image.pickImage(
                           source: ImageSource.gallery,
                         );
                         if (picker != null) {
                           final File sourcePath = File(picker.path);
-                          devtools.log(
-                            "Picked new image for edit at: ${picker.path}",
-                          );
                           final result = await Navigator.push(
                             context,
                             PageTransition(
@@ -410,38 +356,27 @@ class _PortfolioPageState extends State<PortfolioPage> {
                               child: AddMedia(file: sourcePath),
                             ),
                           );
-                          devtools.log(
-                            "Returned from AddMedia page for edit with result: $result",
-                          );
-                          if (result != null) {
-                            devtools.log(
-                              "Dispatching event to update media item",
+                          if (result != null && result is MediaItems) {
+                            context.read<ProfileBloc>().add(
+                              UpdatePortfolioMediaEvent(mediaItem: result),
                             );
-                            // TODO: Dispatch UpdatePortfolioMediaEvent with 'result'
                           }
-                        } else {
-                          devtools.log("No image picked for media edit");
                         }
                       },
                       () {
-                        devtools.log(
-                          "Delete media button pressed for: ${item.title}",
+                        context.read<ProfileBloc>().add(
+                          DeletePortfolioMediaEvent(mediaItem: item),
                         );
-                        // TODO: Dispatch DeletePortfolioMediaEvent with 'item'
                       },
                     ),
                   ),
                   SizedBox(height: size.height * .03),
-                  // Add media button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
                         MaterialButton(
-                          onPressed: () {
-                            devtools.log("Add Media button pressed");
-                            _openPhoneStorage(context);
-                          },
+                          onPressed: () => _openPhoneStorage(context),
                           color: Colors.white,
                           minWidth: size.width * .3,
                           elevation: 0,
@@ -467,15 +402,11 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     ),
                   ),
                   SizedBox(height: size.height * .04),
-                  // Save button: triggers portfolio registration/update
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: MaterialButton(
                       elevation: 0,
                       onPressed: () {
-                        devtools.log(
-                          "Save portfolio button pressed. Dispatching RegisterPortfolioEvent",
-                        );
                         context.read<ProfileBloc>().add(
                           RegisterPortfolioEvent(
                             links: linkList,
@@ -498,6 +429,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                       ),
                     ),
                   ),
+                  SizedBox(height: size.height * .04),
                 ],
               ),
             ),
@@ -510,7 +442,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
   Widget _textField({
     required TextEditingController controller,
     required String hintText,
-    required String? Function(String?) validator,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -544,10 +476,9 @@ class _PortfolioPageState extends State<PortfolioPage> {
           if (await canLaunchUrl(uri)) {
             await launchUrl(uri, mode: LaunchMode.externalApplication);
           } else {
-            devtools.log("Could not launch URL: ${link.link}");
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Could not open link")));
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Could not open link")),
+            );
           }
         },
         child: Container(
@@ -588,9 +519,6 @@ class _PortfolioPageState extends State<PortfolioPage> {
               IconButton(
                 icon: const Icon(Icons.delete_outline, color: Colors.grey),
                 onPressed: () {
-                  devtools.log(
-                    "Delete link button pressed for link: ${link.linkName}",
-                  );
                   context.read<ProfileBloc>().add(
                     DeletePortfolioLinkEvent(link: link),
                   );
@@ -610,6 +538,17 @@ class _PortfolioPageState extends State<PortfolioPage> {
     VoidCallback onDelete,
   ) {
     var size = MediaQuery.of(context).size;
+
+    // Automatically determine if it's a network or local image
+    ImageProvider displayImage;
+    final imagePath = item.file.path;
+
+    if (imagePath.startsWith('http')) {
+      displayImage = NetworkImage(imagePath);
+    } else {
+      displayImage = FileImage(File(imagePath));
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Card(
@@ -627,11 +566,17 @@ class _PortfolioPageState extends State<PortfolioPage> {
               SizedBox(width: size.width * .04),
               ClipRRect(
                 borderRadius: BorderRadius.circular(11),
-                child: Image.file(
-                  item.file,
+                child: Image(
+                  image: displayImage,
                   width: size.width * .25,
                   height: size.height * .1,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: size.width * .25,
+                    height: size.height * .1,
+                    color: Colors.grey[300],
+                    child: Icon(Icons.broken_image, color: Colors.grey),
+                  ),
                 ),
               ),
               SizedBox(width: size.width * .03),
@@ -653,10 +598,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                   ),
                   IconButton(
                     onPressed: onDelete,
-                    icon: const Icon(
-                      Icons.delete_outline,
-                      color: Colors.grey,
-                    ), // Changed icon here
+                    icon: const Icon(Icons.delete_outline, color: Colors.grey),
                   ),
                 ],
               ),

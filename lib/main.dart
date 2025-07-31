@@ -12,6 +12,7 @@ import 'package:sairam_incubation/Auth/View/login_page.dart';
 import 'package:sairam_incubation/Auth/View/signup_page.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
+import 'package:sairam_incubation/Profile/service/supabase_storage_provider.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Auth/View/verify_page.dart';
@@ -21,10 +22,15 @@ import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
 import 'package:sairam_incubation/Utils/dialogs/network_dialog.dart';
 import 'package:sairam_incubation/View/splash_screen.dart';
 import 'package:sairam_incubation/firebase_options.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
-void main() async {
+const supabaseUrl = 'https://uytnwdzvyjvcozequeci.supabase.co';
+const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -50,7 +56,13 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) => ProfileBloc(ProfileCloudFirestoreProvider()),
+            create: (context) => ProfileBloc(
+              ProfileCloudFirestoreProvider(),
+              SupabaseStorageProvider(
+                supabase: SupabaseClient(supabaseUrl, supabaseKey),
+                bucketName: "files",
+              ),
+            ),
           ),
         ],
         child: const MyApp(),

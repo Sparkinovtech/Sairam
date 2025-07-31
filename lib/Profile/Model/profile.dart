@@ -17,6 +17,7 @@ class Profile {
   final String? profilePicture;
   final int? yearOfGraduation;
   final int? currentYear;
+  final String? resume;
   final String? currentMentor;
   final String? collegeIdPhoto;
   final List<Domains>? domains;
@@ -37,6 +38,7 @@ class Profile {
     this.currentYear,
     this.currentMentor,
     this.collegeIdPhoto,
+    this.resume,
     this.domains,
     this.skillSet,
     this.mediaList,
@@ -53,6 +55,7 @@ class Profile {
       'dateOfBirth': dateOfBirth,
       'id': id,
       'profilePicture': profilePicture,
+      'resume': resume,
       'yearOfGraduation': yearOfGraduation,
       'currentYear': currentYear,
       'currentMentor': currentMentor,
@@ -80,6 +83,7 @@ class Profile {
       currentYear: json['currentYear'] as int?,
       currentMentor: json['currentMentor'] as String?,
       collegeIdPhoto: json['collegeIdPhoto'] as String?,
+      resume: json['resume'] as String?,
       domains: (json['domains'] as List<dynamic>?)
           ?.map((d) => Domains.values.byName(d))
           .toList(),
@@ -130,6 +134,7 @@ extension ProfileCopyWith on Profile {
     String? dateOfBirth,
     String? id,
     String? profilePicture,
+    String? resume,
     int? yearOfGraduation,
     int? currentYear,
     String? currentMentor,
@@ -147,6 +152,7 @@ extension ProfileCopyWith on Profile {
       department: department ?? this.department,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       id: id ?? this.id,
+      resume: resume ?? this.resume,
       profilePicture: profilePicture ?? this.profilePicture,
       yearOfGraduation: yearOfGraduation ?? this.yearOfGraduation,
       currentYear: currentYear ?? this.currentYear,
