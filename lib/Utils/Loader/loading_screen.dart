@@ -42,7 +42,8 @@ class LoadingScreen {
         return Material(
           color: Colors.black.withAlpha(150),
           child: Center(
-            child: Container(
+            child: AnimatedContainer(
+              duration: Duration(seconds: 1),
               width: size.width * .8,
               height: size.height * .4,
               decoration: BoxDecoration(
