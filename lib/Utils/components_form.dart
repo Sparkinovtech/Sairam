@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Utils/Tracker/progress_tracker.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
+import 'package:sairam_incubation/Utils/dialogs/success_dialog.dart';
 class ComponentsForm extends StatefulWidget {
   const ComponentsForm({super.key});
 
@@ -41,7 +42,7 @@ class _ComponentsFormState extends State<ComponentsForm> {
                         Text("Components",style: GoogleFonts.lato(color: Colors.black,fontSize: 24,fontWeight: FontWeight.w800),),
                         CircleAvatar(backgroundColor: Colors.grey.shade200, child:
                         IconButton(onPressed: () async {
-                          final bool progress = await showProgress(context);
+                          Tracker.showTracker(context);
                         }, icon: Icon(CupertinoIcons.cube_box_fill,color: Colors.black,)), ),
                       ],
                     ),
@@ -80,8 +81,9 @@ class _ComponentsFormState extends State<ComponentsForm> {
         child: MaterialButton(
           onPressed: (){
             if(_key.currentState!.validate()){
-              Navigator.pop(context);
+              Success.showSuccessDialog(context);
             }
+
           },
           color: Colors.blue,
           minWidth: double.infinity,
