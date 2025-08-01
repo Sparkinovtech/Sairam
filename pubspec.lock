@@ -193,14 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
-  dotted_border:
-    dependency: transitive
-    description:
-      name: dotted_border
-      sha256: "99b091ec6891ba0c5331fdc2b502993c7c108f898995739a73c6845d71dad70c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -893,14 +885,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.1"
-  step_progress:
-    dependency: "direct main"
-    description:
-      name: step_progress
-      sha256: "77048fd341415923e9058941e63c90f5463c94975da7fc57fa6d056eabceabdc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.6.0"
   storage_client:
     dependency: transitive
     description:
@@ -965,6 +949,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.4"
+  timeline_tile_plus:
+    dependency: "direct main"
+    description:
+      name: timeline_tile_plus
+      sha256: "6a4d2cc9d98c998cec2ea1e3478f7eac4ae044e790e91217799aeec7ec70aa9e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   typed_data:
     dependency: transitive
     description:

@@ -13,7 +13,7 @@ class Success{
          barrierDismissible: true,
          barrierColor: Colors.grey.withOpacity(.5),
          builder: (context){
-           Timer(Duration(seconds: 7) , (){
+           Timer(Duration(seconds: 5) , (){
              Navigator.of(context).pop();
              Navigator.of(context).pushReplacement(PageTransition(type: PageTransitionType.fade , child: BottomNavBar()));
            });
