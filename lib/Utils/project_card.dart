@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
 class ProjectCard extends StatefulWidget {
   final List<Projects> projects;
-  const ProjectCard({super.key, required this.projects});
+  final String title;
+  const ProjectCard({super.key, required this.projects , required this.title});
   @override
   State<ProjectCard> createState() => _ProjectCardState();
 }
@@ -26,7 +27,7 @@ class _ProjectCardState extends State<ProjectCard> {
                     Navigator.pop(context);
                   }, icon: Icon(Icons.arrow_back_ios_new ,color: Colors.black,)),
 
-                  Text("Ongoing Project",
+                  Text(widget.title,
                     style: GoogleFonts.lato(color: Colors.black , fontSize: 23,fontWeight: FontWeight.w400),),
                 ],
               ),

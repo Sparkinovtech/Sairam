@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
+import 'package:sairam_incubation/Utils/dialogs/success_dialog.dart';
 
 class RequestForm extends StatefulWidget {
   const RequestForm({super.key});
@@ -82,6 +83,7 @@ class _RequestFormState extends State<RequestForm> {
                   child: Column(
                     children: [
                       _dropField(
+                        validator: (v) => v == null || v.isEmpty ? "Please select the Field" : null,
                         hintText: "To",
                         selectedValue: selected,
                         list: _list,
@@ -93,12 +95,14 @@ class _RequestFormState extends State<RequestForm> {
                       ),
                       SizedBox(height: size.height * .03),
                       _textField(
+                        validator: (v) => v == null || v.isEmpty ? "Please Enter the date" : null,
                         controller: _dataController,
                         hintText: "Date",
                         text: TextInputType.text,
                       ),
                       SizedBox(height: size.height * .03),
                       _textField(
+                        validator: (v) => v == null || v.isEmpty ?  "Please Enter  the reason" : null,
                         controller: _reasonController,
                         hintText: "Reason",
                         text: TextInputType.text,
@@ -106,6 +110,7 @@ class _RequestFormState extends State<RequestForm> {
                       SizedBox(height: size.height * .04),
 
                       _dropField(
+                        validator: (v) => v == null || v.isEmpty ? "Please Select the type of Stay" :  null,
                         hintText: "Type of Stay",
                         selectedValue: type,
                         list: _stay,
@@ -157,7 +162,11 @@ class _RequestFormState extends State<RequestForm> {
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         child: MaterialButton(
           elevation: 0,
-          onPressed: () {},
+          onPressed: () {
+            if(_key.currentState!.validate()){
+              Success.showSuccessDialog(context);
+            }
+          },
           color: Colors.blue,
           minWidth: double.infinity,
           height: size.height * .05,
@@ -182,9 +191,11 @@ class _RequestFormState extends State<RequestForm> {
     required String? selectedValue,
     required List<String> list,
     required ValueChanged<String?> onChange,
+    required String? Function(String?) validator,
   }) {
     return DropdownButtonFormField<String>(
       onChanged: onChange,
+      validator: validator,
       value: list.contains(selectedValue) ? selectedValue : null,
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -214,10 +225,12 @@ class _RequestFormState extends State<RequestForm> {
     required TextEditingController controller,
     required String hintText,
     required TextInputType text,
+    required  String? Function(String?) validator,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: text,
+      validator: validator,
       cursorColor: Colors.grey,
       decoration: InputDecoration(
         border: OutlineInputBorder(

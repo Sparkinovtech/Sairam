@@ -12,9 +12,10 @@ class Tracker {
          builder: (context){
            int currentStep = 0;
            Timer? timer;
+           Timer? outerTimer;
            return StatefulBuilder(
              builder: (context , setState){
-               timer ??= Timer.periodic(Duration(minutes: 5), (t){
+               timer ??= Timer.periodic(Duration(minutes: 2), (t){
                  if(currentStep < 3){
                    currentStep++;
                  setState(() =>{});
@@ -22,7 +23,9 @@ class Tracker {
                    t.cancel();
                  }
                });
+               outerTimer ??= Timer.periodic(Duration(milliseconds: 700),(t){
 
+               });
                final stepTitle = [
                  "Request Send",
                  "Checking Details",
@@ -62,64 +65,68 @@ class Tracker {
                                isFirst: index == 0,
                                isLast: index == stepTitle.length - 1,
                                indicatorStyle: IndicatorStyle(
-                                 width: 30, height: 30,
-                                 color: isCompleted || isCurrent ? Colors.blue :  Colors.grey[300]!,
-                                 indicator: Container(
-                                   width: size.width * .2,
-                                   height: size.height * .2,
-                                   decoration: BoxDecoration(
-                                     color: isCurrent || isCompleted ? Colors.blue : Colors.grey[300],
-                                     shape: BoxShape.circle,
-                                   ),
-                                   child: Center(
-                                     child: Icon(isCurrent || isCompleted ?  Icons.check : Icons.timelapse_sharp , color: isCurrent  || isCompleted? Colors.white : Colors.black,size: 20,),
+                                 width: size.width * .1,
+                                 height: size.height * .1,
+                                 indicator: AnimatedSwitcher(
+                                   duration: Duration(milliseconds: 400),
+                                   transitionBuilder: (child , animation) => ScaleTransition(scale: animation  ,child: child,),
+                                   child: Container(
+                                     key: ValueKey<bool>(isCurrent),
+                                     decoration: BoxDecoration(
+                                       shape: BoxShape.circle,
+                                       color: isCurrent || isCompleted ? Colors.blue : Colors.grey,
+                                     ),
+                                     child: Center(
+                                       child: Icon(isCompleted || isCurrent  ? Icons.check : null , color: Colors.white,),
+                                     ),
                                    ),
                                  ),
                                ),
                                beforeLineStyle: LineStyle(
-                                 color: index > 0 && (isCurrent || isCompleted) ? Colors.blue : Colors.grey[300]!,
+                                 color:  index > 0 && (isCurrent || isCompleted) ? Colors.blue : Colors.grey[400]!,
                                  thickness: 10,
                                ),
                                afterLineStyle: LineStyle(
-                                 color: isCompleted ? Colors.blue : Colors.grey[300]!,
+                                 color: isCompleted ? Colors.blue: Colors.grey[400]!,
                                  thickness: 10,
                                ),
-                               endChild: Padding(
-                                 padding: EdgeInsets.symmetric(horizontal: 10 , vertical: 0),
+                               endChild:Padding(
+                                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                                  child: Card(
-                                   elevation: 2,
+                                   elevation: 3,
+                                   color: Colors.white,
                                    shape: RoundedRectangleBorder(
                                      borderRadius: BorderRadius.circular(15),
                                    ),
                                    child: ClipRRect(
-                                     child:Container(
-                                       width: size.width * .1,
+                                     borderRadius: BorderRadius.circular(15),
+                                     child: Container(
+                                       width: size.width * .15,
                                        height: size.height * .1,
                                        decoration: BoxDecoration(
                                          color: Colors.white,
-                                         borderRadius: BorderRadius.circular(15),
                                        ),
                                        child: Padding(
-                                         padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+                                         padding: const EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
                                          child: Column(
                                            children: [
                                              Row(
                                                children: [
-                                                 Image.asset(vectorAssets[index],width: size.width * .08,height: size.height * .06,),
-                                                 SizedBox(width: size.width * .03,),
+                                                 Image.asset(vectorAssets[index] , width:size.width * .08 ,height: size.height * .06),
+                                                 SizedBox(width:  size.width * .03,),
                                                  Column(
                                                    mainAxisSize: MainAxisSize.min,
                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                    children: [
-                                                     Text(stepTitle[index],style: GoogleFonts.lato(color: Colors.black,fontSize: 16,fontWeight: FontWeight.bold),),
-                                                     Text(stepDescription[index],style: GoogleFonts.lato(color: Colors.grey,fontSize: 12,fontWeight: FontWeight.w500),),
+                                                     Text(stepTitle[index], style: GoogleFonts.lato(color: Colors.black ,fontSize: 15,fontWeight: FontWeight.bold),),
+                                                     Text(stepDescription[index] , style: GoogleFonts.lato(color: Colors.grey , fontSize: 12,fontWeight: FontWeight.w500),),
                                                    ],
                                                  )
                                                ],
                                              ),
                                            ],
                                          ),
-                                       )
+                                       ),
                                      ),
                                    ),
                                  ),
@@ -128,6 +135,7 @@ class Tracker {
                            );
                          },
                        ),
+
                      ],
                    ),
                  ),

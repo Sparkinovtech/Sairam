@@ -5,6 +5,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Utils/calender_page.dart';
 import 'package:sairam_incubation/Utils/components_form.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
+import 'package:sairam_incubation/Utils/notification_page.dart';
 import 'package:sairam_incubation/Utils/project_card.dart';
 import 'package:sairam_incubation/View/request_form.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -115,7 +116,9 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   InkWell(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: NotificationPage()));
+                    },
                     child: CircleAvatar(
                       backgroundColor: Colors.grey.withValues(alpha: .2),
                       radius: 20,
@@ -151,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     _activityCard(
                       onTap: (){
-                        Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: ProjectCard(projects: ongoingProjects,)));
+                        Navigator.push(context, PageTransition(type: PageTransitionType.fade , child: ProjectCard(projects: ongoingProjects,title: "Ongoing Project",)));
                       },
                       title: "Ongoing",
                       value: "${ongoingProjects.length}",
@@ -162,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(width: size.width * .07),
                     _activityCard(
                       onTap: (){
-                        Navigator.push(context, PageTransition(type: PageTransitionType.fade ,child: ProjectCard(projects: completedProjects)));
+                        Navigator.push(context, PageTransition(type: PageTransitionType.fade ,child: ProjectCard(projects: completedProjects , title: "Completed Project",)));
                       },
                       title: "Completed",
                       value: "${completedProjects.length}",
