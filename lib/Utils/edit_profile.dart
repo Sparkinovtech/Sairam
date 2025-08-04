@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
+import 'package:sairam_incubation/Profile/Model/scholar_type.dart'; // <-- Import your enum here
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
@@ -28,6 +29,7 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _phone = TextEditingController();
   final TextEditingController _dob = TextEditingController();
   Department? _selected;
+  ScholarType? _selectedScholarType; // ← New
 
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
@@ -40,7 +42,7 @@ class _EditProfileState extends State<EditProfile> {
     if (pickedFile != null) {
       setState(() {
         _file = File(pickedFile.path);
-        _profilePictureUrl = null; // Ensures preview switches to local File
+        _profilePictureUrl = null;
       });
     }
   }
@@ -68,6 +70,7 @@ class _EditProfileState extends State<EditProfile> {
           _dob.text = profile.dateOfBirth ?? "";
           _selected = profile.department;
           _profilePictureUrl = profile.profilePicture;
+          _selectedScholarType = profile.scholarType; // ← Initialize
           _initialized = true;
         }
         return Scaffold(
@@ -114,7 +117,6 @@ class _EditProfileState extends State<EditProfile> {
                                 : (_profilePictureUrl != null &&
                                       _profilePictureUrl!.isNotEmpty)
                                 ? NetworkImage(_profilePictureUrl!)
-                                // Optionally, set a fallback default image asset with AssetImage if profile image is null/empty:
                                 : const AssetImage(
                                         'assets/images/default_profile.png',
                                       )
@@ -145,12 +147,9 @@ class _EditProfileState extends State<EditProfile> {
                                 "Full Name",
                                 _name,
                                 TextInputType.name,
-                                (v) {
-                                  if (v == null || v.isEmpty) {
-                                    return "Enter your name";
-                                  }
-                                  return null;
-                                },
+                                (v) => v == null || v.isEmpty
+                                    ? "Enter your name"
+                                    : null,
                               ),
                               SizedBox(height: size.height * .03),
                               _buildLabeledTextField(
@@ -158,12 +157,10 @@ class _EditProfileState extends State<EditProfile> {
                                 _email,
                                 TextInputType.emailAddress,
                                 (v) {
-                                  if (v == null || v.isEmpty) {
+                                  if (v == null || v.isEmpty)
                                     return "Enter the Email Address";
-                                  }
-                                  if (!v.contains('@')) {
+                                  if (!v.contains('@'))
                                     return "Invalid Email Address";
-                                  }
                                   return null;
                                 },
                               ),
@@ -173,12 +170,10 @@ class _EditProfileState extends State<EditProfile> {
                                 _phone,
                                 TextInputType.phone,
                                 (v) {
-                                  if (v == null || v.isEmpty) {
+                                  if (v == null || v.isEmpty)
                                     return "Enter the Phone Number";
-                                  }
-                                  if (v.length < 10) {
-                                    return "Enter the valid Phone Number";
-                                  }
+                                  if (v.length < 10)
+                                    return "Enter a valid Phone Number";
                                   return null;
                                 },
                               ),
@@ -190,6 +185,15 @@ class _EditProfileState extends State<EditProfile> {
                                     setState(() => _selected = val),
                                 hintText: 'Select your department',
                                 itemLabelBuilder: (dept) => dept.departmentName,
+                              ),
+                              SizedBox(height: size.height * .03),
+                              _dropField<ScholarType>(
+                                selectedValue: _selectedScholarType,
+                                options: ScholarType.values,
+                                onChange: (val) =>
+                                    setState(() => _selectedScholarType = val),
+                                hintText: 'Select your scholar type',
+                                itemLabelBuilder: (st) => st.displayName,
                               ),
                               SizedBox(height: size.height * .03),
                               _buildLabelDatePicker(
@@ -254,6 +258,15 @@ class _EditProfileState extends State<EditProfile> {
                       );
                       return;
                     }
+                    if (_selectedScholarType == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please select your scholar type."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
                     context.read<ProfileBloc>().add(
                       RegisterProfileInformationEvent(
                         profilePic: _file?.path ?? _profilePictureUrl,
@@ -261,6 +274,8 @@ class _EditProfileState extends State<EditProfile> {
                         emailAddress: _email.text,
                         phoneNumber: _phone.text,
                         department: _selected!,
+                        scholarType:
+                            _selectedScholarType!, // Pass selected ScholarType
                         dateOfBirth: _dob.text,
                       ),
                     );
@@ -271,7 +286,7 @@ class _EditProfileState extends State<EditProfile> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  splashColor: Colors.white.withValues(alpha: 0.4),
+                  splashColor: Colors.white.withOpacity(0.4),
                   child: Text(
                     "Save Changes",
                     style: GoogleFonts.lato(
@@ -315,7 +330,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: InputDecoration(
             hintText: label,
             filled: true,
-            fillColor: Colors.grey.withValues(alpha: 0.1),
+            fillColor: Colors.grey.withOpacity(0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -341,7 +356,7 @@ class _EditProfileState extends State<EditProfile> {
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
-        fillColor: Colors.grey.withValues(alpha: 0.1),
+        fillColor: Colors.grey.withOpacity(0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -409,7 +424,7 @@ class _EditProfileState extends State<EditProfile> {
                 hintText: 'Select your date of birth',
                 suffixIcon: const Icon(Icons.calendar_today),
                 filled: true,
-                fillColor: Colors.grey.withValues(alpha: 0.1),
+                fillColor: Colors.grey.withOpacity(0.1),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,

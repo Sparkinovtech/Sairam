@@ -6,6 +6,7 @@ import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
 import 'package:sairam_incubation/Profile/Model/media_items.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
+import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 import 'package:sairam_incubation/Utils/exceptions/profile_exceptions.dart';
 
 /// Service Provider for handling all student profile operations with Firestore.
@@ -46,6 +47,7 @@ class ProfileCloudFirestoreProvider {
   Future<Profile> saveProfileInformation({
     String? profilePic,
     required String fullName,
+    required ScholarType scholarType,
     required String emailAddress,
     required String phoneNumber,
     required Department department,
@@ -60,6 +62,7 @@ class ProfileCloudFirestoreProvider {
       profilePicture: profilePic,
       phoneNumber: phoneNumber,
       name: fullName,
+      scholarType: scholarType,
       emailAddresss: emailAddress,
       dateOfBirth: dateOfBirth,
       department: department,
@@ -116,8 +119,7 @@ class ProfileCloudFirestoreProvider {
 
     final updated = currentProfile.copyWith(
       skillSet: skills,
-      profilePicture:
-          resumeFile, // If resume saved as profile file, else adjust field
+      resume: resumeFile, // If resume saved as profile file, else adjust field
     );
 
     await students.doc(currentProfile.id!).update(updated.toJson());

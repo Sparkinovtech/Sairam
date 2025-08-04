@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as devtools;
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Auth/Service/firebase_auth_provider.dart';
 import 'package:sairam_incubation/Auth/Service/network_service.dart';
@@ -26,47 +24,28 @@ import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 const supabaseUrl = 'https://uytnwdzvyjvcozequeci.supabase.co';
 const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
   runApp(
-    MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.blue,
-        pageTransitionsTheme: PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              AuthBloc(FirebaseAuthProvider(), ProfileCloudFirestoreProvider()),
         ),
-      ),
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => AuthBloc(
-              FirebaseAuthProvider(),
-              ProfileCloudFirestoreProvider(),
+        BlocProvider(
+          create: (context) => ProfileBloc(
+            ProfileCloudFirestoreProvider(),
+            SupabaseStorageProvider(
+              supabase: SupabaseClient(supabaseUrl, supabaseKey),
+              bucketName: "files",
             ),
           ),
-          BlocProvider(
-            create: (context) => ProfileBloc(
-              ProfileCloudFirestoreProvider(),
-              SupabaseStorageProvider(
-                supabase: SupabaseClient(supabaseUrl, supabaseKey),
-                bucketName: "files",
-              ),
-            ),
-          ),
-        ],
-        child: const MyApp(),
-      ),
+        ),
+      ],
+      child: const MyApp(),
     ),
   );
 }

@@ -5,6 +5,7 @@ import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
 import 'package:sairam_incubation/Profile/Model/media_items.dart';
+import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 
 @immutable
 class Profile {
@@ -12,6 +13,7 @@ class Profile {
   final String? emailAddresss;
   final String? phoneNumber;
   final Department? department;
+  final ScholarType? scholarType;
   final String? dateOfBirth;
   final String? id;
   final String? profilePicture;
@@ -31,6 +33,7 @@ class Profile {
     this.emailAddresss,
     this.phoneNumber,
     this.department,
+    this.scholarType,
     this.dateOfBirth,
     this.id,
     this.profilePicture,
@@ -53,6 +56,7 @@ class Profile {
       'phoneNumber': phoneNumber,
       'department': department?.name,
       'dateOfBirth': dateOfBirth,
+      'scholarType': scholarType?.name,
       'id': id,
       'profilePicture': profilePicture,
       'resume': resume,
@@ -75,6 +79,9 @@ class Profile {
       phoneNumber: json['phoneNumber'] as String?,
       department: json['department'] != null
           ? Department.values.byName(json['department'])
+          : null,
+      scholarType: json['scholarType'] != null
+          ? ScholarType.values.byName(json['scholarType'])
           : null,
       dateOfBirth: json['dateOfBirth'] as String?,
       id: json['id'] as String?,
@@ -110,6 +117,7 @@ class Profile {
         'phoneNumber: $phoneNumber, '
         'department: ${department?.name}, '
         'dateOfBirth: $dateOfBirth, '
+        'scholartype: $scholarType'
         'id: $id, '
         'profilePicture: $profilePicture, '
         'yearOfGraduation: $yearOfGraduation, '
@@ -130,6 +138,7 @@ extension ProfileCopyWith on Profile {
     String? name,
     String? emailAddresss,
     String? phoneNumber,
+    ScholarType? scholarType,
     Department? department,
     String? dateOfBirth,
     String? id,
@@ -151,6 +160,7 @@ extension ProfileCopyWith on Profile {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       department: department ?? this.department,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      scholarType: scholarType ?? this.scholarType,
       id: id ?? this.id,
       resume: resume ?? this.resume,
       profilePicture: profilePicture ?? this.profilePicture,

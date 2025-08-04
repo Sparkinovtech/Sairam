@@ -4,6 +4,7 @@ import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
 import 'package:sairam_incubation/Profile/Model/media_items.dart';
+import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 
 @immutable
 abstract class ProfileEvent {
@@ -13,6 +14,7 @@ abstract class ProfileEvent {
 class RegisterProfileInformationEvent extends ProfileEvent {
   final String? profilePic;
   final String fullName;
+  final ScholarType scholarType;
   final String emailAddress;
   final String phoneNumber;
   final Department department;
@@ -21,6 +23,7 @@ class RegisterProfileInformationEvent extends ProfileEvent {
   const RegisterProfileInformationEvent({
     required this.profilePic,
     required this.fullName,
+    required this.scholarType,
     required this.emailAddress,
     required this.phoneNumber,
     required this.department,

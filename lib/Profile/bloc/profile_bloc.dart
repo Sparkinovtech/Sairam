@@ -54,6 +54,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           profilePic: profilePhotoUrl,
           dateOfBirth: event.dateOfBirth,
           fullName: event.fullName,
+          scholarType: event.scholarType,
           phoneNumber: event.phoneNumber,
           department: event.department,
           emailAddress: event.emailAddress,
