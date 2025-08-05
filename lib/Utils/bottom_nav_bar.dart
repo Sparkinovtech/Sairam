@@ -49,7 +49,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    _pages = [HomePage(), TeamsPage(), ProfilePage()];
+    _pages = [HomePage(), ProfilePage()];
+
   }
 
   @override
@@ -78,7 +79,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
           activeColor: Colors.white,
           tabs: [
             GButton(icon: CupertinoIcons.home, text: "Home"),
-            GButton(icon: CupertinoIcons.group, text: "Teams"),
             GButton(icon: CupertinoIcons.person, text: "Profile"),
           ],
         ),

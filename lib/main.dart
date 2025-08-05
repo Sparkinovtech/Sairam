@@ -23,7 +23,7 @@ import 'package:sairam_incubation/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 const supabaseUrl = 'https://uytnwdzvyjvcozequeci.supabase.co';
-const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dG53ZHp2eWp2Y296ZXF1ZWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzQyNTAsImV4cCI6MjA2OTU1MDI1MH0.Su3HW6VXa07aiNXBNdOdDciuFQORvkBCZQdVg37fjbM";
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -72,6 +72,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // darkTheme: ThemeData.dark(),
+      // themeMode: ThemeMode.system,
+      // theme: ThemeData(
+      //   brightness: Brightness.light,
+      //   primarySwatch: Colors.blue,
+      //   // customize more if needed
+      // ),
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
