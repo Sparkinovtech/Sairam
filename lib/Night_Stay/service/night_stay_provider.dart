@@ -32,4 +32,27 @@ class NightStayProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  // Call this when student taps “No” to remove their request
+  Future<void> deleteNightStay(String studentId) async {
+    try {
+      await _firestore
+          .collection('night_stay_requests')
+          .doc(studentId)
+          .delete();
+    } catch (e) {
+      debugPrint('Error deleting night stay request:');
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  // Optional: method to check if student exists in requests (could be helpful)
+  Future<bool> nightStayExists(String studentId) async {
+    final doc = await _firestore
+        .collection('night_stay_requests')
+        .doc(studentId)
+        .get();
+    return doc.exists;
+  }
 }

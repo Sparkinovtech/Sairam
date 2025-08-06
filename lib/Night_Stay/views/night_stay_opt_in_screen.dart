@@ -159,7 +159,7 @@ class _NightStayOptInScreenState extends State<NightStayOptInScreen> {
                         : () {
                             if (nightStayChoice == "Yes") {
                               context.read<NightStayBloc>().add(
-                                SaveNightStayEvent(widget.nightStayStudent!),
+                                SaveNightStayEvent(widget.nightStayStudent!, nightStayChoice!),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -171,6 +171,7 @@ class _NightStayOptInScreenState extends State<NightStayOptInScreen> {
                               );
                             }
                           },
+
                     color: Colors.blue,
                     minWidth: double.infinity,
                     height: size.height * .05,

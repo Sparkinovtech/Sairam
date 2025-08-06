@@ -27,8 +27,18 @@ class NightStayBloc extends Bloc<NightStayEvent, NightStayState> {
   ) async {
     emit(NightStayLoading());
     try {
-      await _provider.saveNightStay(event.student);
-      emit(NightStaySuccess());
+      if (event.choice == 'Yes') {
+        await _provider.saveNightStay(event.student);
+        emit(NightStaySuccess());
+      } else if (event.choice == 'No') {
+        final exists = await _provider.nightStayExists(event.student.studentId);
+        if (exists) {
+          await _provider.deleteNightStay(event.student.studentId);
+        }
+        emit(NightStaySuccess());
+      } else {
+        emit(NightStayFailure('Invalid choice'));
+      }
     } catch (e) {
       emit(NightStayFailure(e.toString()));
     }

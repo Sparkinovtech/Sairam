@@ -6,7 +6,6 @@ import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-
 import 'package:sairam_incubation/Utils/add_certificates.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';

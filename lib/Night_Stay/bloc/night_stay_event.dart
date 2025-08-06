@@ -11,11 +11,12 @@ abstract class NightStayEvent extends Equatable {
 // Event to save student's night stay choice
 class SaveNightStayEvent extends NightStayEvent {
   final NightStayStudent student;
+  final String choice;
 
-  const SaveNightStayEvent(this.student);
+  const SaveNightStayEvent(this.student, this.choice);
 
   @override
-  List<Object?> get props => [student];
+  List<Object?> get props => [student, choice];
 }
 
 // Event to load/listen to night stay students (optional)
