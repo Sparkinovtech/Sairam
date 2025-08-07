@@ -23,30 +23,43 @@ import 'package:sairam_incubation/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 const supabaseUrl = 'https://uytnwdzvyjvcozequeci.supabase.co';
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dG53ZHp2eWp2Y296ZXF1ZWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzQyNTAsImV4cCI6MjA2OTU1MDI1MH0.Su3HW6VXa07aiNXBNdOdDciuFQORvkBCZQdVg37fjbM";
+const supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5dG53ZHp2eWp2Y296ZXF1ZWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzQyNTAsImV4cCI6MjA2OTU1MDI1MH0.Su3HW6VXa07aiNXBNdOdDciuFQORvkBCZQdVg37fjbM";
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              AuthBloc(FirebaseAuthProvider(), ProfileCloudFirestoreProvider()),
-        ),
-        BlocProvider(
-          create: (context) => ProfileBloc(
-            ProfileCloudFirestoreProvider(),
-            SupabaseStorageProvider(
-              supabase: SupabaseClient(supabaseUrl, supabaseKey),
-              bucketName: "files",
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+
+      runApp(
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => AuthBloc(
+                FirebaseAuthProvider(),
+                ProfileCloudFirestoreProvider(),
+              ),
             ),
-          ),
+            BlocProvider(
+              create: (context) => ProfileBloc(
+                ProfileCloudFirestoreProvider(),
+                SupabaseStorageProvider(
+                  supabase: SupabaseClient(supabaseUrl, supabaseKey),
+                  bucketName: "files",
+                ),
+              ),
+            ),
+          ],
+          child: const MyApp(),
         ),
-      ],
-      child: const MyApp(),
-    ),
+      );
+    },
+    (error, stackTrace) {
+      devtools.log("Uncaught error: $error\n$stackTrace");
+    },
   );
 }
 
@@ -62,11 +75,31 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _isAfterSplash = false;
   late StreamSubscription<bool> streamSubscription;
   @override
   void initState() {
-    context.read<AuthBloc>().add(AuthInitialiseEvent());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(AuthInitialiseEvent());
+    });
+
+    streamSubscription = services.connectionStream.listen((isConnected) {
+      final context = navigatorKey.currentContext;
+
+      if (context == null) return;
+      if (!isConnected && _isAfterSplash) {
+        dialog.showNetworkDialog(context);
+      } else {
+        dialog.hide(context);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    streamSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -93,16 +126,9 @@ class _MyAppState extends State<MyApp> {
             LoadingScreen().hide();
           }
 
-          streamSubscription = services.connectionStream.listen((isConnected) {
-            final context = navigatorKey.currentContext;
-
-            if (context == null) return;
-            if (!isConnected && state is! AuthInitialiseState) {
-              dialog.showNetworkDialog(context);
-            } else {
-              dialog.hide(context);
-            }
-          });
+          if (state is! AuthInitialiseState) {
+            _isAfterSplash = true;
+          }
         },
         builder: (context, state) {
           devtools.log("From the Splash screen : $state");

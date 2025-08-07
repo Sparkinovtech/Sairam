@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sairam_incubation/Profile/Model/certificate.dart';
@@ -8,9 +9,9 @@ import 'package:sairam_incubation/Profile/Model/media_items.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 
 @immutable
-class Profile {
+class Profile extends Equatable {
   final String? name;
-  final String? emailAddresss;
+  final String? emailAddress;
   final String? phoneNumber;
   final Department? department;
   final ScholarType? scholarType;
@@ -30,7 +31,7 @@ class Profile {
 
   const Profile({
     this.name,
-    this.emailAddresss,
+    this.emailAddress,
     this.phoneNumber,
     this.department,
     this.scholarType,
@@ -52,7 +53,7 @@ class Profile {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'emailAddresss': emailAddresss,
+      'emailAddresss': emailAddress,
       'phoneNumber': phoneNumber,
       'department': department?.name,
       'dateOfBirth': dateOfBirth,
@@ -75,7 +76,7 @@ class Profile {
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
       name: json['name'] as String?,
-      emailAddresss: json['emailAddresss'] as String?,
+      emailAddress: json['emailAddresss'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
       department: json['department'] != null
           ? Department.values.byName(json['department'])
@@ -113,7 +114,7 @@ class Profile {
   String toString() {
     return 'Profile('
         'name: $name, '
-        'emailAddresss: $emailAddresss, '
+        'emailAddresss: $emailAddress, '
         'phoneNumber: $phoneNumber, '
         'department: ${department?.name}, '
         'dateOfBirth: $dateOfBirth, '
@@ -131,6 +132,28 @@ class Profile {
         'certificates: ${certificates?.length}'
         ')';
   }
+
+  @override
+  List<Object?> get props => [
+    name,
+    emailAddress,
+    phoneNumber,
+    department,
+    scholarType,
+    dateOfBirth,
+    id,
+    profilePicture,
+    yearOfGraduation,
+    currentYear,
+    currentMentor,
+    collegeIdPhoto,
+    domains,
+    skillSet,
+    mediaList,
+    links,
+    certificates,
+    resume,
+  ];
 }
 
 extension ProfileCopyWith on Profile {
@@ -156,7 +179,7 @@ extension ProfileCopyWith on Profile {
   }) {
     return Profile(
       name: name ?? this.name,
-      emailAddresss: emailAddresss ?? this.emailAddresss,
+      emailAddress: emailAddresss ?? this.emailAddress,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       department: department ?? this.department,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,

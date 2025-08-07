@@ -65,7 +65,7 @@ class _EditProfileState extends State<EditProfile> {
         final profile = state.profile;
         if (!_initialized && profile != null) {
           _name.text = profile.name ?? "";
-          _email.text = profile.emailAddresss ?? "";
+          _email.text = profile.emailAddress ?? "";
           _phone.text = profile.phoneNumber ?? "";
           _dob.text = profile.dateOfBirth ?? "";
           _selected = profile.department;
@@ -118,7 +118,7 @@ class _EditProfileState extends State<EditProfile> {
                                       _profilePictureUrl!.isNotEmpty)
                                 ? NetworkImage(_profilePictureUrl!)
                                 : const AssetImage(
-                                        'assets/images/default_profile.png',
+                                        'assets/images/default_profile.jpg',
                                       )
                                       as ImageProvider,
                           ),

@@ -118,6 +118,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } on FirebaseAuthException catch (e) {
         devtools.log("From the Auth Bloc : ${e.code}");
         emit(RegisteringState(exception: e, isLoading: false));
+      } on Exception catch (e) {
+        devtools.log("From the Auth Bloc : $e");
+        emit(RegisteringState(exception: e, isLoading: false));
       }
     });
 

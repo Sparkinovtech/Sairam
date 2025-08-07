@@ -55,8 +55,11 @@ class _SignUpFormState extends State<SignUpForm> {
                 controller: _id,
                 hintText: "Enter Student ID ",
                 icon: CupertinoIcons.creditcard,
-                validator: (v) =>
-                    v == null || v.isEmpty ? "Enter the Student ID" : v.length !=  10 ? "Enter the valid STUDENT ID" :    null,
+                validator: (v) => v == null || v.isEmpty
+                    ? "Enter the Student ID"
+                    : v.length != 10
+                    ? "Enter the valid STUDENT ID"
+                    : null,
               ),
               SizedBox(height: size.height * .03),
               _buildTextField(
@@ -64,13 +67,15 @@ class _SignUpFormState extends State<SignUpForm> {
                 hintText: "Enter Email Address",
                 icon: CupertinoIcons.mail,
                 keyboard: TextInputType.emailAddress,
-                validator: (v) => v == null || v.isEmpty
-                    ? "Enter the Email Address"
-                    : !v.contains("@")
-                    ? "Invalid Email Address"
-                    : v.length < 5
-                    ? "The email must contain 5 letters"
-                    : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return "Enter the Email Address";
+                  if (!v.contains("@")) return "Invalid Email Address";
+                  if (v.length < 5) return "The email must contain 5 letters";
+                  if (!v.endsWith("@sairam.edu.in")) {
+                    return "Only SEC/SIT emails allowed";
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: size.height * .03),
               _buildPasswordField(
@@ -90,21 +95,36 @@ class _SignUpFormState extends State<SignUpForm> {
                 toggleVisible: () => setState(
                   () => _isConfirmPasswordVisible = !_isConfirmPasswordVisible,
                 ),
-                validator: (v) => v == null || v.isEmpty
-                    ? "Enter the Confirm Password"
-                    : null,
+                validator: (v) {
+                  if (v == null || v.isEmpty) {
+                    return "Enter the Confirm Password";
+                  }
+                  if (v != _password.text) {
+                    return "Passwords do not match";
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: size.height * .05),
               MaterialButton(
                 onPressed: () {
                   if (_key.currentState!.validate()) {
-                    context.read<AuthBloc>().add(
-                      AuthUserRegisterEvent(
-                        email: _email.text,
-                        password: _password.text,
-                      ),
-                    );
+                    if (_password.text != _confirmPassword.text) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Passwords do not match"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
                   }
+                  context.read<AuthBloc>().add(
+                    AuthUserRegisterEvent(
+                      email: _email.text,
+                      password: _password.text,
+                    ),
+                  );
                 },
                 color: Colors.blueGrey,
                 minWidth: size.width * .65,

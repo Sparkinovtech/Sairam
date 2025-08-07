@@ -157,19 +157,19 @@ class _NightStayOptInScreenState extends State<NightStayOptInScreen> {
                     onPressed: !canSubmit
                         ? null
                         : () {
-                            if (nightStayChoice == "Yes") {
-                              context.read<NightStayBloc>().add(
-                                SaveNightStayEvent(widget.nightStayStudent!, nightStayChoice!),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    "You have opted out of Night Stay.",
-                                  ),
+                            context.read<NightStayBloc>().add(
+                              SaveNightStayEvent(
+                                widget.nightStayStudent!,
+                                nightStayChoice!,
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "You have opted out of Night Stay.",
                                 ),
-                              );
-                            }
+                              ),
+                            );
                           },
 
                     color: Colors.blue,

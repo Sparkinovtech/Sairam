@@ -25,7 +25,7 @@ class ProfileCloudFirestoreProvider {
   /// Creates a new blank profile with ID and email only
   Future<Profile> createNewProfile({required AuthUser user}) async {
     final String studentId = user.email.split("@").first.toUpperCase();
-    final studentProfile = Profile(id: studentId, emailAddresss: user.email);
+    final studentProfile = Profile(id: studentId, emailAddress: user.email);
     await students.doc(studentId).set(studentProfile.toJson());
     _studentProfile = studentProfile;
     return studentProfile;

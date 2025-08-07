@@ -24,20 +24,12 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  File? _imageFile;
+  bool _initialized = false;
+  File? _file;
+  String? _profilePictureUrl;
+
   Future<void> requestPermission() async {
     await [Permission.camera, Permission.photos, Permission.storage].request();
-  }
-
-  Future<void> _openPhoneStorage() async {
-    await requestPermission();
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    }
   }
 
   @override
@@ -53,7 +45,10 @@ class _ProfilePageState extends State<ProfilePage>
       },
       builder: (context, state) {
         final profile = state.profile;
-
+        if (!_initialized && profile != null) {
+          _profilePictureUrl = profile.profilePicture;
+          _initialized = true;
+        }
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -112,10 +107,13 @@ class _ProfilePageState extends State<ProfilePage>
                               child: CircleAvatar(
                                 radius: 50,
                                 backgroundColor: Colors.white,
-                                backgroundImage: _imageFile != null
-                                    ? FileImage(_imageFile!)
-                                    : NetworkImage(
-                                            "https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg",
+                                backgroundImage: _file != null
+                                    ? FileImage(_file!)
+                                    : (_profilePictureUrl != null &&
+                                          _profilePictureUrl!.isNotEmpty)
+                                    ? NetworkImage(_profilePictureUrl!)
+                                    : const AssetImage(
+                                            'assets/images/default_profile.jpg',
                                           )
                                           as ImageProvider,
                               ),
