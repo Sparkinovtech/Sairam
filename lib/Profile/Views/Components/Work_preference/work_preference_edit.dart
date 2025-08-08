@@ -6,7 +6,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-import 'package:sairam_incubation/Utils/work_preference_dorp_down_field.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Work_preference/work_preference_dorp_down_field.dart';
 
 class WorkpreferenceEdit extends StatefulWidget {
   const WorkpreferenceEdit({super.key});

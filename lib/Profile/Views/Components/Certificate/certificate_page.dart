@@ -6,7 +6,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-import 'package:sairam_incubation/Utils/add_certificates.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Certificate/add_certificates.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
@@ -31,6 +31,7 @@ class _CertificatePageState extends State<CertificatePage> {
 
   Future<void> _navigateToAddCertificate() async {
     await _requestPermissions();
+    if (!mounted) return;
     final result = await Navigator.push(
       context,
       PageTransition(
@@ -38,6 +39,7 @@ class _CertificatePageState extends State<CertificatePage> {
         child: const AddCertificates(hintText: "mm/yyyy"),
       ),
     );
+    if (!mounted) return;
     if (result is Certificate) {
       context.read<ProfileBloc>().add(
         // Add the new certificate to the list
@@ -48,7 +50,7 @@ class _CertificatePageState extends State<CertificatePage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
@@ -65,9 +67,9 @@ class _CertificatePageState extends State<CertificatePage> {
         }
 
         if (state is ProfileErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'An error occurred')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
         }
       },
       builder: (context, state) {
@@ -149,6 +151,7 @@ class _CertificatePageState extends State<CertificatePage> {
                                       ),
                                     );
                                 if (edited != null) {
+                                  if (!context.mounted) return;
                                   context.read<ProfileBloc>().add(
                                     UpdateCertificateEvent(
                                       oldCertificate: cert,

@@ -117,10 +117,7 @@ class _EditProfileState extends State<EditProfile> {
                                 : (_profilePictureUrl != null &&
                                       _profilePictureUrl!.isNotEmpty)
                                 ? NetworkImage(_profilePictureUrl!)
-                                : const AssetImage(
-                                        'assets/images/default_profile.jpg',
-                                      )
-                                      as ImageProvider,
+                                : Icon(Icons.person) as ImageProvider, //TODO Change the default profile image
                           ),
                         ),
                       ),
@@ -157,10 +154,12 @@ class _EditProfileState extends State<EditProfile> {
                                 _email,
                                 TextInputType.emailAddress,
                                 (v) {
-                                  if (v == null || v.isEmpty)
+                                  if (v == null || v.isEmpty) {
                                     return "Enter the Email Address";
-                                  if (!v.contains('@'))
+                                  }
+                                  if (!v.contains('@')) {
                                     return "Invalid Email Address";
+                                  }
                                   return null;
                                 },
                               ),
@@ -170,10 +169,12 @@ class _EditProfileState extends State<EditProfile> {
                                 _phone,
                                 TextInputType.phone,
                                 (v) {
-                                  if (v == null || v.isEmpty)
+                                  if (v == null || v.isEmpty) {
                                     return "Enter the Phone Number";
-                                  if (v.length < 10)
+                                  }
+                                  if (v.length < 10) {
                                     return "Enter a valid Phone Number";
+                                  }
                                   return null;
                                 },
                               ),
@@ -286,7 +287,7 @@ class _EditProfileState extends State<EditProfile> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  splashColor: Colors.white.withOpacity(0.4),
+                  splashColor: Colors.white.withValues(alpha : 0.4),
                   child: Text(
                     "Save Changes",
                     style: GoogleFonts.lato(
@@ -330,7 +331,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: InputDecoration(
             hintText: label,
             filled: true,
-            fillColor: Colors.grey.withOpacity(0.1),
+            fillColor: Colors.grey.withValues(alpha : 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -356,7 +357,7 @@ class _EditProfileState extends State<EditProfile> {
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
-        fillColor: Colors.grey.withOpacity(0.1),
+        fillColor: Colors.grey.withValues(alpha : 0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -424,7 +425,7 @@ class _EditProfileState extends State<EditProfile> {
                 hintText: 'Select your date of birth',
                 suffixIcon: const Icon(Icons.calendar_today),
                 filled: true,
-                fillColor: Colors.grey.withOpacity(0.1),
+                fillColor: Colors.grey.withValues(alpha : 0.1),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,

@@ -3,10 +3,10 @@ import 'dart:developer' as devtools;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sairam_incubation/Night_Stay/bloc/night_stay_bloc.dart';
-import 'package:sairam_incubation/Night_Stay/bloc/night_stay_event.dart';
-import 'package:sairam_incubation/Night_Stay/bloc/night_stay_state.dart';
-import 'package:sairam_incubation/Night_Stay/model/night_stay_student.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 
 class NightStayOptInScreen extends StatefulWidget {
   final NightStayStudent? nightStayStudent;

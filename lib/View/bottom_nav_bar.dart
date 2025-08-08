@@ -1,16 +1,11 @@
-import 'package:floating_navigation_bar/floating_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sairam_incubation/Profile/Model/profile.dart';
-import 'package:sairam_incubation/View/home_page.dart';
-import 'package:sairam_incubation/View/profile_page.dart';
-import 'package:sairam_incubation/View/teams_page.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:sairam_incubation/View/Components/Home/home_page.dart';
+import 'package:sairam_incubation/View/Components/profile_page.dart';
 
-import 'model/projects.dart';
 
 class BottomNavBar extends StatefulWidget {
-
   const BottomNavBar({super.key});
 
   @override
@@ -51,7 +46,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
   void initState() {
     super.initState();
     _pages = [HomePage(), ProfilePage()];
-
   }
 
   @override

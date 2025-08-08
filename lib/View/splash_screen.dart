@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sairam_incubation/Utils/images.dart';
+import 'package:sairam_incubation/Utils/Constants/images.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

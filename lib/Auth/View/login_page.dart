@@ -5,9 +5,8 @@ import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
 import 'package:sairam_incubation/Utils/dialogs/error_dialog.dart';
 import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
-import 'package:sairam_incubation/Utils/images.dart';
 
-import '../../Utils/login_form.dart';
+import 'login_form.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is LoggedOutState) {

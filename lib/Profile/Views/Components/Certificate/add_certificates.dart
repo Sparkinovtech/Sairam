@@ -142,7 +142,7 @@ class _AddCertificatesState extends State<AddCertificates> {
         }
         if (state is ProfileErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'Error occurred')),
+            SnackBar(content: Text(state.errorMessage)),
           );
         }
       },

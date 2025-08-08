@@ -162,7 +162,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                                   fontWeight: FontWeight.w500,
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.withOpacity(0.1),
+                                fillColor: Colors.grey.withValues(alpha: 0.1),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,
@@ -193,7 +193,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                                   fontWeight: FontWeight.w500,
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.withOpacity(0.1),
+                                fillColor: Colors.grey.withValues(alpha: 0.1),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,
@@ -234,7 +234,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                                   fontWeight: FontWeight.w500,
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.withOpacity(0.1),
+                                fillColor: Colors.grey.withValues(alpha: 0.1),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,
@@ -261,7 +261,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                                   fontWeight: FontWeight.w500,
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.withOpacity(0.1),
+                                fillColor: Colors.grey.withValues(alpha: 0.1),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,
@@ -288,7 +288,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                                   fontWeight: FontWeight.w500,
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey.withOpacity(0.1),
+                                fillColor: Colors.grey.withValues(alpha: 0.1),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,

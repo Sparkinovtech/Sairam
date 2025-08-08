@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -21,13 +20,10 @@ class NetworkDialog {
 
   bool _isShowing = false;
 
-  BuildContext? _dialogContext;
-
    Future<void> showNetworkDialog(BuildContext context) async{
     if(_isShowing) return;
     _isShowing = true;
     await showDialog(context: context, barrierDismissible: false ,builder: (dialogContext){
-      _dialogContext = dialogContext;
       var size = MediaQuery.of(context).size;
       return Dialog(
         shape: RoundedRectangleBorder(

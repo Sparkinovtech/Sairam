@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:sairam_incubation/Night_Stay/model/night_stay_student.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 
 abstract class NightStayState extends Equatable {
   const NightStayState();

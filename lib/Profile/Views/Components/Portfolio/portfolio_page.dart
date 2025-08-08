@@ -12,7 +12,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-import 'package:sairam_incubation/Utils/add_media.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Portfolio/add_media.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -42,7 +42,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
 
     if (pickedFile != null) {
       final File selectedFile = File(pickedFile.path);
-      if (!mounted) return;
+      if (!context.mounted) return;
       final result = await Navigator.push(
         context,
         PageTransition(
@@ -51,7 +51,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
         ),
       );
       if (result != null && result is MediaItems) {
-        if (!mounted) return;
+        if (!context.mounted) return;
         context.read<ProfileBloc>().add(
           AddPortfolioMediaEvent(mediaItem: result),
         );
@@ -71,7 +71,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
       context: context,
       isDismissible: false,
       isScrollControlled: true,
-      barrierColor: Colors.grey.withOpacity(0.2),
+      barrierColor: Colors.grey.withValues(alpha : 0.2),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -222,7 +222,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage ?? "An error occurred."),
+                content: Text(state.errorMessage),
               ),
             );
           }
@@ -281,6 +281,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                               size.width,
                             );
                             if (newLink != null) {
+                              if (!context.mounted) return;
                               context.read<ProfileBloc>().add(
                                 AddPortfolioLinkEvent(link: newLink),
                               );
@@ -349,6 +350,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                         );
                         if (picker != null) {
                           final File sourcePath = File(picker.path);
+                          if (!context.mounted) return;
                           final result = await Navigator.push(
                             context,
                             PageTransition(
@@ -357,6 +359,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                             ),
                           );
                           if (result != null && result is MediaItems) {
+                            if (!context.mounted) return;
                             context.read<ProfileBloc>().add(
                               UpdatePortfolioMediaEvent(mediaItem: result),
                             );
@@ -459,7 +462,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
-        fillColor: Colors.grey.withOpacity(0.1),
+        fillColor: Colors.grey.withValues(alpha : 0.1),
         filled: true,
       ),
       validator: validator,
@@ -476,6 +479,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           if (await canLaunchUrl(uri)) {
             await launchUrl(uri, mode: LaunchMode.externalApplication);
           } else {
+            if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Could not open link")),
             );

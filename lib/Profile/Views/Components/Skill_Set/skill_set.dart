@@ -9,7 +9,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-import 'package:sairam_incubation/Utils/work_preference_dorp_down_field.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Work_preference/work_preference_dorp_down_field.dart';
 
 class SkillSet extends StatefulWidget {
   const SkillSet({super.key});
@@ -126,7 +126,7 @@ class _SkillSetState extends State<SkillSet> {
                         vertical: 20,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Colors.grey.withValues(alpha : 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
@@ -293,7 +293,7 @@ class _SkillSetState extends State<SkillSet> {
                                 borderRadius: BorderRadius.circular(10),
                                 side: const BorderSide(color: Colors.blue),
                               ),
-                              splashColor: Colors.white.withOpacity(.7),
+                              splashColor: Colors.white.withValues(alpha : .7),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -341,11 +341,11 @@ class _SkillSetState extends State<SkillSet> {
               },
               minWidth: double.infinity,
               height: size.height * .05,
-              color: Colors.blue.withOpacity(.6),
+              color: Colors.blue.withValues(alpha : .6),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              splashColor: Colors.white.withOpacity(.6),
+              splashColor: Colors.white.withValues(alpha : .6),
               child: Text(
                 "Save",
                 style: GoogleFonts.inter(

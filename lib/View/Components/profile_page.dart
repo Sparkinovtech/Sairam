@@ -3,17 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-import 'package:sairam_incubation/Utils/edit_profile.dart';
-import 'package:sairam_incubation/Utils/profile_list.dart';
-import '../Auth/bloc/auth_bloc.dart';
-import '../Auth/bloc/auth_event.dart';
-import '../Utils/dialogs/logout_dialog.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Edit_Profile/edit_profile.dart';
+import 'package:sairam_incubation/Profile/Views/profile_list.dart';
+import '../../Auth/bloc/auth_bloc.dart';
+import '../../Auth/bloc/auth_event.dart';
+import '../../Utils/dialogs/logout_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

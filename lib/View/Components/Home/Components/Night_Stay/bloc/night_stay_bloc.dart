@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:sairam_incubation/Night_Stay/model/night_stay_student.dart';
-import 'package:sairam_incubation/Night_Stay/service/night_stay_provider.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
 
 import 'night_stay_event.dart';
 import 'night_stay_state.dart';

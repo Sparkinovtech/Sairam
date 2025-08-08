@@ -18,9 +18,9 @@ class SupabaseStorageProvider {
           .upload(storagePath, file, fileOptions: FileOptions(upsert: true));
 
       return storagePath;
-    } catch (e, stackTrace) {
-      print('Exception uploading file: $e');
-      print(stackTrace);
+    } catch (e) {
+      // print('Exception uploading file: $e');
+      // print(stackTrace);
       return null;
     }
   }

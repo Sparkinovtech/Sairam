@@ -6,7 +6,7 @@ import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
 import 'package:sairam_incubation/Utils/dialogs/error_dialog.dart';
 import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
-import 'package:sairam_incubation/Utils/signup_form.dart';
+import 'package:sairam_incubation/Auth/View/signup_form.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -18,7 +18,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    // var size = MediaQuery.of(context).size;
 
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {

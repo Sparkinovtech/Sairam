@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:sairam_incubation/Night_Stay/bloc/night_stay_bloc.dart';
-import 'package:sairam_incubation/Night_Stay/model/night_stay_student.dart';
-import 'package:sairam_incubation/Night_Stay/service/night_stay_provider.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
-import 'package:sairam_incubation/Utils/calender_page.dart';
-import 'package:sairam_incubation/Utils/components_form.dart';
+import 'package:sairam_incubation/Utils/Calender/calender_page.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/components_form.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
-import 'package:sairam_incubation/Utils/notification_page.dart';
-import 'package:sairam_incubation/Utils/project_card.dart';
-import 'package:sairam_incubation/Night_Stay/views/night_stay_opt_in_screen.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/notification_page.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Projects/project_card.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/views/night_stay_opt_in_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatefulWidget {

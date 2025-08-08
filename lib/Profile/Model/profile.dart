@@ -179,7 +179,7 @@ extension ProfileCopyWith on Profile {
   }) {
     return Profile(
       name: name ?? this.name,
-      emailAddress: emailAddresss ?? this.emailAddress,
+      emailAddress: emailAddresss ?? emailAddress,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       department: department ?? this.department,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,

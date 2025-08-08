@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Utils/model/task.dart';
-import 'package:sairam_incubation/Utils/monthy_calender.dart';
-import 'package:sairam_incubation/Utils/task_details.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:sairam_incubation/Utils/Calender/monthy_calender.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Projects/task_details.dart';
 class CalenderPage extends StatefulWidget {
   const CalenderPage({super.key});
 
@@ -13,8 +12,8 @@ class CalenderPage extends StatefulWidget {
 }
 
 class _CalenderPageState extends State<CalenderPage> {
-  DateTime? _dateTime;
-  DateTime _focusedDay = DateTime.now();
+  // DateTime? _dateTime;
+  // DateTime _focusedDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
     var size  = MediaQuery.of(context).size;

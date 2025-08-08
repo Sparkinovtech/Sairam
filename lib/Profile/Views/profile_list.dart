@@ -3,11 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
-import 'package:sairam_incubation/Utils/certificate_page.dart';
-import 'package:sairam_incubation/Utils/identity_details.dart';
-import 'package:sairam_incubation/Utils/portfolio_page.dart';
-import 'package:sairam_incubation/Utils/skill_set.dart';
-import 'package:sairam_incubation/Utils/work_preference_edit.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Certificate/certificate_page.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Identity_Details/identity_details.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Portfolio/portfolio_page.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Skill_Set/skill_set.dart';
+import 'package:sairam_incubation/Profile/Views/Components/Work_preference/work_preference_edit.dart';
 
 class ProfileList extends StatefulWidget {
   final Profile? profile;

@@ -12,7 +12,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Profile/service/supabase_storage_provider.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
-import 'package:sairam_incubation/Utils/bottom_nav_bar.dart';
+import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Auth/View/verify_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
@@ -89,8 +89,10 @@ class _MyAppState extends State<MyApp> {
 
       if (context == null) return;
       if (!isConnected && _isAfterSplash) {
+        if (!context.mounted) return;
         dialog.showNetworkDialog(context);
       } else {
+        if (!context.mounted) return;
         dialog.hide(context);
       }
     });
