@@ -117,7 +117,17 @@ class _EditProfileState extends State<EditProfile> {
                                 : (_profilePictureUrl != null &&
                                       _profilePictureUrl!.isNotEmpty)
                                 ? NetworkImage(_profilePictureUrl!)
-                                : Icon(Icons.person) as ImageProvider, //TODO Change the default profile image
+                                : null, // No image if fallback to icon
+                            child:
+                                (_file == null &&
+                                    (_profilePictureUrl == null ||
+                                        _profilePictureUrl!.isEmpty))
+                                ? Icon(
+                                    Icons.person,
+                                    size: 80,
+                                    color: Colors.grey,
+                                  )
+                                : null,
                           ),
                         ),
                       ),
@@ -287,7 +297,7 @@ class _EditProfileState extends State<EditProfile> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  splashColor: Colors.white.withValues(alpha : 0.4),
+                  splashColor: Colors.white.withValues(alpha: 0.4),
                   child: Text(
                     "Save Changes",
                     style: GoogleFonts.lato(
@@ -331,7 +341,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: InputDecoration(
             hintText: label,
             filled: true,
-            fillColor: Colors.grey.withValues(alpha : 0.1),
+            fillColor: Colors.grey.withValues(alpha: 0.1),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -357,7 +367,7 @@ class _EditProfileState extends State<EditProfile> {
       decoration: InputDecoration(
         hintText: hintText,
         filled: true,
-        fillColor: Colors.grey.withValues(alpha : 0.1),
+        fillColor: Colors.grey.withValues(alpha: 0.1),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -425,7 +435,7 @@ class _EditProfileState extends State<EditProfile> {
                 hintText: 'Select your date of birth',
                 suffixIcon: const Icon(Icons.calendar_today),
                 filled: true,
-                fillColor: Colors.grey.withValues(alpha : 0.1),
+                fillColor: Colors.grey.withValues(alpha: 0.1),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,

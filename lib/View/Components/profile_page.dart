@@ -103,18 +103,31 @@ class _ProfilePageState extends State<ProfilePage>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50),
                               ),
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundColor: Colors.white,
-                                backgroundImage: _file != null
-                                    ? FileImage(_file!)
-                                    : (_profilePictureUrl != null &&
-                                          _profilePictureUrl!.isNotEmpty)
-                                    ? NetworkImage(_profilePictureUrl!)
-                                    : const AssetImage(
-                                            'assets/images/default_profile.jpg',
-                                          )
-                                          as ImageProvider,
+                              child: ClipOval(
+                                child: CircleAvatar(
+                                  radius: 50, // 20% of screen width
+                                  backgroundColor: Colors.white,
+                                  backgroundImage: _file != null
+                                      ? FileImage(_file!)
+                                      : (_profilePictureUrl != null &&
+                                            _profilePictureUrl!.isNotEmpty)
+                                      ? NetworkImage(_profilePictureUrl!)
+                                      : null,
+                                  child:
+                                      (_file == null &&
+                                          (_profilePictureUrl == null ||
+                                              _profilePictureUrl!.isEmpty))
+                                      ? Icon(
+                                          Icons.person,
+                                          size:
+                                              MediaQuery.of(
+                                                context,
+                                              ).size.width *
+                                              0.2, // match radius
+                                          color: Colors.grey,
+                                        )
+                                      : null,
+                                ),
                               ),
                             ),
                             SizedBox(width: size.width * .03),
