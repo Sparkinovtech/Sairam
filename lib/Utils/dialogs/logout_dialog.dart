@@ -17,7 +17,7 @@ Future<bool> showLogoutDialog(BuildContext context) {
             duration: Duration(seconds: 1),
             curve: Curves.easeInOut,
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            width: MediaQuery.of(context).size.width * .3 ,
+            width: MediaQuery.of(context).size.width * .4,
             height: MediaQuery.of(context).size.height * .5,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -57,7 +57,8 @@ Future<bool> showLogoutDialog(BuildContext context) {
                 SizedBox(height: size.height * .03),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 1),
+
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
