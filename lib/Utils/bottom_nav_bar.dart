@@ -1,3 +1,4 @@
+import 'package:floating_navigation_bar/floating_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
@@ -56,6 +57,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: _pages[_selectedIndex],
       bottomNavigationBar: AnimatedContainer(
         duration: Duration(seconds: 3),

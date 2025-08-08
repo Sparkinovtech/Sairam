@@ -40,7 +40,7 @@ class _LoginFormState extends State<LoginForm> {
               _buildTextField(
                 controller: _id,
                 hintText: "Enter Student ID",
-                icon: CupertinoIcons.creditcard,
+                icon: CupertinoIcons.person_alt,
                 keyboard: TextInputType.text,
                 validator: (v) =>
                     v == null || v.isEmpty ? "Enter the Student ID " : null,
