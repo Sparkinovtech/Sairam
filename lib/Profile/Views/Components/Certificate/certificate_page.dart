@@ -85,7 +85,7 @@ class _CertificatePageState extends State<CertificatePage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
+                    horizontal: 10,
                     vertical: 10,
                   ),
                   child: Row(
@@ -97,7 +97,7 @@ class _CertificatePageState extends State<CertificatePage> {
                         ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width:1),
                       Text(
                         "Earned Certificates",
                         style: GoogleFonts.lato(
@@ -110,16 +110,21 @@ class _CertificatePageState extends State<CertificatePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  padding: const EdgeInsets.symmetric(horizontal: 25 , vertical: 0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Add documents or photos (.jpg / .pdf)",
-                      style: GoogleFonts.lato(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
+                    child: Row(
+                      children: [
+                        SizedBox(width: MediaQuery.of(context).size.width * .08,),
+                        Text(
+                          "Add documents or photos (.jpg / .pdf)",
+                          style: GoogleFonts.lato(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
