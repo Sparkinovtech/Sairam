@@ -1,8 +1,12 @@
+import 'dart:developer' as devtools show log;
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Profile/Model/department.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
@@ -21,13 +25,14 @@ class _IdentityDetailsState extends State<IdentityDetails> {
   Department? _selected;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _id = TextEditingController();
-  final TextEditingController _year = TextEditingController();
-  final TextEditingController _graduation = TextEditingController();
+  int? _currentYear;
+  int? _graduationYear;
   final TextEditingController _mentorName = TextEditingController();
   bool _initialized = false;
 
   File? _file;
-  String? _currentIdCardUrl; // stores the current URL if from cloud
+  String? _currentIdCardUrl;
+  String? _pickedFileName;
 
   Future<void> requestPermission() async {
     await [
@@ -38,23 +43,32 @@ class _IdentityDetailsState extends State<IdentityDetails> {
     ].request();
   }
 
-  Future<void> _openPhoneStorage() async {
+  Future<void> _pickFile() async {
     await requestPermission();
-    final picker = ImagePicker();
-    final pickedSource = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedSource != null) {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+    );
+    if (result != null && result.files.single.path != null) {
       setState(() {
-        _file = File(pickedSource.path);
-        _currentIdCardUrl = null; // Use the newly picked local file for preview
+        _file = File(result.files.single.path!);
+        _pickedFileName = result.files.single.name;
+        _currentIdCardUrl = null;
       });
+    }
+  }
+
+  void _calculateGraduationYear() {
+    if (_currentYear != null) {
+      int now = DateTime.now().year;
+      int remainingYears = (5 - _currentYear!) + 1;
+      _graduationYear = now + remainingYears - 1;
     }
   }
 
   @override
   void dispose() {
     _id.dispose();
-    _year.dispose();
-    _graduation.dispose();
     _mentorName.dispose();
     super.dispose();
   }
@@ -78,8 +92,8 @@ class _IdentityDetailsState extends State<IdentityDetails> {
         if (!_initialized && profile != null) {
           _selected = profile.department;
           _id.text = profile.id ?? "";
-          _year.text = profile.currentYear?.toString() ?? "";
-          _graduation.text = profile.yearOfGraduation?.toString() ?? "";
+          _currentYear = profile.currentYear;
+          _graduationYear = profile.yearOfGraduation;
           _mentorName.text = profile.currentMentor ?? "";
           _currentIdCardUrl = profile.collegeIdPhoto;
           _initialized = true;
@@ -124,7 +138,6 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                       ],
                     ),
                   ),
-                  SizedBox(height: size.height * .01),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Align(
@@ -154,21 +167,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                               validator: (v) => (v == null || v.isEmpty)
                                   ? "Enter the Student Id"
                                   : null,
-                              decoration: InputDecoration(
-                                hintText: "Student Id",
-                                hintStyle: GoogleFonts.lato(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey.withValues(alpha: 0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.all(12),
-                              ),
+                              decoration: _inputDecoration("Student Id"),
                               cursorColor: Colors.grey,
                             ),
                           ),
@@ -185,33 +184,13 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                               onChanged: (val) =>
                                   setState(() => _selected = val),
                               isExpanded: true,
-                              decoration: InputDecoration(
-                                hintText: "Select Department",
-                                hintStyle: GoogleFonts.lato(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey.withValues(alpha: 0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 14,
-                                ),
-                              ),
+                              decoration: _inputDecoration("Select Department"),
                               icon: const Icon(Icons.keyboard_arrow_down),
                               items: Department.values
                                   .map(
-                                    (dept) => DropdownMenuItem<Department>(
+                                    (dept) => DropdownMenuItem(
                                       value: dept,
-                                      child: Text(
-                                        dept.departmentName,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      child: Text(dept.departmentName),
                                     ),
                                   )
                                   .toList(),
@@ -220,55 +199,42 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                           SizedBox(height: size.height * .03),
                           labelledField(
                             "Current Year",
-                            TextFormField(
-                              controller: _year,
-                              keyboardType: TextInputType.number,
-                              validator: (v) => (v == null || v.isEmpty)
-                                  ? "Enter the Current Year"
-                                  : null,
-                              decoration: InputDecoration(
-                                hintText: "Current Year",
-                                hintStyle: GoogleFonts.lato(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey.withValues(alpha: 0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.all(12),
-                              ),
-                              cursorColor: Colors.grey,
+                            DropdownButtonFormField<int>(
+                              value: _currentYear,
+                              validator: (val) =>
+                                  val == null ? "Select Current Year" : null,
+                              onChanged: (val) {
+                                setState(() {
+                                  _currentYear = val;
+                                  _calculateGraduationYear();
+                                });
+                              },
+                              decoration: _inputDecoration("Select Year"),
+                              items: List.generate(5, (index) => index + 1)
+                                  .map(
+                                    (year) => DropdownMenuItem(
+                                      value: year,
+                                      child: Text("$year"),
+                                    ),
+                                  )
+                                  .toList(),
                             ),
                           ),
                           SizedBox(height: size.height * .03),
                           labelledField(
                             "Year of Graduation",
-                            TextFormField(
-                              controller: _graduation,
-                              keyboardType: TextInputType.number,
-                              validator: (v) => (v == null || v.isEmpty)
-                                  ? "Enter the Year of Graduation"
-                                  : null,
-                              decoration: InputDecoration(
-                                hintText: "Year of Graduation",
-                                hintStyle: GoogleFonts.lato(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey.withValues(alpha: 0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.all(12),
-                              ),
-                              cursorColor: Colors.grey,
+                            DropdownButtonFormField<int>(
+                              value: _graduationYear,
+                              onChanged: null, // read-only
+                              decoration: _inputDecoration("Graduation Year"),
+                              items: _graduationYear != null
+                                  ? [
+                                      DropdownMenuItem(
+                                        value: _graduationYear,
+                                        child: Text("$_graduationYear"),
+                                      ),
+                                    ]
+                                  : [],
                             ),
                           ),
                           SizedBox(height: size.height * .03),
@@ -276,25 +242,10 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                             "Mentor Name",
                             TextFormField(
                               controller: _mentorName,
-                              keyboardType: TextInputType.name,
                               validator: (v) => (v == null || v.isEmpty)
                                   ? "Enter the Mentor Name"
                                   : null,
-                              decoration: InputDecoration(
-                                hintText: "Mentor Name",
-                                hintStyle: GoogleFonts.lato(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey.withValues(alpha: 0.1),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.all(12),
-                              ),
+                              decoration: _inputDecoration("Mentor Name"),
                               cursorColor: Colors.grey,
                             ),
                           ),
@@ -304,68 +255,24 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                             child: Text(
                               "Id Proof",
                               style: GoogleFonts.lato(
-                                color: Colors.black,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 15,
                               ),
                             ),
                           ),
-                          SizedBox(height: size.height * .03),
+                          SizedBox(height: size.height * .02),
 
-                          // Updated preview logic: show file image if picked, else the current URL if available
+                          // PREVIEW
                           if (_file != null)
-                            Card(
-                              color: Colors.white,
-                              margin: const EdgeInsets.only(bottom: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              elevation: 3,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.file(
-                                  _file!,
-                                  width: double.infinity,
-                                  height: size.height * .35,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            )
-                          else if (_currentIdCardUrl != null &&
+                            _buildFilePreview(size, _file!.path),
+                          if (_file == null &&
+                              _currentIdCardUrl != null &&
                               _currentIdCardUrl!.isNotEmpty)
-                            Card(
-                              color: Colors.white,
-                              margin: const EdgeInsets.only(bottom: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              elevation: 3,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  _currentIdCardUrl!,
-                                  width: double.infinity,
-                                  height: size.height * .35,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Container(
-                                        color: Colors.grey[300],
-                                        height: size.height * .35,
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          'Could not load image',
-                                          style: GoogleFonts.lato(
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ),
-                                ),
-                              ),
-                            ),
+                            _buildNetworkFilePreview(size, _currentIdCardUrl!),
 
                           MaterialButton(
                             elevation: 0,
-                            onPressed: _openPhoneStorage,
+                            onPressed: _pickFile,
                             minWidth: double.infinity,
                             height: size.height * .05,
                             color: Colors.white,
@@ -377,7 +284,7 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                               _file != null ||
                                       (_currentIdCardUrl != null &&
                                           _currentIdCardUrl!.isNotEmpty)
-                                  ? "Replace ID Card"
+                                  ? "Replace ID Proof"
                                   : "Upload ID (PDF/JPG)",
                               style: GoogleFonts.lato(
                                 color: Colors.blue,
@@ -397,34 +304,23 @@ class _IdentityDetailsState extends State<IdentityDetails> {
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MaterialButton(
-                  elevation: 0,
                   onPressed: () => Navigator.pop(context),
-                  minWidth: size.width * .31,
-                  height: size.height * .045,
                   color: Colors.grey[200],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(11),
-                  ),
-                  child: Text(
-                    "Cancel",
-                    style: GoogleFonts.lato(
-                      color: Colors.grey,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  minWidth: size.width * .3,
+                  child: Text("Cancel"),
                 ),
+                SizedBox(width: 10),
                 MaterialButton(
-                  elevation: 0,
+                  color: Colors.blue,
+                  minWidth: size.width * .5,
                   onPressed: () {
                     if (!_formKey.currentState!.validate() ||
                         _selected == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text("Please fill in all required fields."),
+                          content: Text("Please fill all required fields."),
                           backgroundColor: Colors.red,
                         ),
                       );
@@ -434,26 +330,16 @@ class _IdentityDetailsState extends State<IdentityDetails> {
                       RegisterIdentityDetailsEvent(
                         studentId: _id.text.trim(),
                         department: _selected!,
-                        currentYear: int.parse(_year.text.trim()),
-                        yearOfGraduation: int.parse(_graduation.text.trim()),
+                        currentYear: _currentYear!,
+                        yearOfGraduation: _graduationYear!,
                         mentorName: _mentorName.text.trim(),
                         idCardPhoto: _file?.path ?? (_currentIdCardUrl ?? ""),
                       ),
                     );
                   },
-                  minWidth: size.width * .5,
-                  height: size.height * .05,
-                  color: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(13),
-                  ),
                   child: Text(
                     "Save changes",
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ],
@@ -462,5 +348,125 @@ class _IdentityDetailsState extends State<IdentityDetails> {
         );
       },
     );
+  }
+
+  InputDecoration _inputDecoration(String hint) => InputDecoration(
+    hintText: hint,
+    filled: true,
+    fillColor: Colors.grey.withValues(alpha: 0.1),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide.none,
+    ),
+    contentPadding: const EdgeInsets.all(12),
+  );
+
+  Widget _buildFilePreview(Size size, String path) {
+    if (path.toLowerCase().endsWith(".pdf")) {
+      return GestureDetector(
+        onTap: () => OpenFilex.open(path),
+        child: Card(
+          child: Container(
+            height: size.height * .1,
+            padding: EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    _pickedFileName ?? "PDF File",
+                    style: GoogleFonts.lato(fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () => OpenFilex.open(path),
+        child: Card(
+          child: Image.file(
+            File(path),
+            height: size.height * .35,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _downloadAndOpenFile(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+        final tempDir = await getTemporaryDirectory();
+
+        final fileName = url.split('/').last;
+        final file = File('${tempDir.path}/$fileName');
+
+        await file.writeAsBytes(bytes);
+
+        await OpenFilex.open(file.path);
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to download file")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error opening file: $e")));
+    }
+  }
+
+  Widget _buildNetworkFilePreview(Size size, String url) {
+    devtools.log("Url for the id proof is : $url");
+    if (url.toLowerCase().endsWith(".pdf")) {
+      return GestureDetector(
+        onTap: () => _downloadAndOpenFile(url), // call new helper
+        child: Card(
+          child: Container(
+            height: size.height * .1,
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                const Icon(Icons.picture_as_pdf, size: 40, color: Colors.red),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "PDF File",
+                    style: GoogleFonts.lato(fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      // For images
+      return GestureDetector(
+        onTap: () => _downloadAndOpenFile(url), // call new helper as well
+        child: Card(
+          child: Image.network(
+            url,
+            height: size.height * .35,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const Center(child: CircularProgressIndicator());
+            },
+            errorBuilder: (context, error, stackTrace) =>
+                Center(child: Text('Could not load image')),
+          ),
+        ),
+      );
+    }
   }
 }

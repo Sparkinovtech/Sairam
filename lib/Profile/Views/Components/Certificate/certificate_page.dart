@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:open_filex/open_filex.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
@@ -141,7 +144,6 @@ class _CertificatePageState extends State<CertificatePage> {
                               context,
                               cert,
                               onEdit: () async {
-                                // Navigate to edit certificate page
                                 final edited =
                                     await Navigator.push<Certificate>(
                                       context,
@@ -208,6 +210,8 @@ class _CertificatePageState extends State<CertificatePage> {
     );
   }
 
+  // Modify the onTap in _certificateCard as follows:
+
   Widget _certificateCard(
     BuildContext context,
     Certificate certificate, {
@@ -227,7 +231,6 @@ class _CertificatePageState extends State<CertificatePage> {
         imageProvider = FileImage(File(filePath));
       }
     } else {
-      // Fallback placeholder image
       imageProvider = const AssetImage('assets/images/default_certificate.png');
     }
 
@@ -239,22 +242,31 @@ class _CertificatePageState extends State<CertificatePage> {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image(
-                image: imageProvider,
-                width: size.width * 0.15,
-                height: size.width * 0.15,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
+            GestureDetector(
+              onTap: () async {
+                if (isNetworkUrl) {
+                  await _downloadAndOpenFile(filePath);
+                } else {
+                  await OpenFilex.open(filePath);
+                }
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image(
+                  image: imageProvider,
                   width: size.width * 0.15,
                   height: size.width * 0.15,
-                  color: Colors.grey.shade300,
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.broken_image,
-                    color: Colors.grey,
-                    size: 30,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: size.width * 0.15,
+                    height: size.width * 0.15,
+                    color: Colors.grey.shade300,
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.broken_image,
+                      color: Colors.grey,
+                      size: 30,
+                    ),
                   ),
                 ),
               ),
@@ -302,5 +314,34 @@ class _CertificatePageState extends State<CertificatePage> {
         ),
       ),
     );
+  }
+
+  // Add this method inside your _CertificatePageState class:
+
+  Future<void> _downloadAndOpenFile(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+        final tempDir = await getTemporaryDirectory();
+
+        final fileName = url.split('/').last;
+        final file = File('${tempDir.path}/$fileName');
+
+        await file.writeAsBytes(bytes);
+
+        await OpenFilex.open(file.path);
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to download file")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error opening file: $e")));
+    }
   }
 }

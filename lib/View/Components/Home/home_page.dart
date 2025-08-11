@@ -1,14 +1,15 @@
 import 'dart:developer' as devtools;
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
-import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Calender/calender_page.dart';
@@ -26,10 +27,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final String name = "Sujin Danial";
+  File? _file;
   DateTime? _dateTime;
   DateTime _focusedDay = DateTime.now();
   late final ScrollController _controller;
+
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
     Projects(
@@ -51,6 +53,7 @@ class _HomePageState extends State<HomePage> {
       imagePath: "",
     ),
   ];
+
   final List<Projects> completedProjects = [
     Projects(
       name: "Skoolinq",
@@ -59,6 +62,7 @@ class _HomePageState extends State<HomePage> {
       imagePath: "",
     ),
   ];
+
   @override
   void initState() {
     super.initState();
@@ -67,17 +71,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        NightStayStudent? nightStayStudent;
         final profile = state.profile;
+        String displayName = profile?.name ?? "User";
+        String? profilePictureUrl = profile?.profilePicture;
+
+        NightStayStudent? nightStayStudent;
         if (profile != null &&
             (profile.name?.isNotEmpty ?? false) &&
             (profile.id?.isNotEmpty ?? false) &&
@@ -90,10 +98,10 @@ class _HomePageState extends State<HomePage> {
         }
 
         devtools.log("From home page : The profile is $profile");
-
         devtools.log(
           "From home page : The Night stay student is : $nightStayStudent",
         );
+
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -103,17 +111,32 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: size.height * .025),
+
+                  // ===== Profile Header =====
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Colors.grey.withValues(alpha: .1),
-                            radius: 24,
-                            backgroundImage: NetworkImage(
-                              "https://imgcdn.stablediffusionweb.com/2024/11/1/f9199f4e-2f29-4b5c-8b51-5a3633edb18b.jpg",
-                            ),
+                            radius: 40,
+                            backgroundColor: Colors.white,
+                            backgroundImage: _file != null
+                                ? FileImage(_file!)
+                                : (profilePictureUrl != null &&
+                                      profilePictureUrl.isNotEmpty)
+                                ? NetworkImage(profilePictureUrl)
+                                : null,
+                            child:
+                                (_file == null &&
+                                    (profilePictureUrl == null ||
+                                        profilePictureUrl.isEmpty))
+                                ? Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: Colors.grey,
+                                  )
+                                : null,
                           ),
                           SizedBox(width: size.width * .02),
                           Column(
@@ -128,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Text(
-                                name,
+                                displayName,
                                 style: GoogleFonts.inter(
                                   color: Colors.black,
                                   fontSize: 20,
@@ -157,29 +180,28 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
+
                   SizedBox(height: size.height * .06),
+
+                  // ===== Activity Title =====
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Your Activity",
-                          style: GoogleFonts.inter(
-                            color: Colors.black,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      "Your Activity",
+                      style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
+
                   SizedBox(height: size.height * .05),
 
+                  // ===== Activity Cards =====
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _activityCard(
                           onTap: () {
@@ -216,134 +238,35 @@ class _HomePageState extends State<HomePage> {
                           },
                           title: "Completed",
                           value: "${completedProjects.length}",
-                          label: "Night Stay",
+                          label: "Projects",
                           icon: CupertinoIcons.moon_stars_fill,
                           context: context,
                         ),
                       ],
                     ),
                   ),
+
                   SizedBox(height: size.height * .06),
+
+                  // ===== Schedule =====
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Schedule",
-                          style: GoogleFonts.lato(
-                            color: Colors.black,
-                            fontSize: 25,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      "Schedule",
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
-                  SizedBox(height: size.height * .01),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 0,
-                    ),
-                    child: Card(
-                      elevation: 3,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 10,
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "${_focusedDay.month == 1
-                                      ? "January"
-                                      : _focusedDay.month == 2
-                                      ? "February"
-                                      : _focusedDay.month == 3
-                                      ? "March"
-                                      : _focusedDay.month == 4
-                                      ? "April"
-                                      : _focusedDay.month == 5
-                                      ? "May"
-                                      : _focusedDay.month == 6
-                                      ? "June"
-                                      : _focusedDay.month == 7
-                                      ? "July"
-                                      : _focusedDay.month == 8
-                                      ? "August"
-                                      : _focusedDay.month == 9
-                                      ? "September"
-                                      : _focusedDay.month == 10
-                                      ? "October"
-                                      : _focusedDay.month == 11
-                                      ? "November"
-                                      : "December"} ${_focusedDay.year}",
-                                  style: GoogleFonts.lato(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Spacer(),
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.fade,
-                                        child: CalenderPage(),
-                                      ),
-                                    );
-                                  },
-                                  icon: Icon(CupertinoIcons.calendar),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: size.height * .02),
 
-                          TableCalendar(
-                            firstDay: DateTime.utc(2020, 1, 1),
-                            lastDay: DateTime.utc(2030, 12, 31),
-                            focusedDay: _focusedDay,
-                            selectedDayPredicate: (day) =>
-                                isSameDay(_dateTime, day),
-                            calendarFormat: CalendarFormat.week,
-                            onDaySelected: (selectedDay, focusedDay) {
-                              setState(() {
-                                _dateTime = selectedDay;
-                                _focusedDay = focusedDay;
-                              });
-                            },
-                            headerVisible: false,
-                            availableGestures: AvailableGestures.none,
-                            daysOfWeekVisible: true,
-                            calendarStyle: CalendarStyle(
-                              isTodayHighlighted: true,
-                              selectedDecoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              todayDecoration: BoxDecoration(
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
-                              ),
-                              outsideDaysVisible: false,
-                            ),
-                          ),
-                          SizedBox(height: size.height * .04),
-                        ],
-                      ),
-                    ),
-                  ),
+                  SizedBox(height: size.height * .01),
+                  _buildCalendarCard(size),
+
                   SizedBox(height: size.height * .05),
+
+                  // ===== Components Grid =====
                   SizedBox(
                     height: size.height * .4,
                     child: GridView.count(
@@ -384,7 +307,9 @@ class _HomePageState extends State<HomePage> {
                                 child: BlocProvider(
                                   create: (context) =>
                                       NightStayBloc(NightStayProvider()),
-                                  child: NightStayOptInScreen(nightStayStudent: nightStayStudent,),
+                                  child: NightStayOptInScreen(
+                                    nightStayStudent: nightStayStudent,
+                                  ),
                                 ),
                               ),
                             );
@@ -405,6 +330,97 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Widget _buildCalendarCard(Size size) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        elevation: 3,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Row(
+                children: [
+                  Text(
+                    "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
+                    style: GoogleFonts.lato(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: CalenderPage(),
+                        ),
+                      );
+                    },
+                    icon: Icon(CupertinoIcons.calendar),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: size.height * .02),
+            TableCalendar(
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_dateTime, day),
+              calendarFormat: CalendarFormat.week,
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _dateTime = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              headerVisible: false,
+              availableGestures: AvailableGestures.none,
+              daysOfWeekVisible: true,
+              calendarStyle: CalendarStyle(
+                isTodayHighlighted: true,
+                selectedDecoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                todayDecoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                outsideDaysVisible: false,
+              ),
+            ),
+            SizedBox(height: size.height * .04),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _monthName(int month) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return months[month - 1];
   }
 
   Widget _activityCard({
@@ -452,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "Project",
+                        label,
                         style: GoogleFonts.lato(
                           color: Colors.grey,
                           fontWeight: FontWeight.w500,
@@ -475,7 +491,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       SizedBox(width: size.width * .01),
                       Text(
-                        "Projects",
+                        label,
                         style: GoogleFonts.lato(
                           color: Colors.grey,
                           fontSize: 14,
@@ -502,7 +518,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -512,9 +528,7 @@ class _HomePageState extends State<HomePage> {
             curve: Curves.easeInOutCubic,
             duration: Duration(seconds: 1),
             child: Container(
-              width: size.width * .18,
-              height: size.height * .008,
-              padding: EdgeInsets.symmetric(horizontal: 00),
+              padding: EdgeInsets.symmetric(horizontal: 0),
               decoration: BoxDecoration(
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(15),
@@ -522,7 +536,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(child: Icon(icon, color: Colors.white, size: 60)),
+                  Icon(icon, color: Colors.white, size: 60),
                   SizedBox(height: size.height * .01),
                   Text(
                     title,

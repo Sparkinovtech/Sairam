@@ -6,6 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
 
 import 'package:sairam_incubation/Profile/Model/media_items.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
@@ -71,7 +74,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
       context: context,
       isDismissible: false,
       isScrollControlled: true,
-      barrierColor: Colors.grey.withValues(alpha : 0.2),
+      barrierColor: Colors.grey.withValues(alpha: 0.2),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -204,6 +207,33 @@ class _PortfolioPageState extends State<PortfolioPage> {
     return result;
   }
 
+  Future<void> _downloadAndOpenFile(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final bytes = response.bodyBytes;
+        final tempDir = await getTemporaryDirectory();
+
+        final fileName = url.split('/').last;
+        final file = File('${tempDir.path}/$fileName');
+
+        await file.writeAsBytes(bytes);
+
+        await OpenFilex.open(file.path);
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to download file")),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error opening file: $e")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -220,11 +250,9 @@ class _PortfolioPageState extends State<PortfolioPage> {
         }
         if (state is ProfileErrorState) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage),
-              ),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage)));
           }
         }
       },
@@ -462,7 +490,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
-        fillColor: Colors.grey.withValues(alpha : 0.1),
+        fillColor: Colors.grey.withValues(alpha: 0.1),
         filled: true,
       ),
       validator: validator,
@@ -543,70 +571,81 @@ class _PortfolioPageState extends State<PortfolioPage> {
   ) {
     var size = MediaQuery.of(context).size;
 
-    // Automatically determine if it's a network or local image
-    ImageProvider displayImage;
     final imagePath = item.file.path;
 
-    if (imagePath.startsWith('http')) {
-      displayImage = NetworkImage(imagePath);
-    } else {
-      displayImage = FileImage(File(imagePath));
-    }
+    final bool isNetwork = imagePath.startsWith('http');
+    ImageProvider displayImage = isNetwork
+        ? NetworkImage(imagePath)
+        : FileImage(File(imagePath));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-        child: Container(
-          padding: const EdgeInsets.all(15),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
+      child: GestureDetector(
+        onTap: () async {
+          if (isNetwork) {
+            await _downloadAndOpenFile(imagePath);
+          } else {
+            await OpenFilex.open(imagePath);
+          }
+        },
+        child: Card(
+          elevation: 5,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(11),
           ),
-          child: Row(
-            children: [
-              SizedBox(width: size.width * .04),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(11),
-                child: Image(
-                  image: displayImage,
-                  width: size.width * .25,
-                  height: size.height * .1,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Row(
+              children: [
+                SizedBox(width: size.width * .04),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(11),
+                  child: Image(
+                    image: displayImage,
                     width: size.width * .25,
                     height: size.height * .1,
-                    color: Colors.grey[300],
-                    child: Icon(Icons.broken_image, color: Colors.grey),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: size.width * .25,
+                      height: size.height * .1,
+                      color: Colors.grey[300],
+                      child: Icon(Icons.broken_image, color: Colors.grey),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: size.width * .03),
-              Expanded(
-                child: Text(
-                  item.title.isNotEmpty ? item.title : "Untitled",
-                  style: GoogleFonts.inter(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
+                SizedBox(width: size.width * .03),
+                Expanded(
+                  child: Text(
+                    item.title.isNotEmpty ? item.title : "Untitled",
+                    style: GoogleFonts.inter(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: onEdit,
-                    icon: const Icon(Icons.edit, color: Colors.grey),
-                  ),
-                  IconButton(
-                    onPressed: onDelete,
-                    icon: const Icon(Icons.delete_outline, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      onPressed: onEdit,
+                      icon: const Icon(Icons.edit, color: Colors.grey),
+                    ),
+                    IconButton(
+                      onPressed: onDelete,
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
