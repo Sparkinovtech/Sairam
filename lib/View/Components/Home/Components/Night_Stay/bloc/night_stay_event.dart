@@ -21,3 +21,14 @@ class SaveNightStayEvent extends NightStayEvent {
 
 // Event to load/listen to night stay students (optional)
 class LoadNightStayStudentsEvent extends NightStayEvent {}
+
+
+// Add new event for checking current user's night stay status
+class CheckNightStayStatusEvent extends NightStayEvent {
+  final String studentId;
+
+  const CheckNightStayStatusEvent(this.studentId);
+
+  @override
+  List<Object?> get props => [studentId];
+}

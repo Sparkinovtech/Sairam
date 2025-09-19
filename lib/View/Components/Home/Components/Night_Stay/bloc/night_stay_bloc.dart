@@ -15,7 +15,8 @@ class NightStayBloc extends Bloc<NightStayEvent, NightStayState> {
     on<LoadNightStayStudentsEvent>(_onLoadStudents);
     on<_StudentsUpdated>(
       _onStudentsUpdated,
-    ); // Register handler for internal event
+    ); // Register handler for internal event<
+    on<CheckNightStayStatusEvent>(_onCheckNightStayStatus);
 
     // Automatically start listening for student list changes
     add(LoadNightStayStudentsEvent());
@@ -39,6 +40,19 @@ class NightStayBloc extends Bloc<NightStayEvent, NightStayState> {
       } else {
         emit(NightStayFailure('Invalid choice'));
       }
+    } catch (e) {
+      emit(NightStayFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onCheckNightStayStatus(
+    CheckNightStayStatusEvent event,
+    Emitter<NightStayState> emit,
+  ) async {
+    emit(NightStayLoading());
+    try {
+      final hasOpted = await _provider.hasOptedForNightStay(event.studentId);
+      emit(NightStayStatusState(hasOpted));
     } catch (e) {
       emit(NightStayFailure(e.toString()));
     }

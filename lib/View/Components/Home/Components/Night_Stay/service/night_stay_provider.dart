@@ -55,4 +55,19 @@ class NightStayProvider extends ChangeNotifier {
         .get();
     return doc.exists;
   }
+
+  // Call this to check if the current user has opted for night stay or not
+  Future<bool> hasOptedForNightStay(String studentId) async {
+    try {
+      final doc = await _firestore
+          .collection('night_stay_requests')
+          .doc(studentId)
+          .get();
+      return doc.exists;
+    } catch (e) {
+      debugPrint('Error checking night stay status:');
+      debugPrint(e.toString());
+      return false;
+    }
+  }
 }

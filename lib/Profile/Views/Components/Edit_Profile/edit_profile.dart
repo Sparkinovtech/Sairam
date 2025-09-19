@@ -361,7 +361,7 @@ class _EditProfileState extends State<EditProfile> {
     required String Function(T) itemLabelBuilder,
   }) {
     return DropdownButtonFormField<T>(
-      value: options.contains(selectedValue) ? selectedValue : null,
+      initialValue: options.contains(selectedValue) ? selectedValue : null,
       onChanged: onChange,
       isExpanded: true,
       decoration: InputDecoration(

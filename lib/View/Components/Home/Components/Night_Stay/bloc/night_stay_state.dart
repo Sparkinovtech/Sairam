@@ -32,3 +32,13 @@ class NightStayLoaded extends NightStayState {
   @override
   List<Object?> get props => [students];
 }
+
+// Add new state for night stay status result
+class NightStayStatusState extends NightStayState {
+  final bool hasOpted;
+
+  const NightStayStatusState(this.hasOpted);
+
+  @override
+  List<Object?> get props => [hasOpted];
+}
