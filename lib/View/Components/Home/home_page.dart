@@ -205,16 +205,16 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         _activityCard(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: ProjectCard(
-                                  projects: ongoingProjects,
-                                  title: "Ongoing Project",
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   PageTransition(
+                            //     type: PageTransitionType.fade,
+                            //     child: ProjectCard(
+                            //       projects: ongoingProjects,
+                            //       title: "Ongoing Project",
+                            //     ),
+                            //   ),
+                            // );
                           },
                           title: "Ongoing",
                           value: "${ongoingProjects.length}",
@@ -225,16 +225,16 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(width: size.width * .07),
                         _activityCard(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: ProjectCard(
-                                  projects: completedProjects,
-                                  title: "Completed Project",
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   PageTransition(
+                            //     type: PageTransitionType.fade,
+                            //     child: ProjectCard(
+                            //       projects: completedProjects,
+                            //       title: "Completed Project",
+                            //     ),
+                            //   ),
+                            // );
                           },
                           title: "Completed",
                           value: "${completedProjects.length}",
@@ -433,7 +433,6 @@ class _HomePageState extends State<HomePage> {
   }) {
     var size = MediaQuery.of(context).size;
     return GestureDetector(
-      onTap: onTap,
       child: SizedBox(
         width: size.width * .4,
         child: Card(

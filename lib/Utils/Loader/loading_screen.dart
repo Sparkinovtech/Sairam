@@ -45,7 +45,7 @@ class LoadingScreen {
             child: AnimatedContainer(
               duration: Duration(seconds: 1),
               width: size.width * .8,
-              height: size.height * .4,
+              height: size.height * .35,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -57,7 +57,9 @@ class LoadingScreen {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Lottie.asset("assets/loader.json", repeat: true),
+                      Center(
+                        child: Lottie.asset("assets/Paperplane.json", repeat: true),
+                      ),
                       StreamBuilder(
                         stream: _text.stream,
                         builder: (context, snapshot) {
