@@ -12,6 +12,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Profile/service/supabase_storage_provider.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 import 'package:sairam_incubation/Auth/View/verify_page.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
@@ -50,6 +51,12 @@ Future<void> main() async {
                   supabase: SupabaseClient(supabaseUrl, supabaseKey),
                   bucketName: "files",
                 ),
+              ),
+            ),
+            BlocProvider(
+              create: (context) => ComponentBloc(
+                ProfileCloudFirestoreProvider(),
+                
               ),
             ),
           ],

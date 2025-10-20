@@ -396,57 +396,57 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   SizedBox(height: size.height * .01),        
-                  ListTile(
-                    title: Text(
-                      "Mentor Meeting",
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Today, 3:00 PM - 4:00 PM",
-                      style: GoogleFonts.lato(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Icon(
-                      CupertinoIcons.right_chevron,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-                      // Navigate to meeting details or join meeting
-                    },
-                  ),
-                  SizedBox(height: 1),
-                  ListTile(
-                    title: Text(
-                      "Mentor Meeting",
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "Today, 3:00 PM - 4:00 PM",
-                      style: GoogleFonts.lato(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Icon(
-                      CupertinoIcons.right_chevron,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-                      // Navigate to meeting details or join meeting
-                    },
-                  ),
+                  // ListTile(
+                  //   title: Text(
+                  //     "Mentor Meeting",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.black,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     "Today, 3:00 PM - 4:00 PM",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.grey,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   trailing: Icon(
+                  //     CupertinoIcons.right_chevron,
+                  //     color: Colors.grey,
+                  //   ),
+                  //   onTap: () {
+                  //     // Navigate to meeting details or join meeting
+                  //   },
+                  // ),
+                  // SizedBox(height: 1),
+                  // ListTile(
+                  //   title: Text(
+                  //     "Mentor Meeting",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.black,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     "Today, 3:00 PM - 4:00 PM",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.grey,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   trailing: Icon(
+                  //     CupertinoIcons.right_chevron,
+                  //     color: Colors.grey,
+                  //   ),
+                  //   onTap: () {
+                  //     // Navigate to meeting details or join meeting
+                  //   },
+                  // ),
                   // ===== Components Grid =====
                   // SizedBox(
                   //   height: size.height * .4,
