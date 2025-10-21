@@ -13,14 +13,7 @@ final class NavigateToAddComponentEvent extends ComponentEvent {
   const NavigateToAddComponentEvent();
 }
 
-final class AddComponent extends ComponentEvent {
-  final String component; // Example data, replace with actual model
-
-  const AddComponent(this.component);
-
-  @override
-  List<Object> get props => [component];
-}
+final class AddComponent extends ComponentEvent {}
 
 final class RemoveComponent extends ComponentEvent {
   final String component; // Example data, replace with actual model
@@ -31,13 +24,13 @@ final class RemoveComponent extends ComponentEvent {
   List<Object> get props => [component];
 }
 
-final class clickViewCart extends ComponentEvent {
-  const clickViewCart(this.cartItems);
+final class NavigateToViewComponentEvent extends ComponentEvent {
+  const NavigateToViewComponentEvent(this.components);
 
-  final List<String> cartItems;
+  final List<Component> components;
 
   @override
-  List<Object> get props => [cartItems];
+  List<Object> get props => [components];
 }
 
 final class IncreaseComponentQuantity extends ComponentEvent {
@@ -68,10 +61,10 @@ final class DeleteComponentFromCart extends ComponentEvent {
 }
 
 final class SendRequest extends ComponentEvent {
-  final List<String> cartItems; // Example data, replace with actual model
+  final List<Component> components;
 
-  const SendRequest(this.cartItems);
+  const SendRequest({required this.components});
 
   @override
-  List<Object> get props => [cartItems];
+  List<Object> get props => [components];
 }

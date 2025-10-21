@@ -2,30 +2,35 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 
 part 'component_event.dart';
 part 'component_state.dart';
 
 class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
   final ProfileCloudFirestoreProvider profileProvider;
+  late List<Component> components;
 
-  ComponentBloc(this.profileProvider)
+  ComponentBloc(this.profileProvider, this.components)
     : super(ComponentInitial(profile: profileProvider.profile)) {
     on<LoadComponentEvent>((event, emit) {
       // Handle loading components
       emit(ComponentLoading());
       // Simulate loading
-      final components = <String>['Component1', 'Component2']; // Example data
+      components = [
+        Component(name: 'Component1', quantity: '1'),
+        Component(name: 'Component2', quantity: '2'),
+      ];
       emit(ComponentLoaded(components));
     });
 
     on<NavigateToAddComponentEvent>((event, emit) {
-      emit(NavigateToAddComponent());
+      emit(NavigateToAddComponentState());
     });
 
     on<AddComponent>((event, emit) {
       // Handle adding component logic here
-      emit(AddComponentState(event.component));
+      emit(AddComponentState());
     });
 
     on<RemoveComponent>((event, emit) {
@@ -33,8 +38,8 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       emit(ComponentRemoved(event.component));
     });
 
-    on<clickViewCart>((event, emit) {
-      emit(NavigateToCart(event.cartItems));
+    on<NavigateToViewComponentEvent>((event, emit) {
+      emit(NavigateToViewComponentState(event.components));
     });
 
     on<IncreaseComponentQuantity>((event, emit) {

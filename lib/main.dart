@@ -54,10 +54,10 @@ Future<void> main() async {
               ),
             ),
             BlocProvider(
-              create: (context) => ComponentBloc(
-                ProfileCloudFirestoreProvider(),
-                
-              ),
+              create: (context) =>
+                  ComponentBloc(ProfileCloudFirestoreProvider()
+                      , []),
+
             ),
           ],
           child: const MyApp(),

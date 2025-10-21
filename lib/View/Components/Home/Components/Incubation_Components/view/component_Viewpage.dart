@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 
 class ComponentViewpage extends StatefulWidget {
-  const ComponentViewpage({super.key});
+  final List<Component> components;
+
+  const ComponentViewpage({super.key, required this.components});
 
   @override
   State<ComponentViewpage> createState() => _ComponentViewpageState();
@@ -38,7 +43,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                       child: IconButton(
                         onPressed: () {
                           // Handle back button press
-                          Navigator.pop(context);
+                          Navigator.pop(context, widget.components);
                         },
                         icon: Icon(CupertinoIcons.back),
                         padding: EdgeInsets.zero,
@@ -52,7 +57,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: 10, // Example item count
+                itemCount: widget.components.length,
                 itemBuilder: (context, index) {
                   return Container(
                     margin: EdgeInsets.symmetric(
@@ -67,7 +72,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Component ${index + 1}"),
+                        Text(widget.components[index].name),
                         Container(
                           child: Row(
                             children: [
@@ -75,17 +80,52 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                                 icon: Icon(Icons.remove),
                                 onPressed: () {
                                   // Handle edit action
+                                  setState(() {
+                                    if (int.parse(
+                                          widget.components[index].quantity,
+                                        ) >
+                                        1) {
+                                      widget.components[index].quantity =
+                                          (int.parse(
+                                                    widget
+                                                        .components[index]
+                                                        .quantity,
+                                                  ) -
+                                                  1)
+                                              .toString();
+                                    }
+                                  });
                                 },
                               ),
-                              Text('5'),
+                              Text(widget.components[index].quantity),
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  // Handle edit action
+                                  setState(() {
+                                    widget.components[index].quantity =
+                                        (int.parse(
+                                                  widget
+                                                      .components[index]
+                                                      .quantity,
+                                                ) +
+                                                1)
+                                            .toString();
+                                  });
+                                },
                                 icon: Icon(Icons.add),
                               ),
                             ],
                           ),
                         ),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.delete))
+                        IconButton(
+                          onPressed: () {
+                            // Handle delete action
+                            setState(() {
+                              widget.components.removeAt(index);
+                            });
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
                       ],
                     ),
                   );
@@ -94,7 +134,6 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
             ],
           ),
         ),
-        
       ),
       bottomNavigationBar: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -103,6 +142,9 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
         ),
         onPressed: () {
           // Handle save action
+          context.read<ComponentBloc>().add(
+            SendRequest(components: widget.components),
+          );
         },
         child: Text("Save Changes"),
       ),

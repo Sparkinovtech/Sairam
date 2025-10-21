@@ -2,7 +2,8 @@ part of 'component_bloc.dart';
 
 sealed class ComponentState extends Equatable {
   final Profile? profile;
-  const ComponentState({this.profile});
+  final List<Component> components;
+  const ComponentState({this.profile, this.components = const []});
 
   @override
   List<Object> get props => [];
@@ -15,7 +16,7 @@ final class ComponentInitial extends ComponentState {
 final class ComponentLoading extends ComponentState {}
 
 final class ComponentLoaded extends ComponentState {
-  final List<String> components; // Example data, replace with actual model
+  final List<Component> components;
 
   const ComponentLoaded(this.components);
 
@@ -31,24 +32,17 @@ final class ComponentError extends ComponentState {
   List<Object> get props => [message];
 }
 
-final class NavigateToAddComponent extends ComponentState {}
+final class NavigateToAddComponentState extends ComponentState {}
 
-final class AddComponentState extends ComponentState {
-  final String component; // Example data, replace with actual model
+final class AddComponentState extends ComponentState {}
 
-  const AddComponentState(this.component);
+final class NavigateToViewComponentState extends ComponentState {
+  final List<Component> components;
 
-  @override
-  List<Object> get props => [component];
-}
-
-final class NavigateToCart extends ComponentState {
-  final List<String> cartItems; // Example data, replace with actual model
-
-  const NavigateToCart(this.cartItems);
+  const NavigateToViewComponentState(this.components);
 
   @override
-  List<Object> get props => [cartItems];
+  List<Object> get props => [components];
 }
 
 final class ComponentQuantityUpdated extends ComponentState {
