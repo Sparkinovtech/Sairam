@@ -43,6 +43,7 @@ class _ComponentPageState extends State<ComponentPage> {
                   )
                   .toList()
             : [];
+        
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -88,107 +89,127 @@ class _ComponentPageState extends State<ComponentPage> {
                   ),
                   // List of Requested Components
                   SizedBox(height: 16),
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: ComponentRequests.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.2),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
+
+                  ComponentRequests.isNotEmpty
+                      ? ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: ComponentRequests.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Requested ${ComponentRequests[index].id}',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          ComponentRequests[index].createdAt !=
+                                                  null
+                                              ? DateFormat.yMMMd().format(
+                                                  ComponentRequests[index]
+                                                      .createdAt!,
+                                                )
+                                              : 'No date',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(
+                                              177,
+                                              240,
+                                              201,
+                                              30,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            ComponentRequests[index].status,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 30),
+                                        Icon(Icons.arrow_forward_ios),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // child: ListTile(
+                              //   title: Text(
+                              //     'Requested ${ComponentRequests[index].id}',
+                              //     style: TextStyle(fontWeight: FontWeight.bold),
+                              //   ),
+                              //   subtitle: Text(
+                              //     ComponentRequests[index].createdAt != null
+                              //         ? DateFormat.yMMMd().format(ComponentRequests[index].createdAt!)
+                              //         : 'No date',
+                              //   ),
+                              //   trailing: Icon(Icons.arrow_forward_ios),
+                              //   onTap: () {
+                              //     // Handle component tap
+                              //   },
+                              // ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: 
+                             Text(
+                              "No Component Requests Found",
+                              style: GoogleFonts.lato(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ],
+                         
                         ),
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Requested ${ComponentRequests[index].id}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    ComponentRequests[index].createdAt != null
-                                        ? DateFormat.yMMMd().format(
-                                            ComponentRequests[index].createdAt!,
-                                          )
-                                        : 'No date',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                        177,
-                                        240,
-                                        201,
-                                        30,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Text(
-                                      ComponentRequests[index].status,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 30),
-                                  Icon(Icons.arrow_forward_ios),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        // child: ListTile(
-                        //   title: Text(
-                        //     'Requested ${ComponentRequests[index].id}',
-                        //     style: TextStyle(fontWeight: FontWeight.bold),
-                        //   ),
-                        //   subtitle: Text(
-                        //     ComponentRequests[index].createdAt != null
-                        //         ? DateFormat.yMMMd().format(ComponentRequests[index].createdAt!)
-                        //         : 'No date',
-                        //   ),
-                        //   trailing: Icon(Icons.arrow_forward_ios),
-                        //   onTap: () {
-                        //     // Handle component tap
-                        //   },
-                        // ),
-                      );
-                    },
-                  ),
                 ],
               ),
             ),
