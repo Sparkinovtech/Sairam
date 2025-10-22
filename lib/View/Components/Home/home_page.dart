@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -284,13 +284,12 @@ class _HomePageState extends State<HomePage> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: bg_light,
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),
                           spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
+                          blurRadius: 2,
                         ),
                       ],
                     ),
@@ -328,8 +327,8 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                           SizedBox(height: size.height * .02),
-                          ElevatedButton(
-                            onPressed: () {
+                          InkWell(
+                            onTap: () {
                               Navigator.push(
                                 context,
                                 PageTransition(
@@ -345,22 +344,25 @@ class _HomePageState extends State<HomePage> {
                               );
                             },
 
-                            style: ElevatedButton.styleFrom(
+                            child: Container(
                               padding: EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 60,
+                                vertical: 12,
+                                horizontal: 20,
                               ),
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: bg,
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                            ),
-                            child: Text(
-                              "Night Stay",
-                              style: GoogleFonts.lato(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              child: Center(
+                                child: Text(
+                                  "Night Stay",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -369,7 +371,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   SizedBox(height: size.height * .03),
-
 
                   // ===== Schedule =====
                   Text(
@@ -395,7 +396,7 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  SizedBox(height: size.height * .01),        
+                  SizedBox(height: size.height * .01),
                   // ListTile(
                   //   title: Text(
                   //     "Mentor Meeting",
@@ -514,74 +515,71 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCalendarCard(Size size) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        elevation: 3,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Row(
-                children: [
-                  Text(
-                    "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
-                    style: GoogleFonts.lato(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
+    return Card(
+      elevation: 2,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: Row(
+              children: [
+                Text(
+                  "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: CalenderPage(),
-                        ),
-                      );
-                    },
-                    icon: Icon(CupertinoIcons.calendar),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: size.height * .02),
-            TableCalendar(
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_dateTime, day),
-              calendarFormat: CalendarFormat.week,
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _dateTime = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              headerVisible: false,
-              availableGestures: AvailableGestures.none,
-              daysOfWeekVisible: true,
-              calendarStyle: CalendarStyle(
-                isTodayHighlighted: true,
-                selectedDecoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
                 ),
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
+                Spacer(),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: CalenderPage(),
+                      ),
+                    );
+                  },
+                  icon: Icon(CupertinoIcons.calendar),
                 ),
-                outsideDaysVisible: false,
-              ),
+              ],
             ),
-            SizedBox(height: size.height * .04),
-          ],
-        ),
+          ),
+          SizedBox(height: size.height * .02),
+          TableCalendar(
+            firstDay: DateTime.utc(2020, 1, 1),
+            lastDay: DateTime.utc(2030, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_dateTime, day),
+            calendarFormat: CalendarFormat.week,
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _dateTime = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            headerVisible: false,
+            availableGestures: AvailableGestures.none,
+            daysOfWeekVisible: true,
+            calendarStyle: CalendarStyle(
+              isTodayHighlighted: true,
+              selectedDecoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              outsideDaysVisible: false,
+            ),
+          ),
+          SizedBox(height: size.height * .04),
+        ],
       ),
     );
   }
