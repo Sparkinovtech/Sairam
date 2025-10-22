@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
+import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
@@ -109,49 +110,206 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: size.height * .025),
-
                   // ===== Profile Header =====
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Stack(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.white,
-                            backgroundImage: _file != null
-                                ? FileImage(_file!)
-                                : (profilePictureUrl != null &&
-                                      profilePictureUrl.isNotEmpty)
-                                ? NetworkImage(profilePictureUrl)
-                                : null,
-                            child:
-                                (_file == null &&
-                                    (profilePictureUrl == null ||
-                                        profilePictureUrl.isEmpty))
-                                ? Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  )
-                                : null,
+                      // Centered Home text
+                      Center(
+                        child: Text(
+                          "Home",
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                           ),
-                          SizedBox(width: size.width * .02),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Welcome",
-                                style: GoogleFonts.inter(
-                                  color: Colors.grey,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      // Right-aligned icons
+                      Positioned(
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: NotificationPage(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  CupertinoIcons.bell,
+                                  color: Colors.blue,
+                                  size: 20,
                                 ),
                               ),
+                            ),
+                            SizedBox(width: 12),
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.grey.shade200,
+                              backgroundImage: _file != null
+                                  ? FileImage(_file!)
+                                  : (profilePictureUrl != null &&
+                                        profilePictureUrl.isNotEmpty)
+                                  ? NetworkImage(profilePictureUrl)
+                                  : null,
+                              child:
+                                  (_file == null &&
+                                      (profilePictureUrl == null ||
+                                          profilePictureUrl.isEmpty))
+                                  ? Icon(
+                                      Icons.person,
+                                      size: 28,
+                                      color: Colors.grey,
+                                    )
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: size.height * .03),
+
+                  // // ===== Activity Title =====
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 10),
+                  //   child: Text(
+                  //     "Your Activity",
+                  //     style: GoogleFonts.inter(
+                  //       color: Colors.black,
+                  //       fontSize: 24,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  // ),
+
+                  // SizedBox(height: size.height * .05),
+
+                  // // ===== Activity Cards =====
+                  // SingleChildScrollView(
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Row(
+                  //     children: [
+                  //       _activityCard(
+                  //         onTap: () {
+                  //           // Navigator.push(
+                  //           //   context,
+                  //           //   PageTransition(
+                  //           //     type: PageTransitionType.fade,
+                  //           //     child: ProjectCard(
+                  //           //       projects: ongoingProjects,
+                  //           //       title: "Ongoing Project",
+                  //           //     ),
+                  //           //   ),
+                  //           // );
+                  //         },
+                  //         title: "Ongoing",
+                  //         value: "${ongoingProjects.length}",
+                  //         label: "Projects",
+                  //         icon: CupertinoIcons.cube,
+                  //         context: context,
+                  //       ),
+                  //       SizedBox(width: size.width * .07),
+                  //       _activityCard(
+                  //         onTap: () {
+                  //           // Navigator.push(
+                  //           //   context,
+                  //           //   PageTransition(
+                  //           //     type: PageTransitionType.fade,
+                  //           //     child: ProjectCard(
+                  //           //       projects: completedProjects,
+                  //           //       title: "Completed Project",
+                  //           //     ),
+                  //           //   ),
+                  //           // );
+                  //         },
+                  //         title: "Completed",
+                  //         value: "${completedProjects.length}",
+                  //         label: "Projects",
+                  //         icon: CupertinoIcons.moon_stars_fill,
+                  //         context: context,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                  // SizedBox(height: size.height * .06),
+                  // ===== Display profile =====
+                  RichText(
+                    text: TextSpan(
+                      text: 'Hello, ',
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$displayName!',
+                          style: GoogleFonts.lato(
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'Welcome back to Sairam Incubation!',
+                    style: GoogleFonts.lato(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  SizedBox(height: size.height * .03),
+
+                  // ===== Night Stay =====
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: bg_light,
+                      borderRadius: BorderRadius.circular(5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.moon,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                              SizedBox(width: size.width * .02),
                               Text(
-                                displayName,
-                                style: GoogleFonts.inter(
+                                "Night Stay Facility",
+                                style: GoogleFonts.lato(
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,
@@ -159,169 +317,193 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
+                          SizedBox(height: size.height * .01),
+                          Text(
+                            "Register for late-night lab access to continue your projects.",
+                            style: GoogleFonts.lato(
+                              color: Colors.grey.shade800,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+
+                          SizedBox(height: size.height * .02),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: BlocProvider(
+                                    create: (context) =>
+                                        NightStayBloc(NightStayProvider()),
+                                    child: NightStayOptInScreen(
+                                      nightStayStudent: nightStayStudent,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10,
+                                horizontal: 60,
+                              ),
+                              backgroundColor: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            child: Text(
+                              "Night Stay",
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.fade,
-                              child: NotificationPage(),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.grey.withValues(alpha: .2),
-                          radius: 20,
-                          child: Icon(CupertinoIcons.bell, color: Colors.grey),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: size.height * .06),
-
-                  // ===== Activity Title =====
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      "Your Activity",
-                      style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
                     ),
                   ),
+                  SizedBox(height: size.height * .03),
 
-                  SizedBox(height: size.height * .05),
-
-                  // ===== Activity Cards =====
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _activityCard(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   PageTransition(
-                            //     type: PageTransitionType.fade,
-                            //     child: ProjectCard(
-                            //       projects: ongoingProjects,
-                            //       title: "Ongoing Project",
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                          title: "Ongoing",
-                          value: "${ongoingProjects.length}",
-                          label: "Projects",
-                          icon: CupertinoIcons.cube,
-                          context: context,
-                        ),
-                        SizedBox(width: size.width * .07),
-                        _activityCard(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   PageTransition(
-                            //     type: PageTransitionType.fade,
-                            //     child: ProjectCard(
-                            //       projects: completedProjects,
-                            //       title: "Completed Project",
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                          title: "Completed",
-                          value: "${completedProjects.length}",
-                          label: "Projects",
-                          icon: CupertinoIcons.moon_stars_fill,
-                          context: context,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: size.height * .06),
 
                   // ===== Schedule =====
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      "Schedule",
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                      ),
+                  Text(
+                    "Schedule",
+                    style: GoogleFonts.lato(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
 
                   SizedBox(height: size.height * .01),
                   _buildCalendarCard(size),
 
-                  SizedBox(height: size.height * .05),
+                  SizedBox(height: size.height * .03),
 
-                  // ===== Components Grid =====
-                  SizedBox(
-                    height: size.height * .4,
-                    child: GridView.count(
-                      childAspectRatio: 1.2,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 7,
-                      crossAxisSpacing: 7,
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      children: [
-                        _componentCard(
-                          title: "Progress",
-                          icon: CupertinoIcons.chart_bar_alt_fill,
-                          onTap: () {},
-                        ),
-                        _componentCard(
-                          title: "Components",
-                          icon: CupertinoIcons.settings,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: ComponentsForm(),
-                                curve: Curves.easeInOut,
-                              ),
-                            );
-                          },
-                        ),
-                        _componentCard(
-                          title: "Night Stay",
-                          icon: CupertinoIcons.moon_stars_fill,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: BlocProvider(
-                                  create: (context) =>
-                                      NightStayBloc(NightStayProvider()),
-                                  child: NightStayOptInScreen(
-                                    nightStayStudent: nightStayStudent,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        _componentCard(
-                          title: "OD",
-                          icon: CupertinoIcons.square_list_fill,
-                          onTap: () {},
-                        ),
-                      ],
+                  // ====== Meetings =====
+                  Text(
+                    "Upcoming Meetings",
+                    style: GoogleFonts.lato(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
+                  SizedBox(height: size.height * .01),        
+                  // ListTile(
+                  //   title: Text(
+                  //     "Mentor Meeting",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.black,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     "Today, 3:00 PM - 4:00 PM",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.grey,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   trailing: Icon(
+                  //     CupertinoIcons.right_chevron,
+                  //     color: Colors.grey,
+                  //   ),
+                  //   onTap: () {
+                  //     // Navigate to meeting details or join meeting
+                  //   },
+                  // ),
+                  // SizedBox(height: 1),
+                  // ListTile(
+                  //   title: Text(
+                  //     "Mentor Meeting",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.black,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     "Today, 3:00 PM - 4:00 PM",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.grey,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   trailing: Icon(
+                  //     CupertinoIcons.right_chevron,
+                  //     color: Colors.grey,
+                  //   ),
+                  //   onTap: () {
+                  //     // Navigate to meeting details or join meeting
+                  //   },
+                  // ),
+                  // ===== Components Grid =====
+                  // SizedBox(
+                  //   height: size.height * .4,
+                  //   child: GridView.count(
+                  //     childAspectRatio: 1.2,
+                  //     crossAxisCount: 2,
+                  //     mainAxisSpacing: 7,
+                  //     crossAxisSpacing: 7,
+                  //     shrinkWrap: true,
+                  //     physics: ScrollPhysics(),
+                  //     children: [
+                  //       _componentCard(
+                  //         title: "Progress",
+                  //         icon: CupertinoIcons.chart_bar_alt_fill,
+                  //         onTap: () {},
+                  //       ),
+                  //       _componentCard(
+                  //         title: "Components",
+                  //         icon: CupertinoIcons.settings,
+                  //         onTap: () {
+                  //           Navigator.push(
+                  //             context,
+                  //             PageTransition(
+                  //               type: PageTransitionType.fade,
+                  //               child: ComponentsForm(),
+                  //               curve: Curves.easeInOut,
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //       _componentCard(
+                  //         title: "Night Stay",
+                  //         icon: CupertinoIcons.moon_stars_fill,
+                  //         onTap: () {
+                  //           Navigator.push(
+                  //             context,
+                  //             PageTransition(
+                  //               type: PageTransitionType.fade,
+                  //               child: BlocProvider(
+                  //                 create: (context) =>
+                  //                     NightStayBloc(NightStayProvider()),
+                  //                 child: NightStayOptInScreen(
+                  //                   nightStayStudent: nightStayStudent,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //       _componentCard(
+                  //         title: "OD",
+                  //         icon: CupertinoIcons.square_list_fill,
+                  //         onTap: () {},
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
