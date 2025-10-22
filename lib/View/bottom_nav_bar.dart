@@ -6,16 +6,16 @@ import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Com
 import 'package:sairam_incubation/View/Components/Home/home_page.dart';
 import 'package:sairam_incubation/View/Components/profile_page.dart';
 
-
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+  final int? index;
+  const BottomNavBar({super.key, this.index});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
   late final List<Widget> _pages;
 
   // final List<Projects> myTeams = [
@@ -47,7 +47,26 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
-    _pages = [HomePage(), ComponentPage(), Placeholder() , ProfilePage() ];
+    _selectedIndex = widget.index ?? 0;
+    _pages = [
+      HomePage(),
+      ComponentPage(),
+      Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              "OD Process",
+              style: TextStyle(color: Colors.black, fontSize: 20 , fontWeight: FontWeight.w600),
+            ),
+          ),
+          surfaceTintColor: Colors.white,
+          backgroundColor: Colors.white,
+        ),
+        backgroundColor: Colors.white,
+        body: Center(child: Text("Coming Soon")),
+      ),
+      ProfilePage(),
+    ];
   }
 
   @override
@@ -114,14 +133,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ),
                     )
                   : IconButton(
-                      icon: Icon(Icons.architecture_outlined, color: Colors.grey[400]),
+                      icon: Icon(
+                        Icons.architecture_outlined,
+                        color: Colors.grey[400],
+                      ),
                       onPressed: () {
                         setState(() {
                           _selectedIndex = 1;
                         });
                       },
                     ),
-             _selectedIndex == 2
+              _selectedIndex == 2
                   ? Container(
                       width: 48,
                       height: 48,
@@ -139,14 +161,18 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ),
                     )
                   : IconButton(
-                      icon: Icon(Icons.article_outlined, color: Colors.grey[400]),
+                      icon: Icon(
+                        Icons.article_outlined,
+                        color: Colors.grey[400],
+                      ),
                       onPressed: () {
                         setState(() {
                           _selectedIndex = 2;
                         });
                       },
                     ),
-              _selectedIndex == 3 ? Container(
+              _selectedIndex == 3
+                  ? Container(
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
@@ -163,7 +189,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ),
                     )
                   : IconButton(
-                      icon: Icon(Icons.person_2_outlined, color: Colors.grey[400]),
+                      icon: Icon(
+                        Icons.person_2_outlined,
+                        color: Colors.grey[400],
+                      ),
                       onPressed: () {
                         setState(() {
                           _selectedIndex = 3;

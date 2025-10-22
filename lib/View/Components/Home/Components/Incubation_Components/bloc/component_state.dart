@@ -3,10 +3,15 @@ part of 'component_bloc.dart';
 sealed class ComponentState extends Equatable {
   final Profile? profile;
   final List<Component> components;
-  const ComponentState({this.profile, this.components = const []});
+  final List<ComponentControllers> controllers;
+  const ComponentState({
+    this.profile,
+    this.components = const [],
+    this.controllers = const [],
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [profile, components, controllers];
 }
 
 final class ComponentInitial extends ComponentState {
@@ -16,12 +21,10 @@ final class ComponentInitial extends ComponentState {
 final class ComponentLoading extends ComponentState {}
 
 final class ComponentLoaded extends ComponentState {
-  final List<Component> components;
-
-  const ComponentLoaded(this.components);
-
-  @override
-  List<Object> get props => [components];
+  const ComponentLoaded(
+    List<Component> components,
+    List<ComponentControllers> controllers,
+  ) : super(components: components, controllers: controllers);
 }
 
 final class ComponentError extends ComponentState {
@@ -32,9 +35,20 @@ final class ComponentError extends ComponentState {
   List<Object> get props => [message];
 }
 
-final class NavigateToAddComponentState extends ComponentState {}
+final class NavigateToAddComponentState extends ComponentState {
+  final List<ComponentControllers> controllers;
 
-final class AddComponentState extends ComponentState {}
+  const NavigateToAddComponentState(this.controllers)
+    : super(controllers: controllers);
+
+  @override
+  List<Object> get props => [controllers];
+}
+
+final class AddComponentState extends ComponentState {
+  const AddComponentState(List<ComponentControllers> controllers)
+    : super(controllers: controllers);
+}
 
 final class NavigateToViewComponentState extends ComponentState {
   final List<Component> components;
@@ -72,3 +86,16 @@ final class ComponentRequestAdded extends ComponentState {
   @override
   List<Object> get props => [component];
 }
+
+// Lightweight holder for TextEditingControllers so bloc/state can manage them
+class ComponentControllers {
+  final TextEditingController nameController;
+  final TextEditingController quantityController;
+
+  ComponentControllers({
+    required this.nameController,
+    required this.quantityController,
+  });
+}
+
+class NavigateToComponentPageState extends ComponentState {}

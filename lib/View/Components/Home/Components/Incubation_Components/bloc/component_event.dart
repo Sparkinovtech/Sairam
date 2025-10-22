@@ -9,8 +9,13 @@ sealed class ComponentEvent extends Equatable {
 
 final class LoadComponentEvent extends ComponentEvent {}
 
+final class NavigateToComponentPageEvent extends ComponentEvent {
+  const NavigateToComponentPageEvent();
+}
+
 final class NavigateToAddComponentEvent extends ComponentEvent {
-  const NavigateToAddComponentEvent();
+  final List<Component>? components;
+  const NavigateToAddComponentEvent(this.components);
 }
 
 final class AddComponent extends ComponentEvent {}
