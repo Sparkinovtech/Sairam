@@ -3,10 +3,12 @@ part of 'component_bloc.dart';
 sealed class ComponentState extends Equatable {
   final Profile? profile;
   final List<Component> components;
+  final List<ComponetRequest> requests;
   final List<ComponentControllers> controllers;
   const ComponentState({
     this.profile,
     this.components = const [],
+    this.requests = const [],
     this.controllers = const [],
   });
 
@@ -79,12 +81,11 @@ final class ComponentRemoved extends ComponentState {
 }
 
 final class ComponentRequestAdded extends ComponentState {
-  final String component; // Example data, replace with actual model
+  final List<ComponetRequest> requests;
 
-  const ComponentRequestAdded(this.component);
-
+  const ComponentRequestAdded(this.requests) : super(requests: requests);
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [requests];
 }
 
 // Lightweight holder for TextEditingControllers so bloc/state can manage them
@@ -99,3 +100,15 @@ class ComponentControllers {
 }
 
 class NavigateToComponentPageState extends ComponentState {}
+
+class NavigateBackToAddComponentState extends ComponentState {
+  @override
+  // ignore: overridden_fields
+  final List<ComponentControllers> controllers;
+
+  const NavigateBackToAddComponentState(this.controllers)
+    : super(controllers: controllers);
+
+  @override
+  List<Object> get props => [controllers];
+}

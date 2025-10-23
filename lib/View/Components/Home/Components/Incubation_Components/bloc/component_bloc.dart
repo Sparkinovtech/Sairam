@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
 // Note: Do not import view files into bloc to keep layering clean.
 
 part 'component_event.dart';
@@ -39,7 +40,9 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
             .map(
               (controller) => ComponentControllers(
                 nameController: TextEditingController(text: controller.name),
-                quantityController: TextEditingController(text: controller.quantity),
+                quantityController: TextEditingController(
+                  text: controller.quantity,
+                ),
               ),
             )
             .toList();
@@ -57,7 +60,7 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
         final current = state as ComponentLoaded;
         final newComponents = state.components.toList();
         final newControllers = state.controllers.toList();
-        newComponents.add(Component(name: 'NewComponent', quantity: '0' ));
+        newComponents.add(Component(name: 'NewComponent', quantity: '0'));
         newControllers.add(
           ComponentControllers(
             nameController: TextEditingController(),
@@ -75,7 +78,15 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
     });
 
     on<NavigateToViewComponentEvent>((event, emit) {
-      emit(NavigateToViewComponentState(event.components));
+      List<Component> components = event.controllers
+          .map(
+            (controller) => Component(
+              name: controller.nameController.text,
+              quantity: controller.quantityController.text,
+            ),
+          )
+          .toList();
+      emit(NavigateToViewComponentState(components));
     });
 
     on<IncreaseComponentQuantity>((event, emit) {
@@ -94,9 +105,30 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       // Handle deleting component from cart logic here
       emit(ComponentRemoved(event.component));
     });
+    List<ComponetRequest> requests = [];
     on<SendRequest>((event, emit) {
       // Handle sending request logic here
-      emit(ComponentRequestAdded(event as String));
+      final request = ComponetRequest(
+        id: 'req_${DateTime.now().millisecondsSinceEpoch}',
+        createdAt: DateTime.now(),
+        status: 'pending',
+        components: event.components,
+      );
+      requests.add(request);
+      emit(ComponentRequestAdded(requests));
+    });
+    on<NavigateBackToAddComponentEvent>((event, emit) {
+      List<ComponentControllers> controllers = event.components
+          .map(
+            (controller) => ComponentControllers(
+              nameController: TextEditingController(text: controller.name),
+              quantityController: TextEditingController(
+                text: controller.quantity,
+              ),
+            ),
+          )
+          .toList();
+      emit(NavigateBackToAddComponentState(controllers));
     });
   }
 }

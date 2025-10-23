@@ -6,6 +6,7 @@ import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Com
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
+import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 
 class ComponentViewpage extends StatefulWidget {
   final List<Component> components;
@@ -19,12 +20,18 @@ class ComponentViewpage extends StatefulWidget {
 class _ComponentViewpageState extends State<ComponentViewpage> {
   @override
   Widget build(BuildContext context) {
+    void dispose() {
+      super.dispose();
+      widget.components.clear();
+    }
+
     return BlocConsumer<ComponentBloc, ComponentState>(
       listenWhen: (previous, current) =>
           current is NavigateToAddComponentState ||
+          current is NavigateBackToAddComponentState ||
           current is ComponentRequestAdded,
       listener: (context, state) {
-        if (state is NavigateToAddComponentState) {
+        if (state is NavigateBackToAddComponentState) {
           print("Navigating to Add Component Page");
           Navigator.push(
             context,
@@ -37,9 +44,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
         if (state is ComponentRequestAdded) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (context) => ComponentPage(components: state.components),
-            ),
+            MaterialPageRoute(builder: (context) => BottomNavBar(index: 1)),
           ); // Go back after request is added
         }
       },
@@ -72,7 +77,9 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                             onPressed: () {
                               // Handle back button press
                               context.read<ComponentBloc>().add(
-                                NavigateToAddComponentEvent(widget.components),
+                                NavigateBackToAddComponentEvent(
+                                  widget.components,
+                                ),
                               );
                             },
                             icon: Icon(CupertinoIcons.back),
@@ -188,26 +195,26 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
               ),
             ),
           ),
-              bottomNavigationBar: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+          bottomNavigationBar: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
                 backgroundColor: bg,
                 foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 50),
-                 shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                onPressed: () {
+              ),
+              onPressed: () {
                 // Handle save action
                 context.read<ComponentBloc>().add(
                   SendRequest(components: widget.components),
                 );
-                },
-                child: Text("Save Changes"),
-              ),
-              ),
+              },
+              child: Text("Save Changes"),
+            ),
+          ),
         );
       },
     );

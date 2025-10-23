@@ -50,7 +50,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     _selectedIndex = widget.index ?? 0;
     _pages = [
       HomePage(),
-      ComponentPage(),
+      ComponentPage(  requests: []),
       Scaffold(
         appBar: AppBar(
           title: Center(

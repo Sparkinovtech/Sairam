@@ -5,13 +5,13 @@ import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_Viewpage.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
+// import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
 import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 
 class ComponentAddpage extends StatefulWidget {
-  final List<ComponentControllers>? controllers;
+  final List<ComponentControllers> controllers;
 
-  const ComponentAddpage({super.key, this.controllers});
+  ComponentAddpage({super.key, this.controllers = const []});
 
   @override
   State<ComponentAddpage> createState() => _ComponentAddpageState();
@@ -32,10 +32,20 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
   @override
   void dispose() {
     super.dispose();
+    // Dispose controllers if needed
+    for (var controller in widget.controllers) {
+      controller.nameController.dispose();
+      controller.quantityController.dispose();
+    }
+    
   }
 
   @override
   Widget build(BuildContext context) {
+    // Make a mutable copy to avoid adding to an unmodifiable list
+    List<ComponentControllers> controllersForNav = List.from(
+      widget.controllers,
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocConsumer<ComponentBloc, ComponentState>(
@@ -50,6 +60,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
         listener: (context, state) async {
           // Handle navigation or other side effects here if needed
           if (state is NavigateToViewComponentState) {
+            component = state.components;
             print("Navigating to View Component Page");
             Navigator.push(
               context,
@@ -66,11 +77,18 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
         },
         builder: (context, state) {
           component = state.components;
-          List<ComponentControllers> componentControllers = state.controllers;
+          // create a fresh mutable list combining any passed controllers + bloc controllers
+          final mergedControllers = List<ComponentControllers>.from(
+            widget.controllers,
+          )..addAll(state.controllers);
+          // keep controllersForNav in sync for bottom nav action
+          controllersForNav = List<ComponentControllers>.from(
+            mergedControllers,
+          );
           if (state is AddComponentState) {
-            print("Total components: ${componentControllers.length}");
-            // You can use componentControllers here
-            for (var controller in componentControllers) {
+            print("Total components: ${mergedControllers.length}");
+            // You can use mergedControllers here
+            for (var controller in mergedControllers) {
               print(
                 "Component Name: ${controller.nameController.text}, Quantity: ${controller.quantityController.text}",
               );
@@ -82,9 +100,10 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           }
           if (state is ComponentLoaded) {
             component = state.components;
-            List<ComponentControllers>? componentControllers =
-                state.controllers ?? widget.controllers;
-            print("Total components: ${componentControllers?.length}");
+            final List<ComponentControllers> componentControllers =
+                mergedControllers;
+
+            print("Total components: ${componentControllers.length}");
             return SafeArea(
               child: Column(
                 children: [
@@ -130,12 +149,11 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
                   // Component List
                   Expanded(
                     child: ListView.builder(
-                      itemCount: componentControllers?.length ?? 0,
+                      itemCount: mergedControllers.length,
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       itemBuilder: (context, index) {
                         return ComponentAdd(
-                          controllers: componentControllers![index],
-
+                          controllers: mergedControllers[index],
                           index: index + 1,
                         );
                       },
@@ -195,7 +213,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           ),
           onPressed: () {
             context.read<ComponentBloc>().add(
-              NavigateToViewComponentEvent(component),
+              NavigateToViewComponentEvent(controllersForNav),
             );
           },
           child: Text("View Components", style: TextStyle(fontSize: 16)),

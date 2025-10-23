@@ -18,7 +18,9 @@ final class NavigateToAddComponentEvent extends ComponentEvent {
   const NavigateToAddComponentEvent(this.components);
 }
 
-final class AddComponent extends ComponentEvent {}
+final class AddComponent extends ComponentEvent {
+  
+}
 
 final class RemoveComponent extends ComponentEvent {
   final String component; // Example data, replace with actual model
@@ -30,12 +32,12 @@ final class RemoveComponent extends ComponentEvent {
 }
 
 final class NavigateToViewComponentEvent extends ComponentEvent {
-  const NavigateToViewComponentEvent(this.components);
+  const NavigateToViewComponentEvent(this.controllers);
 
-  final List<Component> components;
+  final List<ComponentControllers> controllers;
 
   @override
-  List<Object> get props => [components];
+  List<Object> get props => [controllers];
 }
 
 final class IncreaseComponentQuantity extends ComponentEvent {
@@ -69,6 +71,15 @@ final class SendRequest extends ComponentEvent {
   final List<Component> components;
 
   const SendRequest({required this.components});
+
+  @override
+  List<Object> get props => [components];
+}
+
+class NavigateBackToAddComponentEvent extends ComponentEvent {
+  final List<Component> components;
+
+  const NavigateBackToAddComponentEvent(this.components);
 
   @override
   List<Object> get props => [components];

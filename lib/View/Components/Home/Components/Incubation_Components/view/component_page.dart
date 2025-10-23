@@ -11,14 +11,23 @@ import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Com
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
 
 class ComponentPage extends StatefulWidget {
-  final List<Component>? components;
-  const ComponentPage({super.key, this.components});
+  final List<ComponetRequest> requests;
+  const ComponentPage({super.key, required this.requests});
 
   @override
   State<ComponentPage> createState() => _ComponentPageState();
 }
 
 class _ComponentPageState extends State<ComponentPage> {
+  void initState() {
+    super.initState();
+    context.read<ComponentBloc>().add(LoadComponentEvent());
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ComponentBloc, ComponentState>(
@@ -32,18 +41,11 @@ class _ComponentPageState extends State<ComponentPage> {
         }
       },
       builder: (context, state) {
-        List<ComponetRequest> ComponentRequests = widget.components != null
-            ? widget.components!
-                  .map(
-                    (comp) => ComponetRequest(
-                      id: comp.name,
-                      status: comp.status,
-                      createdAt: DateTime.now(),
-                    ),
-                  )
-                  .toList()
-            : [];
         
+
+        print("Building Component Page with requests: ${widget.requests}");
+        List<ComponetRequest> ComponentRequests = state.requests;
+
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -124,7 +126,7 @@ class _ComponentPageState extends State<ComponentPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Requested ${ComponentRequests[index].id}',
+                                          'Requested ${ComponentRequests[index].id.substring(0, 8)}',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
@@ -199,16 +201,14 @@ class _ComponentPageState extends State<ComponentPage> {
                           },
                         )
                       : Center(
-                          child: 
-                             Text(
-                              "No Component Requests Found",
-                              style: GoogleFonts.lato(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          child: Text(
+                            "No Component Requests Found",
+                            style: GoogleFonts.lato(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
-                         
+                          ),
                         ),
                 ],
               ),
