@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
+import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
@@ -105,53 +106,209 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: size.height * .025),
-
                   // ===== Profile Header =====
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Stack(
                     children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.white,
-                            backgroundImage: _file != null
-                                ? FileImage(_file!)
-                                : (profilePictureUrl != null &&
-                                      profilePictureUrl.isNotEmpty)
-                                ? NetworkImage(profilePictureUrl)
-                                : null,
-                            child:
-                                (_file == null &&
-                                    (profilePictureUrl == null ||
-                                        profilePictureUrl.isEmpty))
-                                ? Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.grey,
-                                  )
-                                : null,
+                      // Centered Home text
+                      Center(
+                        child: Text(
+                          "Home",
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                           ),
-                          SizedBox(width: size.width * .02),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Welcome",
-                                style: GoogleFonts.inter(
-                                  color: Colors.grey,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      // Right-aligned icons
+                      Positioned(
+                        right: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.fade,
+                                    child: NotificationPage(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  CupertinoIcons.bell,
+                                  color: Colors.blue,
+                                  size: 20,
                                 ),
                               ),
+                            ),
+                            SizedBox(width: 12),
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.grey.shade200,
+                              backgroundImage: _file != null
+                                  ? FileImage(_file!)
+                                  : (profilePictureUrl != null &&
+                                        profilePictureUrl.isNotEmpty)
+                                  ? NetworkImage(profilePictureUrl)
+                                  : null,
+                              child:
+                                  (_file == null &&
+                                      (profilePictureUrl == null ||
+                                          profilePictureUrl.isEmpty))
+                                  ? Icon(
+                                      Icons.person,
+                                      size: 28,
+                                      color: Colors.grey,
+                                    )
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: size.height * .03),
+
+                  // // ===== Activity Title =====
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 10),
+                  //   child: Text(
+                  //     "Your Activity",
+                  //     style: GoogleFonts.inter(
+                  //       color: Colors.black,
+                  //       fontSize: 24,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  // ),
+
+                  // SizedBox(height: size.height * .05),
+
+                  // // ===== Activity Cards =====
+                  // SingleChildScrollView(
+                  //   scrollDirection: Axis.horizontal,
+                  //   child: Row(
+                  //     children: [
+                  //       _activityCard(
+                  //         onTap: () {
+                  //           // Navigator.push(
+                  //           //   context,
+                  //           //   PageTransition(
+                  //           //     type: PageTransitionType.fade,
+                  //           //     child: ProjectCard(
+                  //           //       projects: ongoingProjects,
+                  //           //       title: "Ongoing Project",
+                  //           //     ),
+                  //           //   ),
+                  //           // );
+                  //         },
+                  //         title: "Ongoing",
+                  //         value: "${ongoingProjects.length}",
+                  //         label: "Projects",
+                  //         icon: CupertinoIcons.cube,
+                  //         context: context,
+                  //       ),
+                  //       SizedBox(width: size.width * .07),
+                  //       _activityCard(
+                  //         onTap: () {
+                  //           // Navigator.push(
+                  //           //   context,
+                  //           //   PageTransition(
+                  //           //     type: PageTransitionType.fade,
+                  //           //     child: ProjectCard(
+                  //           //       projects: completedProjects,
+                  //           //       title: "Completed Project",
+                  //           //     ),
+                  //           //   ),
+                  //           // );
+                  //         },
+                  //         title: "Completed",
+                  //         value: "${completedProjects.length}",
+                  //         label: "Projects",
+                  //         icon: CupertinoIcons.moon_stars_fill,
+                  //         context: context,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+
+                  // SizedBox(height: size.height * .06),
+                  // ===== Display profile =====
+                  RichText(
+                    text: TextSpan(
+                      text: 'Hello, ',
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.normal,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$displayName!',
+                          style: GoogleFonts.lato(
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'Welcome back to Sairam Incubation!',
+                    style: GoogleFonts.lato(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  SizedBox(height: size.height * .03),
+
+                  // ===== Night Stay =====
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: bg_light,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.moon,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                              SizedBox(width: size.width * .02),
                               Text(
-                                displayName,
-                                style: GoogleFonts.inter(
+                                "Night Stay Facility",
+                                style: GoogleFonts.lato(
                                   color: Colors.black,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,
@@ -159,169 +316,195 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
+                          SizedBox(height: size.height * .01),
+                          Text(
+                            "Register for late-night lab access to continue your projects.",
+                            style: GoogleFonts.lato(
+                              color: Colors.grey.shade800,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+
+                          SizedBox(height: size.height * .02),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.fade,
+                                  child: BlocProvider(
+                                    create: (context) =>
+                                        NightStayBloc(NightStayProvider()),
+                                    child: NightStayOptInScreen(
+                                      nightStayStudent: nightStayStudent,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 20,
+                              ),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: bg,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Night Stay",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.fade,
-                              child: NotificationPage(),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.grey.withValues(alpha: .2),
-                          radius: 20,
-                          child: Icon(CupertinoIcons.bell, color: Colors.grey),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: size.height * .06),
-
-                  // ===== Activity Title =====
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      "Your Activity",
-                      style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                      ),
                     ),
                   ),
-
-                  SizedBox(height: size.height * .05),
-
-                  // ===== Activity Cards =====
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _activityCard(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   PageTransition(
-                            //     type: PageTransitionType.fade,
-                            //     child: ProjectCard(
-                            //       projects: ongoingProjects,
-                            //       title: "Ongoing Project",
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                          title: "Ongoing",
-                          value: "${ongoingProjects.length}",
-                          label: "Projects",
-                          icon: CupertinoIcons.cube,
-                          context: context,
-                        ),
-                        SizedBox(width: size.width * .07),
-                        _activityCard(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   PageTransition(
-                            //     type: PageTransitionType.fade,
-                            //     child: ProjectCard(
-                            //       projects: completedProjects,
-                            //       title: "Completed Project",
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                          title: "Completed",
-                          value: "${completedProjects.length}",
-                          label: "Projects",
-                          icon: CupertinoIcons.moon_stars_fill,
-                          context: context,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: size.height * .06),
+                  SizedBox(height: size.height * .03),
 
                   // ===== Schedule =====
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      "Schedule",
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                      ),
+                  Text(
+                    "Schedule",
+                    style: GoogleFonts.lato(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
 
                   SizedBox(height: size.height * .01),
                   _buildCalendarCard(size),
 
-                  SizedBox(height: size.height * .05),
+                  SizedBox(height: size.height * .03),
 
-                  // ===== Components Grid =====
-                  SizedBox(
-                    height: size.height * .4,
-                    child: GridView.count(
-                      childAspectRatio: 1.2,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 7,
-                      crossAxisSpacing: 7,
-                      shrinkWrap: true,
-                      physics: ScrollPhysics(),
-                      children: [
-                        _componentCard(
-                          title: "Progress",
-                          icon: CupertinoIcons.chart_bar_alt_fill,
-                          onTap: () {},
-                        ),
-                        _componentCard(
-                          title: "Components",
-                          icon: CupertinoIcons.settings,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: ComponentsForm(),
-                                curve: Curves.easeInOut,
-                              ),
-                            );
-                          },
-                        ),
-                        _componentCard(
-                          title: "Night Stay",
-                          icon: CupertinoIcons.moon_stars_fill,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.fade,
-                                child: BlocProvider(
-                                  create: (context) =>
-                                      NightStayBloc(NightStayProvider()),
-                                  child: NightStayOptInScreen(
-                                    nightStayStudent: nightStayStudent,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        _componentCard(
-                          title: "OD",
-                          icon: CupertinoIcons.square_list_fill,
-                          onTap: () {},
-                        ),
-                      ],
+                  // ====== Meetings =====
+                  Text(
+                    "Upcoming Meetings",
+                    style: GoogleFonts.lato(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
+                  SizedBox(height: size.height * .01),
+                  // ListTile(
+                  //   title: Text(
+                  //     "Mentor Meeting",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.black,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     "Today, 3:00 PM - 4:00 PM",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.grey,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   trailing: Icon(
+                  //     CupertinoIcons.right_chevron,
+                  //     color: Colors.grey,
+                  //   ),
+                  //   onTap: () {
+                  //     // Navigate to meeting details or join meeting
+                  //   },
+                  // ),
+                  // SizedBox(height: 1),
+                  // ListTile(
+                  //   title: Text(
+                  //     "Mentor Meeting",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.black,
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //   ),
+                  //   subtitle: Text(
+                  //     "Today, 3:00 PM - 4:00 PM",
+                  //     style: GoogleFonts.lato(
+                  //       color: Colors.grey,
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  //   trailing: Icon(
+                  //     CupertinoIcons.right_chevron,
+                  //     color: Colors.grey,
+                  //   ),
+                  //   onTap: () {
+                  //     // Navigate to meeting details or join meeting
+                  //   },
+                  // ),
+                  // ===== Components Grid =====
+                  // SizedBox(
+                  //   height: size.height * .4,
+                  //   child: GridView.count(
+                  //     childAspectRatio: 1.2,
+                  //     crossAxisCount: 2,
+                  //     mainAxisSpacing: 7,
+                  //     crossAxisSpacing: 7,
+                  //     shrinkWrap: true,
+                  //     physics: ScrollPhysics(),
+                  //     children: [
+                  //       _componentCard(
+                  //         title: "Progress",
+                  //         icon: CupertinoIcons.chart_bar_alt_fill,
+                  //         onTap: () {},
+                  //       ),
+                  //       _componentCard(
+                  //         title: "Components",
+                  //         icon: CupertinoIcons.settings,
+                  //         onTap: () {
+                  //           Navigator.push(
+                  //             context,
+                  //             PageTransition(
+                  //               type: PageTransitionType.fade,
+                  //               child: ComponentsForm(),
+                  //               curve: Curves.easeInOut,
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //       _componentCard(
+                  //         title: "Night Stay",
+                  //         icon: CupertinoIcons.moon_stars_fill,
+                  //         onTap: () {
+                  //           Navigator.push(
+                  //             context,
+                  //             PageTransition(
+                  //               type: PageTransitionType.fade,
+                  //               child: BlocProvider(
+                  //                 create: (context) =>
+                  //                     NightStayBloc(NightStayProvider()),
+                  //                 child: NightStayOptInScreen(
+                  //                   nightStayStudent: nightStayStudent,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           );
+                  //         },
+                  //       ),
+                  //       _componentCard(
+                  //         title: "OD",
+                  //         icon: CupertinoIcons.square_list_fill,
+                  //         onTap: () {},
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -332,74 +515,71 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCalendarCard(Size size) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        elevation: 3,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Row(
-                children: [
-                  Text(
-                    "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
-                    style: GoogleFonts.lato(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
+    return Card(
+      elevation: 2,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: Row(
+              children: [
+                Text(
+                  "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: CalenderPage(),
-                        ),
-                      );
-                    },
-                    icon: Icon(CupertinoIcons.calendar),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: size.height * .02),
-            TableCalendar(
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_dateTime, day),
-              calendarFormat: CalendarFormat.week,
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _dateTime = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              headerVisible: false,
-              availableGestures: AvailableGestures.none,
-              daysOfWeekVisible: true,
-              calendarStyle: CalendarStyle(
-                isTodayHighlighted: true,
-                selectedDecoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
                 ),
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
+                Spacer(),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: CalenderPage(),
+                      ),
+                    );
+                  },
+                  icon: Icon(CupertinoIcons.calendar),
                 ),
-                outsideDaysVisible: false,
-              ),
+              ],
             ),
-            SizedBox(height: size.height * .04),
-          ],
-        ),
+          ),
+          SizedBox(height: size.height * .02),
+          TableCalendar(
+            firstDay: DateTime.utc(2020, 1, 1),
+            lastDay: DateTime.utc(2030, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_dateTime, day),
+            calendarFormat: CalendarFormat.week,
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _dateTime = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            headerVisible: false,
+            availableGestures: AvailableGestures.none,
+            daysOfWeekVisible: true,
+            calendarStyle: CalendarStyle(
+              isTodayHighlighted: true,
+              selectedDecoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              outsideDaysVisible: false,
+            ),
+          ),
+          SizedBox(height: size.height * .04),
+        ],
       ),
     );
   }

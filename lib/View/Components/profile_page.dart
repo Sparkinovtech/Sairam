@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
+import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/Utils/Loader/loading_screen.dart';
 import 'package:sairam_incubation/Profile/Views/Components/Edit_Profile/edit_profile.dart';
 import 'package:sairam_incubation/Profile/Views/profile_list.dart';
@@ -98,35 +99,44 @@ class _ProfilePageState extends State<ProfilePage>
                         padding: EdgeInsets.symmetric(horizontal: 13),
                         child: Row(
                           children: [
-                            Card(
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: bg,
+                                  width: 2,
+                                )
                               ),
-                              child: ClipOval(
-                                child: CircleAvatar(
-                                  radius: 50, // 20% of screen width
-                                  backgroundColor: Colors.white,
-                                  backgroundImage: _file != null
-                                      ? FileImage(_file!)
-                                      : (_profilePictureUrl != null &&
-                                            _profilePictureUrl!.isNotEmpty)
-                                      ? NetworkImage(_profilePictureUrl!)
-                                      : null,
-                                  child:
-                                      (_file == null &&
-                                          (_profilePictureUrl == null ||
-                                              _profilePictureUrl!.isEmpty))
-                                      ? Icon(
-                                          Icons.person,
-                                          size:
-                                              MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.2, // match radius
-                                          color: Colors.grey,
-                                        )
-                                      : null,
+                              child: Card(
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: ClipOval(
+                                  child: CircleAvatar(
+                                    radius: 50, // 20% of screen width
+                                    backgroundColor: Colors.white,
+                                    backgroundImage: _file != null
+                                        ? FileImage(_file!)
+                                        : (_profilePictureUrl != null &&
+                                              _profilePictureUrl!.isNotEmpty)
+                                        ? NetworkImage(_profilePictureUrl!)
+                                        : null,
+                                    child:
+                                        (_file == null &&
+                                            (_profilePictureUrl == null ||
+                                                _profilePictureUrl!.isEmpty))
+                                        ? Icon(
+                                            Icons.person,
+                                            size:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.2, // match radius
+                                            color: Colors.grey,
+                                          )
+                                        : null,
+                                  ),
                                 ),
                               ),
                             ),
@@ -135,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  profile?.name ?? "Student",
+                                  profile?.name?.toUpperCase() ?? "STUDENT",
                                   style: GoogleFonts.inter(
                                     color: Colors.black,
                                     fontSize: 21,

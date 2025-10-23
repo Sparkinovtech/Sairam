@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_state.dart';
+import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/Utils/dialogs/error_dialog.dart';
 import 'package:sairam_incubation/Utils/exceptions/auth_exceptions.dart';
 import 'package:sairam_incubation/Auth/View/signup_form.dart';
@@ -48,9 +49,9 @@ class _SignupPageState extends State<SignupPage> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.blueGrey[800]!,
-                Colors.blueGrey[600]!,
-                Colors.blueGrey[400]!,
+                bg_dark,
+                bg,
+                bg_light,
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

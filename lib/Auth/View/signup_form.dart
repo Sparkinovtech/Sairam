@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_bloc.dart';
 import 'package:sairam_incubation/Auth/bloc/auth_event.dart';
+import 'package:sairam_incubation/Utils/Constants/colors.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -126,7 +127,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                   );
                 },
-                color: Colors.blueGrey,
+                color: bg,
                 minWidth: size.width * .65,
                 height: size.height * .05,
                 shape: RoundedRectangleBorder(
