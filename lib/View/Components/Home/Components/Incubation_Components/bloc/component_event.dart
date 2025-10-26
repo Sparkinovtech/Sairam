@@ -13,13 +13,9 @@ final class NavigateToComponentPageEvent extends ComponentEvent {
   const NavigateToComponentPageEvent();
 }
 
-final class NavigateToAddComponentEvent extends ComponentEvent {
-  
-}
+final class NavigateToAddComponentEvent extends ComponentEvent {}
 
-final class AddComponent extends ComponentEvent {
-  
-}
+final class AddComponent extends ComponentEvent {}
 
 final class RemoveComponent extends ComponentEvent {
   final int removeIndex;
@@ -40,30 +36,30 @@ final class NavigateToViewComponentEvent extends ComponentEvent {
 }
 
 final class IncreaseComponentQuantity extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int componentIndex;
 
-  const IncreaseComponentQuantity(this.component);
+  const IncreaseComponentQuantity(this.componentIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [componentIndex];
 }
 
 final class DecreaseComponentQuantity extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int componentIndex;
 
-  const DecreaseComponentQuantity(this.component);
+  const DecreaseComponentQuantity(this.componentIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [componentIndex];
 }
 
 final class DeleteComponentFromCart extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int componentIndex;
 
-  const DeleteComponentFromCart(this.component);
+  const DeleteComponentFromCart(this.componentIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [componentIndex];
 }
 
 final class SendRequest extends ComponentEvent {

@@ -88,16 +88,19 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       final current = state as ComponentLoaded;
       final newComponents = current.components.toList();
       final newControllers = current.controllers.toList();
-      newControllers.removeAt(event.removeIndex);
+      newControllers.removeAt(event.removeIndex - 1);
+      print("Removing component at index ${event.removeIndex}");
       emit(
         ComponentLoaded(
           newComponents,
           newControllers,
           List<ComponetRequest>.from(current.requests),
-        ),);
+        ),
+      );
     });
 
     on<NavigateToViewComponentEvent>((event, emit) {
+      // Build components from controllers
       List<Component> components = event.controllers
           .map(
             (controller) => Component(
@@ -106,6 +109,17 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
             ),
           )
           .toList();
+
+      // First emit loaded state with the components so they're in the state
+      emit(
+        ComponentLoaded(
+          components,
+          event.controllers,
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
+
+      // Then emit navigation state
       emit(
         NavigateToViewComponentState(
           components,
@@ -116,16 +130,55 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
 
     on<IncreaseComponentQuantity>((event, emit) {
       // Handle increasing quantity logic here
-      final newQuantity = 1; // Example logic
+
+      final newComponents = List<Component>.from(state.components);
+      newComponents[event.componentIndex].quantity =
+          (int.parse(newComponents[event.componentIndex].quantity) + 1)
+              .toString();
+
+      // Create new component instances instead of mutating
+
+      emit(
+        ComponentLoaded(
+          newComponents,
+          List<ComponentControllers>.from(state.controllers),
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
 
     on<DecreaseComponentQuantity>((event, emit) {
+      print("DecreaseComponentQuantity: index=${event.componentIndex}");
       // Handle decreasing quantity logic here
-      final newQuantity = 0; // Example logic
+
+      final newComponents = List<Component>.from(state.components);
+      newComponents[event.componentIndex].quantity =
+          (int.parse(newComponents[event.componentIndex].quantity) - 1)
+              .toString();
+
+      // Create new component instances instead of mutating
+
+      emit(
+        ComponentLoaded(
+          newComponents,
+          List<ComponentControllers>.from(state.controllers),
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
 
     on<DeleteComponentFromCart>((event, emit) {
       // Handle deleting component from cart logic here
+
+      final newComponents = state.components.toList();
+      newComponents.removeAt(event.componentIndex);
+      emit(
+        ComponentLoaded(
+          newComponents,
+          List<ComponentControllers>.from(state.controllers),
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
 
     on<SendRequest>((event, emit) {

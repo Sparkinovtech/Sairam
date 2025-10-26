@@ -42,6 +42,7 @@ final class ComponentError extends ComponentState {
   List<Object> get props => [message];
 }
 
+// State emitted when navigating to Add Component Page
 final class NavigateToAddComponentState extends ComponentState {
   final List<ComponentControllers> controllers;
 
@@ -54,11 +55,17 @@ final class NavigateToAddComponentState extends ComponentState {
   List<Object> get props => [controllers, requests];
 }
 
-final class AddComponentState extends ComponentState {
-  const AddComponentState(List<ComponentControllers> controllers)
-    : super(controllers: controllers);
+// State emitted when navigating Back to Component Page
+class NavigateToComponentPageState extends ComponentState {
+  const NavigateToComponentPageState([
+    List<ComponetRequest> requests = const [],
+  ]) : super(requests: requests);
+
+  @override
+  List<Object> get props => [requests];
 }
 
+// State emitted when navigating to View Component Page
 final class NavigateToViewComponentState extends ComponentState {
   final List<Component> components;
 
@@ -71,6 +78,22 @@ final class NavigateToViewComponentState extends ComponentState {
   List<Object> get props => [components, requests];
 }
 
+// State emitted when navigating Back to Add Component Page
+class NavigateBackToAddComponentState extends ComponentState {
+  @override
+  // ignore: overridden_fields
+  final List<ComponentControllers> controllers;
+
+  const NavigateBackToAddComponentState(
+    this.controllers, [
+    List<ComponetRequest> requests = const [],
+  ]) : super(controllers: controllers, requests: requests);
+
+  @override
+  List<Object> get props => [controllers, requests];
+}
+
+// State emitted when a component request has been successfully added
 final class ComponentRequestAdded extends ComponentState {
   final List<ComponetRequest> requests;
 
@@ -88,27 +111,4 @@ class ComponentControllers {
     required this.nameController,
     required this.quantityController,
   });
-}
-
-class NavigateToComponentPageState extends ComponentState {
-  const NavigateToComponentPageState([
-    List<ComponetRequest> requests = const [],
-  ]) : super(requests: requests);
-
-  @override
-  List<Object> get props => [requests];
-}
-
-class NavigateBackToAddComponentState extends ComponentState {
-  @override
-  // ignore: overridden_fields
-  final List<ComponentControllers> controllers;
-
-  const NavigateBackToAddComponentState(
-    this.controllers, [
-    List<ComponetRequest> requests = const [],
-  ]) : super(controllers: controllers, requests: requests);
-
-  @override
-  List<Object> get props => [controllers, requests];
 }

@@ -53,9 +53,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
             current is NavigateToComponentPageState,
         // allow building when the bloc emits ComponentLoaded (or AddComponentState)
         buildWhen: (previous, current) =>
-            current is AddComponentState ||
-            current is ComponentLoaded ||
-            current is ComponentLoading,
+            current is ComponentLoaded || current is ComponentLoading,
         listener: (context, state) async {
           final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
           if (!isActiveRoute) return;
@@ -94,16 +92,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           controllersForNav = List<ComponentControllers>.from(
             mergedControllers,
           );
-          if (state is AddComponentState) {
-            print("Total components: ${mergedControllers.length}");
-            // You can use mergedControllers here
-            for (var controller in mergedControllers) {
-              print(
-                "Component Name: ${controller.nameController.text}, Quantity: ${controller.quantityController.text}",
-              );
-            }
-            return Container(); // Replace with your widget
-          }
+
           if (state is ComponentLoading) {
             return Center(child: CircularProgressIndicator());
           }
@@ -166,11 +155,9 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
                           index: index + 1,
                           onDelete: mergedControllers.length > 1
                               ? () {
+                                  print("Deleting component at index $index");
                                   context.read<ComponentBloc>().add(
-                                    RemoveComponent(
-                                      index
-                                         
-                                    ),
+                                    RemoveComponent(index),
                                   );
                                 }
                               : null,
