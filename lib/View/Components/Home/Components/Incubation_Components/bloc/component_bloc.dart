@@ -16,41 +16,46 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
   ComponentBloc(this.profileProvider)
     : super(ComponentInitial(profile: profileProvider.profile)) {
     on<LoadComponentEvent>((event, emit) {
-      // Handle loading components
-      emit(ComponentLoading());
-      // Simulate loading
-      final components = [];
-      // create matching controllers
-      final controllers = components
-          .map(
-            (_) => ComponentControllers(
-              nameController: TextEditingController(),
-              quantityController: TextEditingController(),
-            ),
-          )
-          .toList();
-      print("Loaded components: $components");
-      emit(ComponentLoaded(List.from(components), List.from(controllers)));
+      // Preserve existing components, controllers, AND requests
+      if (state is ComponentLoaded) {
+        final current = state as ComponentLoaded;
+        emit(
+          ComponentLoaded(
+            List<Component>.from(current.components),
+            List<ComponentControllers>.from(current.controllers),
+            List<ComponetRequest>.from(current.requests),
+          ),
+        );
+      } else {
+        // Initial load - preserve requests from any previous state
+        emit(
+          ComponentLoaded([], [], List<ComponetRequest>.from(state.requests)),
+        );
+      }
     });
 
     on<NavigateToAddComponentEvent>((event, emit) {
-      List<ComponentControllers> controllers = [];
-      if (event.components != null) {
-        controllers = event.components!
-            .map(
-              (controller) => ComponentControllers(
-                nameController: TextEditingController(text: controller.name),
-                quantityController: TextEditingController(
-                  text: controller.quantity,
-                ),
-              ),
-            )
-            .toList();
-      }
-      emit(NavigateToAddComponentState(controllers));
+      List<ComponentControllers> controllers = [
+        ComponentControllers(
+          nameController: TextEditingController(),
+          quantityController: TextEditingController(),
+        ),
+      ];
+
+      // Preserve requests from current state
+      emit(
+        NavigateToAddComponentState(
+          controllers,
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
     on<NavigateToComponentPageEvent>((event, emit) {
-      emit(NavigateToComponentPageState());
+      emit(
+        NavigateToComponentPageState(
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
     on<AddComponent>((event, emit) {
       // Handle adding component logic here
@@ -58,8 +63,8 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       // Only operate when we have a loaded state
       if (state is ComponentLoaded) {
         final current = state as ComponentLoaded;
-        final newComponents = state.components.toList();
-        final newControllers = state.controllers.toList();
+        final newComponents = current.components.toList();
+        final newControllers = current.controllers.toList();
         newComponents.add(Component(name: 'NewComponent', quantity: '0'));
         newControllers.add(
           ComponentControllers(
@@ -68,13 +73,28 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
           ),
         );
 
-        emit(ComponentLoaded(newComponents, newControllers));
+        emit(
+          ComponentLoaded(
+            newComponents,
+            newControllers,
+            List<ComponetRequest>.from(current.requests),
+          ),
+        );
       }
     });
 
     on<RemoveComponent>((event, emit) {
       // Handle removing component logic here
-      emit(ComponentRemoved(event.component));
+      final current = state as ComponentLoaded;
+      final newComponents = current.components.toList();
+      final newControllers = current.controllers.toList();
+      newControllers.removeAt(event.removeIndex);
+      emit(
+        ComponentLoaded(
+          newComponents,
+          newControllers,
+          List<ComponetRequest>.from(current.requests),
+        ),);
     });
 
     on<NavigateToViewComponentEvent>((event, emit) {
@@ -86,36 +106,47 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
             ),
           )
           .toList();
-      emit(NavigateToViewComponentState(components));
+      emit(
+        NavigateToViewComponentState(
+          components,
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
 
     on<IncreaseComponentQuantity>((event, emit) {
       // Handle increasing quantity logic here
       final newQuantity = 1; // Example logic
-      emit(ComponentQuantityUpdated(event.component, newQuantity));
     });
 
     on<DecreaseComponentQuantity>((event, emit) {
       // Handle decreasing quantity logic here
       final newQuantity = 0; // Example logic
-      emit(ComponentQuantityUpdated(event.component, newQuantity));
     });
 
     on<DeleteComponentFromCart>((event, emit) {
       // Handle deleting component from cart logic here
-      emit(ComponentRemoved(event.component));
     });
-    List<ComponetRequest> requests = [];
+
     on<SendRequest>((event, emit) {
-      // Handle sending request logic here
+      // Get existing requests from state
+      final currentRequests = List<ComponetRequest>.from(state.requests);
+      print("SendRequest: Current requests count = ${currentRequests.length}");
+
+      // Create new request
       final request = ComponetRequest(
         id: 'req_${DateTime.now().millisecondsSinceEpoch}',
         createdAt: DateTime.now(),
         status: 'pending',
         components: event.components,
       );
-      requests.add(request);
-      emit(ComponentRequestAdded(requests));
+
+      // Add to list and emit
+      currentRequests.add(request);
+      print(
+        "SendRequest: After adding, total requests = ${currentRequests.length}",
+      );
+      emit(ComponentRequestAdded(currentRequests));
     });
     on<NavigateBackToAddComponentEvent>((event, emit) {
       List<ComponentControllers> controllers = event.components
@@ -128,7 +159,12 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
             ),
           )
           .toList();
-      emit(NavigateBackToAddComponentState(controllers));
+      emit(
+        NavigateBackToAddComponentState(
+          controllers,
+          List<ComponetRequest>.from(state.requests),
+        ),
+      );
     });
   }
 }

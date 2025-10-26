@@ -14,8 +14,7 @@ final class NavigateToComponentPageEvent extends ComponentEvent {
 }
 
 final class NavigateToAddComponentEvent extends ComponentEvent {
-  final List<Component>? components;
-  const NavigateToAddComponentEvent(this.components);
+  
 }
 
 final class AddComponent extends ComponentEvent {
@@ -23,12 +22,12 @@ final class AddComponent extends ComponentEvent {
 }
 
 final class RemoveComponent extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int removeIndex;
 
-  const RemoveComponent(this.component);
+  const RemoveComponent(this.removeIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [removeIndex];
 }
 
 final class NavigateToViewComponentEvent extends ComponentEvent {

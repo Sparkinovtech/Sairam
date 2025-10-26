@@ -11,7 +11,7 @@ import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 class ComponentAddpage extends StatefulWidget {
   final List<ComponentControllers> controllers;
 
-  ComponentAddpage({super.key, this.controllers = const []});
+  ComponentAddpage({super.key, required this.controllers});
 
   @override
   State<ComponentAddpage> createState() => _ComponentAddpageState();
@@ -37,7 +37,6 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
       controller.nameController.dispose();
       controller.quantityController.dispose();
     }
-    
   }
 
   @override
@@ -58,6 +57,8 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
             current is ComponentLoaded ||
             current is ComponentLoading,
         listener: (context, state) async {
+          final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
+          if (!isActiveRoute) return;
           // Handle navigation or other side effects here if needed
           if (state is NavigateToViewComponentState) {
             component = state.components;
@@ -65,13 +66,21 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ComponentViewpage(components: component),
+                builder: (ctx) => BlocProvider.value(
+                  value: context.read<ComponentBloc>(),
+                  child: ComponentViewpage(components: component),
+                ),
               ),
             );
           }
           if (state is NavigateToComponentPageState) {
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => BottomNavBar(index: 1)),
+              MaterialPageRoute(
+                builder: (ctx) => BlocProvider.value(
+                  value: context.read<ComponentBloc>(),
+                  child: BottomNavBar(index: 1),
+                ),
+              ),
             );
           }
         },
@@ -155,6 +164,16 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
                         return ComponentAdd(
                           controllers: mergedControllers[index],
                           index: index + 1,
+                          onDelete: mergedControllers.length > 1
+                              ? () {
+                                  context.read<ComponentBloc>().add(
+                                    RemoveComponent(
+                                      index
+                                         
+                                    ),
+                                  );
+                                }
+                              : null,
                         );
                       },
                     ),

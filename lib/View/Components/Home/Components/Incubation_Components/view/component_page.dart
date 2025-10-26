@@ -2,50 +2,44 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
 
 class ComponentPage extends StatefulWidget {
-  final List<ComponetRequest> requests;
-  const ComponentPage({super.key, required this.requests});
+  const ComponentPage({super.key});
 
   @override
   State<ComponentPage> createState() => _ComponentPageState();
 }
 
 class _ComponentPageState extends State<ComponentPage> {
-  void initState() {
-    super.initState();
-    context.read<ComponentBloc>().add(LoadComponentEvent());
-  }
-
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ComponentBloc, ComponentState>(
       listener: (context, state) {
+        final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
+        if (!isActiveRoute) return;
         if (state is NavigateToAddComponentState) {
           print("Navigating to Add Component Page");
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ComponentAddpage()),
+            MaterialPageRoute(
+              builder: (ctx) => BlocProvider.value(
+                value: context.read<ComponentBloc>(),
+                child: ComponentAddpage(controllers: state.controllers),
+              ),
+            ),
           );
         }
       },
       builder: (context, state) {
-        
-
-        print("Building Component Page with requests: ${widget.requests}");
         List<ComponetRequest> ComponentRequests = state.requests;
-
+        print(
+          "Building Component Page - Total requests: ${ComponentRequests.length}",
+        );
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -223,9 +217,7 @@ class _ComponentPageState extends State<ComponentPage> {
               //   context,
               //   MaterialPageRoute(builder: (context) => ComponentAddpage()),
               // );
-              context.read<ComponentBloc>().add(
-                NavigateToAddComponentEvent(null),
-              );
+              context.read<ComponentBloc>().add(NavigateToAddComponentEvent());
             },
             child: Icon(Icons.add),
           ),

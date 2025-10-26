@@ -5,7 +5,6 @@ import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
 import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 
 class ComponentViewpage extends StatefulWidget {
@@ -19,11 +18,13 @@ class ComponentViewpage extends StatefulWidget {
 
 class _ComponentViewpageState extends State<ComponentViewpage> {
   @override
+  void dispose() {
+    super.dispose();
+    widget.components.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    void dispose() {
-      super.dispose();
-      widget.components.clear();
-    }
 
     return BlocConsumer<ComponentBloc, ComponentState>(
       listenWhen: (previous, current) =>
@@ -31,20 +32,29 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
           current is NavigateBackToAddComponentState ||
           current is ComponentRequestAdded,
       listener: (context, state) {
+        final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
+        if (!isActiveRoute) return;
         if (state is NavigateBackToAddComponentState) {
           print("Navigating to Add Component Page");
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ComponentAddpage(controllers: state.controllers),
+              builder: (ctx) => BlocProvider.value(
+                value: context.read<ComponentBloc>(),
+                child: ComponentAddpage(controllers: state.controllers),
+              ),
             ),
           );
         }
         if (state is ComponentRequestAdded) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => BottomNavBar(index: 1)),
+            MaterialPageRoute(
+              builder: (ctx) => BlocProvider.value(
+                value: context.read<ComponentBloc>(),
+                child: BottomNavBar(index: 1),
+              ),
+            ),
           ); // Go back after request is added
         }
       },

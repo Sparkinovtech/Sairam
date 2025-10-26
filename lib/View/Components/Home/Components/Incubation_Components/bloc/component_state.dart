@@ -13,7 +13,7 @@ sealed class ComponentState extends Equatable {
   });
 
   @override
-  List<Object?> get props => [profile, components, controllers];
+  List<Object?> get props => [profile, components, controllers, requests];
 }
 
 final class ComponentInitial extends ComponentState {
@@ -26,7 +26,12 @@ final class ComponentLoaded extends ComponentState {
   const ComponentLoaded(
     List<Component> components,
     List<ComponentControllers> controllers,
-  ) : super(components: components, controllers: controllers);
+    List<ComponetRequest> requests,
+  ) : super(
+        components: components,
+        controllers: controllers,
+        requests: requests,
+      );
 }
 
 final class ComponentError extends ComponentState {
@@ -40,11 +45,13 @@ final class ComponentError extends ComponentState {
 final class NavigateToAddComponentState extends ComponentState {
   final List<ComponentControllers> controllers;
 
-  const NavigateToAddComponentState(this.controllers)
-    : super(controllers: controllers);
+  const NavigateToAddComponentState(
+    this.controllers, [
+    List<ComponetRequest> requests = const [],
+  ]) : super(controllers: controllers, requests: requests);
 
   @override
-  List<Object> get props => [controllers];
+  List<Object> get props => [controllers, requests];
 }
 
 final class AddComponentState extends ComponentState {
@@ -55,29 +62,13 @@ final class AddComponentState extends ComponentState {
 final class NavigateToViewComponentState extends ComponentState {
   final List<Component> components;
 
-  const NavigateToViewComponentState(this.components);
+  const NavigateToViewComponentState(
+    this.components, [
+    List<ComponetRequest> requests = const [],
+  ]) : super(requests: requests);
 
   @override
-  List<Object> get props => [components];
-}
-
-final class ComponentQuantityUpdated extends ComponentState {
-  final String component; // Example data, replace with actual model
-  final int quantity;
-
-  const ComponentQuantityUpdated(this.component, this.quantity);
-
-  @override
-  List<Object> get props => [component, quantity];
-}
-
-final class ComponentRemoved extends ComponentState {
-  final String component; // Example data, replace with actual model
-
-  const ComponentRemoved(this.component);
-
-  @override
-  List<Object> get props => [component];
+  List<Object> get props => [components, requests];
 }
 
 final class ComponentRequestAdded extends ComponentState {
@@ -99,16 +90,25 @@ class ComponentControllers {
   });
 }
 
-class NavigateToComponentPageState extends ComponentState {}
+class NavigateToComponentPageState extends ComponentState {
+  const NavigateToComponentPageState([
+    List<ComponetRequest> requests = const [],
+  ]) : super(requests: requests);
+
+  @override
+  List<Object> get props => [requests];
+}
 
 class NavigateBackToAddComponentState extends ComponentState {
   @override
   // ignore: overridden_fields
   final List<ComponentControllers> controllers;
 
-  const NavigateBackToAddComponentState(this.controllers)
-    : super(controllers: controllers);
+  const NavigateBackToAddComponentState(
+    this.controllers, [
+    List<ComponetRequest> requests = const [],
+  ]) : super(controllers: controllers, requests: requests);
 
   @override
-  List<Object> get props => [controllers];
+  List<Object> get props => [controllers, requests];
 }

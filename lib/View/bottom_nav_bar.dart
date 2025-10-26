@@ -50,13 +50,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
     _selectedIndex = widget.index ?? 0;
     _pages = [
       HomePage(),
-      ComponentPage(  requests: []),
+      ComponentPage(),
       Scaffold(
         appBar: AppBar(
           title: Center(
             child: Text(
               "OD Process",
-              style: TextStyle(color: Colors.black, fontSize: 20 , fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           surfaceTintColor: Colors.white,
