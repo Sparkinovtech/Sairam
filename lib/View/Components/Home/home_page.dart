@@ -10,7 +10,6 @@ import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
@@ -83,34 +82,6 @@ class _HomePageState extends State<HomePage> {
 
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        if (state is NightStayBtnClicked) {
-          // Handle the button clicked state - show dialog and return empty container
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text('AlertDialog Title'),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text('This is a demo alert dialog.'),
-                      Text('Would you like to approve of this message?'),
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('Approve'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            );
-          });
-          return const SizedBox.shrink();
-        }
         final profile = state.profile;
         String displayName = profile?.name ?? "User";
         String? profilePictureUrl = profile?.profilePicture;
@@ -399,7 +370,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: bg,
+                                color: hasOptedIn ? Colors.red : bg,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Center(
