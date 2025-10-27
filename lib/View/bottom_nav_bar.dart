@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
 import 'package:sairam_incubation/View/Components/Home/home_page.dart';
 import 'package:sairam_incubation/View/Components/profile_page.dart';
 
@@ -49,7 +53,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     _selectedIndex = widget.index ?? 0;
     _pages = [
-      HomePage(),
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<NightStayBloc>(create: (context) => NightStayBloc(NightStayProvider())),
+        ],
+        child: HomePage(),
+      ),
       ComponentPage(),
       Scaffold(
         appBar: AppBar(

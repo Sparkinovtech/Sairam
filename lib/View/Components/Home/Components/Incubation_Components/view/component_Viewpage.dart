@@ -18,12 +18,6 @@ class ComponentViewpage extends StatefulWidget {
 
 class _ComponentViewpageState extends State<ComponentViewpage> {
   @override
-  void dispose() {
-    super.dispose();
-    widget.components.clear();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocConsumer<ComponentBloc, ComponentState>(
       listenWhen: (previous, current) =>
