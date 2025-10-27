@@ -95,11 +95,20 @@ class NavigateBackToAddComponentState extends ComponentState {
 
 // State emitted when a component request has been successfully added
 final class ComponentRequestAdded extends ComponentState {
-  final List<ComponetRequest> requests;
+  const ComponentRequestAdded({
+    required List<ComponetRequest> requests,
+    List<Component> components = const [],
+    List<ComponentControllers> controllers = const [],
+    Profile? profile,
+  }) : super(
+         requests: requests,
+         components: components,
+         controllers: controllers,
+         profile: profile,
+       );
 
-  const ComponentRequestAdded(this.requests) : super(requests: requests);
   @override
-  List<Object> get props => [requests];
+  List<Object?> get props => [requests, components, controllers, profile];
 }
 
 // Lightweight holder for TextEditingControllers so bloc/state can manage them

@@ -25,7 +25,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
   @override
   void initState() {
     super.initState();
-    // Add first component by default
+    // Initialize with default component controller on page load
     context.read<ComponentBloc>().add(LoadComponentEvent());
   }
 

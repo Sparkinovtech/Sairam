@@ -7,6 +7,7 @@ import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/viewRequestPage.dart';
 
 class ComponentPage extends StatefulWidget {
   const ComponentPage({super.key});
@@ -16,6 +17,13 @@ class ComponentPage extends StatefulWidget {
 }
 
 class _ComponentPageState extends State<ComponentPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Load  requests when the page initializes
+    context.read<ComponentBloc>().add(LoadComponentEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ComponentBloc, ComponentState>(
@@ -37,9 +45,7 @@ class _ComponentPageState extends State<ComponentPage> {
       },
       builder: (context, state) {
         List<ComponetRequest> ComponentRequests = state.requests;
-        print(
-          "Building Component Page - Total requests: ${ComponentRequests.length}",
-        );
+
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -109,88 +115,87 @@ class _ComponentPageState extends State<ComponentPage> {
                                   ),
                                 ],
                               ),
-                              child: Container(
-                                padding: EdgeInsets.all(16),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Requested ${ComponentRequests[index].id.substring(0, 8)}',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          ComponentRequests[index].createdAt !=
-                                                  null
-                                              ? DateFormat.yMMMd().format(
-                                                  ComponentRequests[index]
-                                                      .createdAt!,
-                                                )
-                                              : 'No date',
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Viewrequestpage(
+                                        request: ComponentRequests[index],
+                                      ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color.fromARGB(
-                                              177,
-                                              240,
-                                              201,
-                                              30,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            ComponentRequests[index].status,
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(16),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Requested ${ComponentRequests[index].id.substring(0, 8)}',
                                             style: TextStyle(
-                                              color: Colors.white,
                                               fontWeight: FontWeight.bold,
+                                              fontSize: 16,
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(width: 30),
-                                        Icon(Icons.arrow_forward_ios),
-                                      ],
-                                    ),
-                                  ],
+
+                                          SizedBox(height: 4),
+                                          Text(
+                                            ComponentRequests[index]
+                                                        .createdAt !=
+                                                    null
+                                                ? DateFormat.yMMMd().format(
+                                                    ComponentRequests[index]
+                                                        .createdAt!,
+                                                  )
+                                                : 'No date',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                177,
+                                                240,
+                                                201,
+                                                30,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              ComponentRequests[index].status,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 30),
+                                          Icon(Icons.arrow_forward_ios),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              // child: ListTile(
-                              //   title: Text(
-                              //     'Requested ${ComponentRequests[index].id}',
-                              //     style: TextStyle(fontWeight: FontWeight.bold),
-                              //   ),
-                              //   subtitle: Text(
-                              //     ComponentRequests[index].createdAt != null
-                              //         ? DateFormat.yMMMd().format(ComponentRequests[index].createdAt!)
-                              //         : 'No date',
-                              //   ),
-                              //   trailing: Icon(Icons.arrow_forward_ios),
-                              //   onTap: () {
-                              //     // Handle component tap
-                              //   },
-                              // ),
                             );
                           },
                         )
@@ -212,11 +217,6 @@ class _ComponentPageState extends State<ComponentPage> {
             backgroundColor: bg,
             foregroundColor: Colors.white,
             onPressed: () {
-              // Action for FAB
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => ComponentAddpage()),
-              // );
               context.read<ComponentBloc>().add(NavigateToAddComponentEvent());
             },
             child: Icon(Icons.add),
