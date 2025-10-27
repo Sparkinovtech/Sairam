@@ -9,11 +9,15 @@ sealed class ComponentEvent extends Equatable {
 
 final class LoadComponentEvent extends ComponentEvent {}
 
+// Events for Component Page
+
+final class NavigateToAddComponentEvent extends ComponentEvent {}
+
+// Events for Component Add Page
+
 final class NavigateToComponentPageEvent extends ComponentEvent {
   const NavigateToComponentPageEvent();
 }
-
-final class NavigateToAddComponentEvent extends ComponentEvent {}
 
 final class AddComponent extends ComponentEvent {}
 
@@ -34,6 +38,8 @@ final class NavigateToViewComponentEvent extends ComponentEvent {
   @override
   List<Object> get props => [controllers];
 }
+
+// Events for Component View Page
 
 final class IncreaseComponentQuantity extends ComponentEvent {
   final int componentIndex;
