@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
@@ -30,6 +31,12 @@ class _HomePageState extends State<HomePage> {
   DateTime _focusedDay = DateTime.now();
   late final ScrollController _controller;
   late NightStayBloc _nightStayBloc;
+  bool get isWithinAllowedTime {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day, 16);
+    final end = DateTime(now.year, now.month, now.day, 18);
+    return now.isAfter(start) && now.isBefore(end);
+  }
 
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
@@ -80,7 +87,69 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return BlocBuilder<ProfileBloc, ProfileState>(
+    return BlocConsumer<ProfileBloc, ProfileState>(
+      listener: (context, state) {
+        if (state is NightStayBtnClickState) {
+          // Handle the night stay button click event
+          if (!isWithinAllowedTime) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Night Stay requests can only be made between 4 PM and 6 PM.',
+                ),
+              ),
+            );
+            return;
+          }
+          if (state.nightStayStudent == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Insufficient profile information to proceed with Night Stay request.',
+                ),
+              ),
+            );
+            return;
+          }
+          showDialog(
+            context: context,
+            builder: (builder) {
+              return AlertDialog(
+                title: Text('Night Stay Request'),
+                content: Text(
+                  hasOptedIn
+                      ? 'Are you sure you want to cancel your night stay request?'
+                      : 'Are you sure you want to opt in for night stay?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _nightStayBloc.add(
+                        SaveNightStayEvent(
+                          state.nightStayStudent!,
+                          hasOptedIn ? 'No' : 'Yes',
+                        ),
+                      );
+
+                      Navigator.of(context).pop();
+                      setState(() {
+                        hasOptedIn = !hasOptedIn;
+                      });
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
       builder: (context, state) {
         final profile = state.profile;
         String displayName = profile?.name ?? "User";
@@ -95,24 +164,6 @@ class _HomePageState extends State<HomePage> {
             studentName: profile.name!,
             scholarType: profile.scholarType!.displayName,
           );
-        }
-        void toggleNightStay() {
-          if (nightStayStudent == null) return;
-
-          if (hasOptedIn) {
-            // Cancel night stay request (No)
-            _nightStayBloc.add(SaveNightStayEvent(nightStayStudent, 'No'));
-            setState(() {
-              hasOptedIn = !hasOptedIn;
-            });
-          } else {
-            // Opt in for night stay (Yes)
-            _nightStayBloc.add(SaveNightStayEvent(nightStayStudent, 'Yes'));
-            setState(() {
-              hasOptedIn = !hasOptedIn;
-            });
-          }
-          // No need for setState here; react to bloc state changes
         }
 
         devtools.log("From home page : The profile is $profile");
@@ -360,7 +411,11 @@ class _HomePageState extends State<HomePage> {
                               //     ),
                               //   ),
                               // );
-                              toggleNightStay();
+                              context.read<ProfileBloc>().add(
+                                NightStayBtnClickEvent(
+                                  nightStayStudent: nightStayStudent,
+                                ),
+                              );
                             },
 
                             child: Container(

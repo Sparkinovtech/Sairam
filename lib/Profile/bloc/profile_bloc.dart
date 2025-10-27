@@ -599,5 +599,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
       }
     });
+
+    // --- Night Stay Button Click ---
+    on<NightStayBtnClickEvent>((event, emit) async {
+      final currentProfile = state.profile;
+      emit(
+        NightStayBtnClickState(
+          nightStayStudent: event.nightStayStudent,
+          isLoading: false,
+          profile: currentProfile,
+        ),
+      );
+    });
   }
 }

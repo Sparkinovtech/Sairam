@@ -5,6 +5,7 @@ import 'package:sairam_incubation/Profile/Model/domains.dart';
 import 'package:sairam_incubation/Profile/Model/link.dart';
 import 'package:sairam_incubation/Profile/Model/media_items.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 
 @immutable
 abstract class ProfileEvent {
@@ -131,4 +132,10 @@ class DeleteCertificateEvent extends ProfileEvent {
   final Certificate certificate;
 
   const DeleteCertificateEvent({required this.certificate});
+}
+
+class NightStayBtnClickEvent extends ProfileEvent {
+  final NightStayStudent? nightStayStudent;
+
+  const NightStayBtnClickEvent({required this.nightStayStudent});
 }
