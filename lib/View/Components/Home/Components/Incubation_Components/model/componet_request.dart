@@ -1,7 +1,8 @@
+import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 
 class ComponetRequest {
-  final String? stu_id;
+  final Profile? profile;
   final String id;
   final DateTime? createdAt;
   final String status;
@@ -12,7 +13,7 @@ class ComponetRequest {
     this.createdAt,
     this.status = 'pending',
     this.components = const [],
-    this.stu_id,
+    required this.profile,
   });
 
   factory ComponetRequest.fromMap(
@@ -20,6 +21,7 @@ class ComponetRequest {
     String documentId,
   ) {
     // Deserialize components list from Firestore
+
     List<Component> componentsList = [];
     if (data['components'] != null) {
       componentsList = (data['components'] as List)
@@ -34,14 +36,19 @@ class ComponetRequest {
           : null,
       status: data['status'] ?? 'pending',
       components: componentsList,
+      profile: data['profile'] != null
+          ? Profile.fromJson(data['profile'] as Map<String, dynamic>)
+          : null,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'createdAt': createdAt?.toIso8601String(),
       'status': status,
       'components': components.map((c) => c.toJson()).toList(),
+      'profile': profile?.toJson(),
     };
   }
 }

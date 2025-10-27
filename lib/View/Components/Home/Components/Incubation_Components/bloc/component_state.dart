@@ -1,23 +1,21 @@
 part of 'component_bloc.dart';
 
 sealed class ComponentState extends Equatable {
-  final Profile? profile;
   final List<Component> components;
   final List<ComponetRequest> requests;
   final List<ComponentControllers> controllers;
   const ComponentState({
-    this.profile,
     this.components = const [],
     this.requests = const [],
     this.controllers = const [],
   });
 
   @override
-  List<Object?> get props => [profile, components, controllers, requests];
+  List<Object?> get props => [components, controllers, requests];
 }
 
 final class ComponentInitial extends ComponentState {
-  const ComponentInitial({required super.profile});
+  const ComponentInitial();
 }
 
 final class ComponentLoading extends ComponentState {}
@@ -99,16 +97,14 @@ final class ComponentRequestAdded extends ComponentState {
     required List<ComponetRequest> requests,
     List<Component> components = const [],
     List<ComponentControllers> controllers = const [],
-    Profile? profile,
   }) : super(
          requests: requests,
          components: components,
          controllers: controllers,
-         profile: profile,
        );
 
   @override
-  List<Object?> get props => [requests, components, controllers, profile];
+  List<Object?> get props => [requests, components, controllers];
 }
 
 // Lightweight holder for TextEditingControllers so bloc/state can manage them

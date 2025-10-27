@@ -13,8 +13,7 @@ part 'component_state.dart';
 class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
   final ProfileCloudFirestoreProvider profileProvider;
 
-  ComponentBloc(this.profileProvider)
-    : super(ComponentInitial(profile: profileProvider.profile)) {
+  ComponentBloc(this.profileProvider) : super(ComponentInitial()) {
     on<LoadComponentEvent>((event, emit) {
       if (state is ComponentLoaded) {
         final current = state as ComponentLoaded;
@@ -66,7 +65,7 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
     // Add Component
     on<AddComponent>((event, emit) {
       // Handle adding component logic here
-      print("Adding component");
+      
       // Only operate when we have a loaded state
       if (state is ComponentLoaded) {
         final current = state as ComponentLoaded;
@@ -97,7 +96,6 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       final newComponents = current.components.toList();
       final newControllers = current.controllers.toList();
       newControllers.removeAt(event.removeIndex - 1);
-      print("Removing component at index ${event.removeIndex}");
       emit(
         ComponentLoaded(
           newComponents,
@@ -156,7 +154,6 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
 
     // Decrease Component Quantity
     on<DecreaseComponentQuantity>((event, emit) {
-      print("DecreaseComponentQuantity: index=${event.componentIndex}");
       // Handle decreasing quantity logic here
 
       final newComponents = List<Component>.from(state.components);
@@ -192,7 +189,7 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
 
       // Create new request
       final request = ComponetRequest(
-        stu_id: state.profile?.id,
+        profile: profileProvider.profile,
         id: 'req_${DateTime.now().millisecondsSinceEpoch}',
         createdAt: DateTime.now(),
         status: 'pending',
@@ -200,13 +197,12 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       );
 
       currentRequests.add(request);
-
       emit(
         ComponentRequestAdded(
           requests: currentRequests,
           components: List<Component>.from(state.components),
           controllers: List<ComponentControllers>.from(state.controllers),
-          profile: state.profile,
+          
         ),
       );
     });

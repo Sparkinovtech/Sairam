@@ -31,7 +31,6 @@ class _ComponentPageState extends State<ComponentPage> {
         final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
         if (!isActiveRoute) return;
         if (state is NavigateToAddComponentState) {
-          print("Navigating to Add Component Page");
           Navigator.push(
             context,
             MaterialPageRoute(

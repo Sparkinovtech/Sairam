@@ -60,7 +60,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           // Handle navigation or other side effects here if needed
           if (state is NavigateToViewComponentState) {
             component = state.components;
-            print("Navigating to View Component Page");
+            
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -101,7 +101,6 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
             final List<ComponentControllers> componentControllers =
                 mergedControllers;
 
-            print("Total components: ${componentControllers.length}");
             return SafeArea(
               child: Column(
                 children: [
@@ -155,7 +154,6 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
                           index: index + 1,
                           onDelete: mergedControllers.length > 1
                               ? () {
-                                  print("Deleting component at index $index");
                                   context.read<ComponentBloc>().add(
                                     RemoveComponent(index),
                                   );
@@ -171,7 +169,6 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
                     padding: const EdgeInsets.all(16),
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        print("Adding another component");
                         context.read<ComponentBloc>().add(AddComponent());
                       },
                       icon: Icon(Icons.add),

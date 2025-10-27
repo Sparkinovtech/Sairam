@@ -55,7 +55,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
     _pages = [
       MultiBlocProvider(
         providers: [
-          BlocProvider<NightStayBloc>(create: (context) => NightStayBloc(NightStayProvider())),
+          BlocProvider<NightStayBloc>(
+            create: (context) => NightStayBloc(NightStayProvider()),
+          ),
         ],
         child: HomePage(),
       ),
