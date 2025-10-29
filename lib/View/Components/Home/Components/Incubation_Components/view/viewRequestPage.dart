@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
@@ -25,39 +27,20 @@ class _ViewrequestpageState extends State<Viewrequestpage> {
               children: [
                 Stack(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
+                    // Centered title
+                    Center(
+                      child: Text(
+                        "Requests Details",
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Request Details',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      left: 10,
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
                       ),
                     ),
                   ],
                 ),
-
+                SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
                     itemCount: widget.request.components.length,

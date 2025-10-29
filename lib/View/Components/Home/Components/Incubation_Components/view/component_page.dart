@@ -21,7 +21,8 @@ class _ComponentPageState extends State<ComponentPage> {
   void initState() {
     super.initState();
     // Load  requests when the page initializes
-    context.read<ComponentBloc>().add(LoadComponentEvent());
+    context.read<ComponentBloc>().add(FetchComponentsEvent());
+    // context.read<ComponentBloc>().add(LoadComponentEvent());
   }
 
   @override
@@ -42,7 +43,9 @@ class _ComponentPageState extends State<ComponentPage> {
           );
         }
       },
+      
       builder: (context, state) {
+        if (state is ComponentLoaded) {}
         List<ComponetRequest> ComponentRequests = state.requests;
 
         return Scaffold(

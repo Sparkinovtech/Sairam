@@ -23,6 +23,9 @@ class SaveNightStayEvent extends NightStayEvent {
 class LoadNightStayStudentsEvent extends NightStayEvent {}
 
 // Add new event for checking current user's night stay status
+
+// migrated code for checking night stay status to ProfileBloc
+
 class CheckNightStayStatusEvent extends NightStayEvent {
   final String studentId;
 

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
@@ -49,6 +50,29 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       emit(NavigateToAddComponentState(controllers, request));
     });
 
+    on<FetchComponentsEvent>((event, emit) {
+      // Fetch components logic here
+      List<ComponetRequest> request = [
+        ComponetRequest(
+          id: 'req_1',
+          createdAt: DateTime.now(),
+          status: 'pending',
+          components: [
+            Component(name: 'Component A', quantity: '2'),
+          Component(name: 'Component B', quantity: '5'),
+        ],
+        profile: null,
+      )];
+
+      emit(
+        ComponentLoaded(
+          List<Component>.from(state.components),
+          List<ComponentControllers>.from(state.controllers),
+          List<ComponetRequest>.from([request]),
+        ),
+      );
+    });
+
     /// -------- End of Component Page Events -----------
 
     /// ------- Component Add Page Events -------
@@ -65,7 +89,7 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
     // Add Component
     on<AddComponent>((event, emit) {
       // Handle adding component logic here
-      
+
       // Only operate when we have a loaded state
       if (state is ComponentLoaded) {
         final current = state as ComponentLoaded;
@@ -132,7 +156,7 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
       );
     });
 
-    /// -------- End of Component Navigation Events -----------
+    /// -------- End of Component Add page Events -----------
 
     /// ------- Component View Page Events -------
 
@@ -202,7 +226,6 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
           requests: currentRequests,
           components: List<Component>.from(state.components),
           controllers: List<ComponentControllers>.from(state.controllers),
-          
         ),
       );
     });

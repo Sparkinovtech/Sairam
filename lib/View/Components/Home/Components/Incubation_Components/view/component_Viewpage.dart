@@ -29,7 +29,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
         final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
         if (!isActiveRoute) return;
         if (state is NavigateBackToAddComponentState) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (ctx) => BlocProvider.value(

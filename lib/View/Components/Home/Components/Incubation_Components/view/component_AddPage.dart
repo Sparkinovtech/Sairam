@@ -61,7 +61,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           if (state is NavigateToViewComponentState) {
             component = state.components;
             
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (ctx) => BlocProvider.value(

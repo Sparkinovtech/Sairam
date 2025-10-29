@@ -31,11 +31,11 @@ class _NightStayOptInScreenState extends State<NightStayOptInScreen> {
   void initState() {
     super.initState();
     // Dispatch event to check current night stay status from Firestore
-    if (widget.nightStayStudent != null) {
-      context.read<NightStayBloc>().add(
-        CheckNightStayStatusEvent(widget.nightStayStudent!.studentId),
-      );
-    }
+    // if (widget.nightStayStudent != null) {
+    //   context.read<NightStayBloc>().add(
+    //     CheckNightStayStatusEvent(widget.nightStayStudent!.studentId),
+    //   );
+    // }
   }
 
   void _toggleNightStay() {

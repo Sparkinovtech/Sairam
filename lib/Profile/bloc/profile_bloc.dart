@@ -612,8 +612,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         ),
       );
     });
-    final NightStayProvider _provider = NightStayProvider();
     // --- Check Night Stay Status ---
+    final NightStayProvider _provider = NightStayProvider();
     on<CheckNightStayStatusProfileEvent>((event, emit) async {
       try {
         final hasOpted = await _provider.hasOptedForNightStay(event.studentId);
@@ -628,4 +628,3 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
   }
 }
-  

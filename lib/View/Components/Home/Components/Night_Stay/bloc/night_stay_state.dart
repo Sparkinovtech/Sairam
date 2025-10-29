@@ -34,6 +34,8 @@ class NightStayLoaded extends NightStayState {
 }
 
 // Add new state for night stay status result
+
+// migrated code for checking night stay status to ProfileBloc
 class NightStayStatusState extends NightStayState {
   final bool hasOpted;
 

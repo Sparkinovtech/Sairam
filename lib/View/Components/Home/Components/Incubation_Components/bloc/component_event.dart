@@ -11,6 +11,8 @@ final class LoadComponentEvent extends ComponentEvent {}
 
 // Events for Component Page
 
+final class FetchComponentsEvent extends ComponentEvent {}
+
 final class NavigateToAddComponentEvent extends ComponentEvent {}
 
 // Events for Component Add Page
