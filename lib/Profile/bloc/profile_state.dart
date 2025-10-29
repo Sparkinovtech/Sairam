@@ -112,3 +112,9 @@ class NightStayBtnClickState extends ProfileState {
     required super.profile,
   });
 }
+
+class ProfileStatusState extends ProfileState {
+  final bool hasOpted;
+
+  ProfileStatusState({required this.hasOpted, required super.isLoading, required super.profile});
+}

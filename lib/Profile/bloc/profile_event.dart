@@ -139,3 +139,12 @@ class NightStayBtnClickEvent extends ProfileEvent {
 
   const NightStayBtnClickEvent({required this.nightStayStudent});
 }
+
+class CheckNightStayStatusProfileEvent extends ProfileEvent {
+  final String studentId;
+
+  const CheckNightStayStatusProfileEvent(this.studentId);
+
+  @override
+  List<Object?> get props => [studentId];
+}

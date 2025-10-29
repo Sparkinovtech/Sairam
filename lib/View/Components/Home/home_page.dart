@@ -11,6 +11,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
     final end = DateTime(now.year, now.month, now.day, 18);
     return now.isAfter(start) && now.isBefore(end);
   }
-
+  bool checked = false;
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
     Projects(
@@ -88,7 +89,14 @@ class _HomePageState extends State<HomePage> {
     var size = MediaQuery.of(context).size;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
+      
       listener: (context, state) {
+        if (state is ProfileStatusState) {
+          print("Has opted in: $hasOptedIn");
+          
+            hasOptedIn = (state as ProfileStatusState).hasOpted;
+          
+        }
         if (state is NightStayBtnClickState) {
           // Handle the night stay button click event
           if (!isWithinAllowedTime) {
@@ -165,7 +173,16 @@ class _HomePageState extends State<HomePage> {
             scholarType: profile.scholarType!.displayName,
           );
         }
-
+        
+        if (nightStayStudent != null && checked == false) {
+          print(
+            "Dispatching CheckNightStayStatusEvent for studentId: ${nightStayStudent.studentId}",
+          );
+          context.read<ProfileBloc>().add(
+            CheckNightStayStatusProfileEvent(nightStayStudent.studentId),
+          );
+          checked = true;
+        }
         devtools.log("From home page : The profile is $profile");
         devtools.log(
           "From home page : The Night stay student is : $nightStayStudent",
