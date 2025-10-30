@@ -19,6 +19,7 @@ import 'package:sairam_incubation/Utils/Calender/calender_page.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/notification_page.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -481,14 +482,137 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: size.height * .03),
 
                   // ====== Meetings =====
-                  Text(
-                    "Upcoming Meetings",
-                    style: GoogleFonts.lato(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
+                  // Text(
+                  //   "Upcoming Meetings",
+                  //   style: GoogleFonts.lato(
+                  //     color: Colors.black,
+                  //     fontSize: 22,
+                  //     fontWeight: FontWeight.w800,
+                  //   ),
+                  // ),
+                  // ===== Report Issue =====
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: bg_light,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.bug_report_outlined,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                              SizedBox(width: size.width * .02),
+                              Text(
+                                "Report App Issue",
+                                style: GoogleFonts.lato(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: size.height * .01),
+                          Text(
+                            "App in testing. Found a bug or issue? Let us know.",
+                            style: GoogleFonts.lato(
+                              color: Colors.grey.shade800,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: size.height * .02),
+                          InkWell(
+                            onTap: () async {
+                              String?
+                              issueDescription = await showDialog<String>(
+                                context: context,
+                                builder: (context) {
+                                  final TextEditingController controller =
+                                      TextEditingController();
+                                  return AlertDialog(
+                                    title: Text('Report an Issue'),
+                                    content: TextField(
+                                      controller: controller,
+                                      minLines: 3,
+                                      maxLines: 6,
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            "Explain the issue you faced...",
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text("Cancel"),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                      ),
+                                      ElevatedButton(
+                                        child: Text("Report"),
+                                        onPressed: () {
+                                          Navigator.of(
+                                            context,
+                                          ).pop(controller.text.trim());
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              if (issueDescription != null &&
+                                  issueDescription.isNotEmpty) {
+                                // Call your method to send the issue, e.g.:
+                                await sendIssueReport(issueDescription);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Issue reported. Thank you!"),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 20,
+                              ),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: bg,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Report Issue",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+
                   SizedBox(height: size.height * .01),
                   // ListTile(
                   //   title: Text(
@@ -605,6 +729,19 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Future<void> sendIssueReport(String message) async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'simonjohn42004.sparkit@gmail.com', // Change to your support email
+      query: 'subject=App Issue&body=${Uri.encodeComponent(message)}',
+    );
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      throw 'Could not launch $emailUri';
+    }
   }
 
   Widget _buildCalendarCard(Size size) {
