@@ -2,17 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/viewRequestPage.dart';
 
 class ComponentPage extends StatefulWidget {
-  final List<Component>? components;
-  const ComponentPage({super.key, this.components});
+  const ComponentPage({super.key});
 
   @override
   State<ComponentPage> createState() => _ComponentPageState();
@@ -20,30 +18,36 @@ class ComponentPage extends StatefulWidget {
 
 class _ComponentPageState extends State<ComponentPage> {
   @override
+  void initState() {
+    super.initState();
+    // Load  requests when the page initializes
+    context.read<ComponentBloc>().add(FetchComponentsEvent());
+    // context.read<ComponentBloc>().add(LoadComponentEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<ComponentBloc, ComponentState>(
       listener: (context, state) {
+        final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
+        if (!isActiveRoute) return;
         if (state is NavigateToAddComponentState) {
-          print("Navigating to Add Component Page");
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ComponentAddpage()),
+            MaterialPageRoute(
+              builder: (ctx) => BlocProvider.value(
+                value: context.read<ComponentBloc>(),
+                child: ComponentAddpage(controllers: state.controllers),
+              ),
+            ),
           );
         }
       },
+      
       builder: (context, state) {
-        List<ComponetRequest> ComponentRequests = widget.components != null
-            ? widget.components!
-                  .map(
-                    (comp) => ComponetRequest(
-                      id: comp.name,
-                      status: comp.status,
-                      createdAt: DateTime.now(),
-                    ),
-                  )
-                  .toList()
-            : [];
-        
+        if (state is ComponentLoaded) {}
+        List<ComponetRequest> ComponentRequests = state.requests;
+
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -113,102 +117,99 @@ class _ComponentPageState extends State<ComponentPage> {
                                   ),
                                 ],
                               ),
-                              child: Container(
-                                padding: EdgeInsets.all(16),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Requested ${ComponentRequests[index].id}',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          ComponentRequests[index].createdAt !=
-                                                  null
-                                              ? DateFormat.yMMMd().format(
-                                                  ComponentRequests[index]
-                                                      .createdAt!,
-                                                )
-                                              : 'No date',
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ],
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Viewrequestpage(
+                                        request: ComponentRequests[index],
+                                      ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 6,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: const Color.fromARGB(
-                                              177,
-                                              240,
-                                              201,
-                                              30,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            ComponentRequests[index].status,
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(16),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Requested ${ComponentRequests[index].id.substring(0, 8)}',
                                             style: TextStyle(
-                                              color: Colors.white,
                                               fontWeight: FontWeight.bold,
+                                              fontSize: 16,
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(width: 30),
-                                        Icon(Icons.arrow_forward_ios),
-                                      ],
-                                    ),
-                                  ],
+
+                                          SizedBox(height: 4),
+                                          Text(
+                                            ComponentRequests[index]
+                                                        .createdAt !=
+                                                    null
+                                                ? DateFormat.yMMMd().format(
+                                                    ComponentRequests[index]
+                                                        .createdAt!,
+                                                  )
+                                                : 'No date',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                177,
+                                                240,
+                                                201,
+                                                30,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              ComponentRequests[index].status,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 30),
+                                          Icon(Icons.arrow_forward_ios),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              // child: ListTile(
-                              //   title: Text(
-                              //     'Requested ${ComponentRequests[index].id}',
-                              //     style: TextStyle(fontWeight: FontWeight.bold),
-                              //   ),
-                              //   subtitle: Text(
-                              //     ComponentRequests[index].createdAt != null
-                              //         ? DateFormat.yMMMd().format(ComponentRequests[index].createdAt!)
-                              //         : 'No date',
-                              //   ),
-                              //   trailing: Icon(Icons.arrow_forward_ios),
-                              //   onTap: () {
-                              //     // Handle component tap
-                              //   },
-                              // ),
                             );
                           },
                         )
                       : Center(
-                          child: 
-                             Text(
-                              "No Component Requests Found",
-                              style: GoogleFonts.lato(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          child: Text(
+                            "No Component Requests Found",
+                            style: GoogleFonts.lato(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
                             ),
-                         
+                          ),
                         ),
                 ],
               ),
@@ -218,14 +219,7 @@ class _ComponentPageState extends State<ComponentPage> {
             backgroundColor: bg,
             foregroundColor: Colors.white,
             onPressed: () {
-              // Action for FAB
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => ComponentAddpage()),
-              // );
-              context.read<ComponentBloc>().add(
-                NavigateToAddComponentEvent(null),
-              );
+              context.read<ComponentBloc>().add(NavigateToAddComponentEvent());
             },
             child: Icon(Icons.add),
           ),

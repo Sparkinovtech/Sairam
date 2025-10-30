@@ -9,66 +9,80 @@ sealed class ComponentEvent extends Equatable {
 
 final class LoadComponentEvent extends ComponentEvent {}
 
+// Events for Component Page
+
+final class FetchComponentsEvent extends ComponentEvent {}
+
+final class NavigateToAddComponentEvent extends ComponentEvent {}
+
+// Events for Component Add Page
+
 final class NavigateToComponentPageEvent extends ComponentEvent {
   const NavigateToComponentPageEvent();
-}
-
-final class NavigateToAddComponentEvent extends ComponentEvent {
-  final List<Component>? components;
-  const NavigateToAddComponentEvent(this.components);
 }
 
 final class AddComponent extends ComponentEvent {}
 
 final class RemoveComponent extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int removeIndex;
 
-  const RemoveComponent(this.component);
+  const RemoveComponent(this.removeIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [removeIndex];
 }
 
 final class NavigateToViewComponentEvent extends ComponentEvent {
-  const NavigateToViewComponentEvent(this.components);
+  const NavigateToViewComponentEvent(this.controllers);
 
-  final List<Component> components;
+  final List<ComponentControllers> controllers;
 
   @override
-  List<Object> get props => [components];
+  List<Object> get props => [controllers];
 }
 
-final class IncreaseComponentQuantity extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+// Events for Component View Page
 
-  const IncreaseComponentQuantity(this.component);
+final class IncreaseComponentQuantity extends ComponentEvent {
+  final int componentIndex;
+
+  const IncreaseComponentQuantity(this.componentIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [componentIndex];
 }
 
 final class DecreaseComponentQuantity extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int componentIndex;
 
-  const DecreaseComponentQuantity(this.component);
+  const DecreaseComponentQuantity(this.componentIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [componentIndex];
 }
 
 final class DeleteComponentFromCart extends ComponentEvent {
-  final String component; // Example data, replace with actual model
+  final int componentIndex;
 
-  const DeleteComponentFromCart(this.component);
+  const DeleteComponentFromCart(this.componentIndex);
 
   @override
-  List<Object> get props => [component];
+  List<Object> get props => [componentIndex];
 }
 
 final class SendRequest extends ComponentEvent {
   final List<Component> components;
 
   const SendRequest({required this.components});
+
+  @override
+  List<Object> get props => [components];
+}
+
+class NavigateBackToAddComponentEvent extends ComponentEvent {
+  final List<Component> components;
+
+  const NavigateBackToAddComponentEvent(this.components);
 
   @override
   List<Object> get props => [components];

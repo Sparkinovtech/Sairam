@@ -7,17 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Calender/calender_page.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/components_form.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/notification_page.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/views/night_stay_opt_in_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,7 +31,14 @@ class _HomePageState extends State<HomePage> {
   DateTime? _dateTime;
   DateTime _focusedDay = DateTime.now();
   late final ScrollController _controller;
-
+  late NightStayBloc _nightStayBloc;
+  bool get isWithinAllowedTime {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day, 16);
+    final end = DateTime(now.year, now.month, now.day, 18);
+    return now.isAfter(start) && now.isBefore(end);
+  }
+  bool checked = false;
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
     Projects(
@@ -62,11 +69,11 @@ class _HomePageState extends State<HomePage> {
       imagePath: "",
     ),
   ];
-
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
+    _nightStayBloc = BlocProvider.of<NightStayBloc>(context);
   }
 
   @override
@@ -75,16 +82,86 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  bool hasOptedIn = false;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return BlocBuilder<ProfileBloc, ProfileState>(
+    return BlocConsumer<ProfileBloc, ProfileState>(
+      
+      listener: (context, state) {
+        if (state is ProfileStatusState) {
+          print("Has opted in: $hasOptedIn");
+          
+            hasOptedIn = (state as ProfileStatusState).hasOpted;
+          
+        }
+        if (state is NightStayBtnClickState) {
+          // Handle the night stay button click event
+          if (!isWithinAllowedTime) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Night Stay requests can only be made between 4 PM and 6 PM.',
+                ),
+              ),
+            );
+            return;
+          }
+          if (state.nightStayStudent == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Insufficient profile information to proceed with Night Stay request.',
+                ),
+              ),
+            );
+            return;
+          }
+          showDialog(
+            context: context,
+            builder: (builder) {
+              return AlertDialog(
+                title: Text('Night Stay Request'),
+                content: Text(
+                  hasOptedIn
+                      ? 'Are you sure you want to cancel your night stay request?'
+                      : 'Are you sure you want to opt in for night stay?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _nightStayBloc.add(
+                        SaveNightStayEvent(
+                          state.nightStayStudent!,
+                          hasOptedIn ? 'No' : 'Yes',
+                        ),
+                      );
+
+                      Navigator.of(context).pop();
+                      setState(() {
+                        hasOptedIn = !hasOptedIn;
+                      });
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
       builder: (context, state) {
         final profile = state.profile;
         String displayName = profile?.name ?? "User";
         String? profilePictureUrl = profile?.profilePicture;
-
         NightStayStudent? nightStayStudent;
         if (profile != null &&
             (profile.name?.isNotEmpty ?? false) &&
@@ -96,7 +173,16 @@ class _HomePageState extends State<HomePage> {
             scholarType: profile.scholarType!.displayName,
           );
         }
-
+        
+        if (nightStayStudent != null && checked == false) {
+          print(
+            "Dispatching CheckNightStayStatusEvent for studentId: ${nightStayStudent.studentId}",
+          );
+          context.read<ProfileBloc>().add(
+            CheckNightStayStatusProfileEvent(nightStayStudent.studentId),
+          );
+          checked = true;
+        }
         devtools.log("From home page : The profile is $profile");
         devtools.log(
           "From home page : The Night stay student is : $nightStayStudent",
@@ -329,17 +415,22 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(height: size.height * .02),
                           InkWell(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: BlocProvider(
-                                    create: (context) =>
-                                        NightStayBloc(NightStayProvider()),
-                                    child: NightStayOptInScreen(
-                                      nightStayStudent: nightStayStudent,
-                                    ),
-                                  ),
+                              // Navigator.push(
+                              //   context,
+                              //   PageTransition(
+                              //     type: PageTransitionType.fade,
+                              //     child: BlocProvider(
+                              //       create: (context) =>
+                              //           NightStayBloc(NightStayProvider()),
+                              //       child: NightStayOptInScreen(
+                              //         nightStayStudent: nightStayStudent,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // );
+                              context.read<ProfileBloc>().add(
+                                NightStayBtnClickEvent(
+                                  nightStayStudent: nightStayStudent,
                                 ),
                               );
                             },
@@ -351,12 +442,14 @@ class _HomePageState extends State<HomePage> {
                               ),
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: bg,
+                                color: hasOptedIn ? Colors.red : bg,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Center(
                                 child: Text(
-                                  "Night Stay",
+                                  hasOptedIn
+                                      ? "Cancel Night Stay"
+                                      : "Opt for Night Stay",
                                   style: GoogleFonts.lato(
                                     color: Colors.white,
                                     fontSize: 16,
