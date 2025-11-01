@@ -7,18 +7,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sairam_incubation/Profile/Model/scholar_type.dart';
+import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Calender/calender_page.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/components_form.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/notification_page.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/views/night_stay_opt_in_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,7 +32,14 @@ class _HomePageState extends State<HomePage> {
   DateTime? _dateTime;
   DateTime _focusedDay = DateTime.now();
   late final ScrollController _controller;
-
+  late NightStayBloc _nightStayBloc;
+  bool get isWithinAllowedTime {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day, 16);
+    final end = DateTime(now.year, now.month, now.day, 18);
+    return now.isAfter(start) && now.isBefore(end);
+  }
+  bool checked = false;
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
     Projects(
@@ -62,11 +70,11 @@ class _HomePageState extends State<HomePage> {
       imagePath: "",
     ),
   ];
-
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
+    _nightStayBloc = BlocProvider.of<NightStayBloc>(context);
   }
 
   @override
@@ -75,16 +83,86 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  bool hasOptedIn = false;
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    return BlocBuilder<ProfileBloc, ProfileState>(
+    return BlocConsumer<ProfileBloc, ProfileState>(
+      
+      listener: (context, state) {
+        if (state is ProfileStatusState) {
+          print("Has opted in: $hasOptedIn");
+          
+            hasOptedIn = (state as ProfileStatusState).hasOpted;
+          
+        }
+        if (state is NightStayBtnClickState) {
+          // Handle the night stay button click event
+          if (!isWithinAllowedTime) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Night Stay requests can only be made between 4 PM and 6 PM.',
+                ),
+              ),
+            );
+            return;
+          }
+          if (state.nightStayStudent == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Insufficient profile information to proceed with Night Stay request.',
+                ),
+              ),
+            );
+            return;
+          }
+          showDialog(
+            context: context,
+            builder: (builder) {
+              return AlertDialog(
+                title: Text('Night Stay Request'),
+                content: Text(
+                  hasOptedIn
+                      ? 'Are you sure you want to cancel your night stay request?'
+                      : 'Are you sure you want to opt in for night stay?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _nightStayBloc.add(
+                        SaveNightStayEvent(
+                          state.nightStayStudent!,
+                          hasOptedIn ? 'No' : 'Yes',
+                        ),
+                      );
+
+                      Navigator.of(context).pop();
+                      setState(() {
+                        hasOptedIn = !hasOptedIn;
+                      });
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      },
       builder: (context, state) {
         final profile = state.profile;
         String displayName = profile?.name ?? "User";
         String? profilePictureUrl = profile?.profilePicture;
-
         NightStayStudent? nightStayStudent;
         if (profile != null &&
             (profile.name?.isNotEmpty ?? false) &&
@@ -96,7 +174,16 @@ class _HomePageState extends State<HomePage> {
             scholarType: profile.scholarType!.displayName,
           );
         }
-
+        
+        if (nightStayStudent != null && checked == false) {
+          print(
+            "Dispatching CheckNightStayStatusEvent for studentId: ${nightStayStudent.studentId}",
+          );
+          context.read<ProfileBloc>().add(
+            CheckNightStayStatusProfileEvent(nightStayStudent.studentId),
+          );
+          checked = true;
+        }
         devtools.log("From home page : The profile is $profile");
         devtools.log(
           "From home page : The Night stay student is : $nightStayStudent",
@@ -106,7 +193,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -284,13 +371,12 @@ class _HomePageState extends State<HomePage> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: bg_light,
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),
                           spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
+                          blurRadius: 2,
                         ),
                       ],
                     ),
@@ -328,39 +414,49 @@ class _HomePageState extends State<HomePage> {
                           ),
 
                           SizedBox(height: size.height * .02),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.fade,
-                                  child: BlocProvider(
-                                    create: (context) =>
-                                        NightStayBloc(NightStayProvider()),
-                                    child: NightStayOptInScreen(
-                                      nightStayStudent: nightStayStudent,
-                                    ),
-                                  ),
+                          InkWell(
+                            onTap: () {
+                              // Navigator.push(
+                              //   context,
+                              //   PageTransition(
+                              //     type: PageTransitionType.fade,
+                              //     child: BlocProvider(
+                              //       create: (context) =>
+                              //           NightStayBloc(NightStayProvider()),
+                              //       child: NightStayOptInScreen(
+                              //         nightStayStudent: nightStayStudent,
+                              //       ),
+                              //     ),
+                              //   ),
+                              // );
+                              context.read<ProfileBloc>().add(
+                                NightStayBtnClickEvent(
+                                  nightStayStudent: nightStayStudent,
                                 ),
                               );
                             },
 
-                            style: ElevatedButton.styleFrom(
+                            child: Container(
                               padding: EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 60,
+                                vertical: 12,
+                                horizontal: 20,
                               ),
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: hasOptedIn ? Colors.red : bg,
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                            ),
-                            child: Text(
-                              "Night Stay",
-                              style: GoogleFonts.lato(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                              child: Center(
+                                child: Text(
+                                  hasOptedIn
+                                      ? "Cancel Night Stay"
+                                      : "Opt for Night Stay",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -369,7 +465,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   SizedBox(height: size.height * .03),
-
 
                   // ===== Schedule =====
                   Text(
@@ -387,15 +482,138 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: size.height * .03),
 
                   // ====== Meetings =====
-                  Text(
-                    "Upcoming Meetings",
-                    style: GoogleFonts.lato(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
+                  // Text(
+                  //   "Upcoming Meetings",
+                  //   style: GoogleFonts.lato(
+                  //     color: Colors.black,
+                  //     fontSize: 22,
+                  //     fontWeight: FontWeight.w800,
+                  //   ),
+                  // ),
+                  // ===== Report Issue =====
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: bg_light,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.bug_report_outlined,
+                                color: Colors.black,
+                                size: 24,
+                              ),
+                              SizedBox(width: size.width * .02),
+                              Text(
+                                "Report App Issue",
+                                style: GoogleFonts.lato(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: size.height * .01),
+                          Text(
+                            "App in testing. Found a bug or issue? Let us know.",
+                            style: GoogleFonts.lato(
+                              color: Colors.grey.shade800,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: size.height * .02),
+                          InkWell(
+                            onTap: () async {
+                              String?
+                              issueDescription = await showDialog<String>(
+                                context: context,
+                                builder: (context) {
+                                  final TextEditingController controller =
+                                      TextEditingController();
+                                  return AlertDialog(
+                                    title: Text('Report an Issue'),
+                                    content: TextField(
+                                      controller: controller,
+                                      minLines: 3,
+                                      maxLines: 6,
+                                      decoration: InputDecoration(
+                                        hintText:
+                                            "Explain the issue you faced...",
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text("Cancel"),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                      ),
+                                      ElevatedButton(
+                                        child: Text("Report"),
+                                        onPressed: () {
+                                          Navigator.of(
+                                            context,
+                                          ).pop(controller.text.trim());
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              if (issueDescription != null &&
+                                  issueDescription.isNotEmpty) {
+                                // Call your method to send the issue, e.g.:
+                                await sendIssueReport(issueDescription);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Issue reported. Thank you!"),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 20,
+                              ),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: bg,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Report Issue",
+                                  style: GoogleFonts.lato(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: size.height * .01),        
+
+                  SizedBox(height: size.height * .01),
                   // ListTile(
                   //   title: Text(
                   //     "Mentor Meeting",
@@ -513,75 +731,85 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> sendIssueReport(String message) async {
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: 'simonjohn42004.sparkit@gmail.com', // Change to your support email
+      query: 'subject=App Issue&body=${Uri.encodeComponent(message)}',
+    );
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      throw 'Could not launch $emailUri';
+    }
+  }
+
   Widget _buildCalendarCard(Size size) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        elevation: 3,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Row(
-                children: [
-                  Text(
-                    "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
-                    style: GoogleFonts.lato(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
+    return Card(
+      elevation: 2,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: Row(
+              children: [
+                Text(
+                  "${_monthName(_focusedDay.month)} ${_focusedDay.year}",
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
-                  Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.fade,
-                          child: CalenderPage(),
-                        ),
-                      );
-                    },
-                    icon: Icon(CupertinoIcons.calendar),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: size.height * .02),
-            TableCalendar(
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_dateTime, day),
-              calendarFormat: CalendarFormat.week,
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _dateTime = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              headerVisible: false,
-              availableGestures: AvailableGestures.none,
-              daysOfWeekVisible: true,
-              calendarStyle: CalendarStyle(
-                isTodayHighlighted: true,
-                selectedDecoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
                 ),
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
+                Spacer(),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: CalenderPage(),
+                      ),
+                    );
+                  },
+                  icon: Icon(CupertinoIcons.calendar),
                 ),
-                outsideDaysVisible: false,
-              ),
+              ],
             ),
-            SizedBox(height: size.height * .04),
-          ],
-        ),
+          ),
+          SizedBox(height: size.height * .02),
+          TableCalendar(
+            firstDay: DateTime.utc(2020, 1, 1),
+            lastDay: DateTime.utc(2030, 12, 31),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_dateTime, day),
+            calendarFormat: CalendarFormat.week,
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _dateTime = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            headerVisible: false,
+            availableGestures: AvailableGestures.none,
+            daysOfWeekVisible: true,
+            calendarStyle: CalendarStyle(
+              isTodayHighlighted: true,
+              selectedDecoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              outsideDaysVisible: false,
+            ),
+          ),
+          SizedBox(height: size.height * .04),
+        ],
       ),
     );
   }

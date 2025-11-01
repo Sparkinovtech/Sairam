@@ -1,4 +1,5 @@
 import 'package:sairam_incubation/Profile/Model/profile.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 
 /// Represents the different states of the profile editing process.
 abstract class ProfileState {
@@ -100,4 +101,20 @@ class ProfileErrorState extends ProfileState {
     required super.isLoading,
     required super.profile,
   });
+}
+
+class NightStayBtnClickState extends ProfileState {
+  final NightStayStudent? nightStayStudent;
+
+  NightStayBtnClickState({
+    required this.nightStayStudent,
+    required super.isLoading,
+    required super.profile,
+  });
+}
+
+class ProfileStatusState extends ProfileState {
+  final bool hasOpted;
+
+  ProfileStatusState({required this.hasOpted, required super.isLoading, required super.profile});
 }

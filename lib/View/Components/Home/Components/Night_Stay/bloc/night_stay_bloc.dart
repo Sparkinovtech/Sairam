@@ -45,6 +45,8 @@ class NightStayBloc extends Bloc<NightStayEvent, NightStayState> {
     }
   }
 
+  // migrated code for checking night stay status to ProfileBloc
+
   Future<void> _onCheckNightStayStatus(
     CheckNightStayStatusEvent event,
     Emitter<NightStayState> emit,

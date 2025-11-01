@@ -7,6 +7,7 @@ import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/Profile/service/supabase_storage_provider.dart';
 import 'package:sairam_incubation/Profile/Model/certificate.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
 
 String? extractStoragePathFromUrl(String url) {
   final regExp = RegExp(r'/storage/v1/object/public/[\w\-]+/(.*)$');
@@ -598,6 +599,32 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           ),
         );
       }
+    });
+
+    // --- Night Stay Button Click ---
+    on<NightStayBtnClickEvent>((event, emit) async {
+      final currentProfile = state.profile;
+      emit(
+        NightStayBtnClickState(
+          nightStayStudent: event.nightStayStudent,
+          isLoading: false,
+          profile: currentProfile,
+        ),
+      );
+    });
+    // --- Check Night Stay Status ---
+    final NightStayProvider _provider = NightStayProvider();
+    on<CheckNightStayStatusProfileEvent>((event, emit) async {
+      try {
+        final hasOpted = await _provider.hasOptedForNightStay(event.studentId);
+        emit(
+          ProfileStatusState(
+            hasOpted: hasOpted,
+            isLoading: false,
+            profile: state.profile,
+          ),
+        );
+      } catch (e) {}
     });
   }
 }
