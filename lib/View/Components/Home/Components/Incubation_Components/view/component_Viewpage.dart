@@ -5,7 +5,7 @@ import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
+import 'package:sairam_incubation/View/bottom_nav_bar.dart';
 
 class ComponentViewpage extends StatefulWidget {
   final List<Component> components;
@@ -22,15 +22,20 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
     return BlocConsumer<ComponentBloc, ComponentState>(
       listenWhen: (previous, current) =>
           current is NavigateToAddComponentState ||
+          current is NavigateBackToAddComponentState ||
           current is ComponentRequestAdded,
+      buildWhen: (previous, current) => current is ComponentLoaded,
       listener: (context, state) {
-        if (state is NavigateToAddComponentState) {
-          print("Navigating to Add Component Page");
-          Navigator.push(
+        final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
+        if (!isActiveRoute) return;
+        if (state is NavigateBackToAddComponentState) {
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ComponentAddpage(controllers: state.controllers),
+              builder: (ctx) => BlocProvider.value(
+                value: context.read<ComponentBloc>(),
+                child: ComponentAddpage(controllers: state.controllers),
+              ),
             ),
           );
         }
@@ -38,7 +43,10 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ComponentPage(components: state.components),
+              builder: (ctx) => BlocProvider.value(
+                value: context.read<ComponentBloc>(),
+                child: BottomNavBar(index: 1),
+              ),
             ),
           ); // Go back after request is added
         }
@@ -72,7 +80,9 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                             onPressed: () {
                               // Handle back button press
                               context.read<ComponentBloc>().add(
-                                NavigateToAddComponentEvent(widget.components),
+                                NavigateBackToAddComponentEvent(
+                                  state.components,
+                                ),
                               );
                             },
                             icon: Icon(CupertinoIcons.back),
@@ -87,7 +97,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                   ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: widget.components.length,
+                    itemCount: state.components.length,
                     itemBuilder: (context, index) {
                       return Container(
                         margin: EdgeInsets.symmetric(
@@ -110,7 +120,7 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(widget.components[index].name),
+                            Text(state.components[index].name),
                             Container(
                               width: 120,
                               decoration: BoxDecoration(
@@ -133,37 +143,19 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                                     icon: Icon(Icons.remove),
                                     onPressed: () {
                                       // Handle edit action
-                                      setState(() {
-                                        if (int.parse(
-                                              widget.components[index].quantity,
-                                            ) >
-                                            1) {
-                                          widget.components[index].quantity =
-                                              (int.parse(
-                                                        widget
-                                                            .components[index]
-                                                            .quantity,
-                                                      ) -
-                                                      1)
-                                                  .toString();
-                                        }
-                                      });
+
+                                      context.read<ComponentBloc>().add(
+                                        DecreaseComponentQuantity(index),
+                                      );
                                     },
                                   ),
-                                  Text(widget.components[index].quantity),
+                                  Text(state.components[index].quantity),
                                   IconButton(
                                     onPressed: () {
                                       // Handle edit action
-                                      setState(() {
-                                        widget.components[index].quantity =
-                                            (int.parse(
-                                                      widget
-                                                          .components[index]
-                                                          .quantity,
-                                                    ) +
-                                                    1)
-                                                .toString();
-                                      });
+                                      context.read<ComponentBloc>().add(
+                                        IncreaseComponentQuantity(index),
+                                      );
                                     },
                                     icon: Icon(Icons.add),
                                   ),
@@ -173,9 +165,9 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
                             IconButton(
                               onPressed: () {
                                 // Handle delete action
-                                setState(() {
-                                  widget.components.removeAt(index);
-                                });
+                                context.read<ComponentBloc>().add(
+                                  DeleteComponentFromCart(index),
+                                );
                               },
                               icon: Icon(Icons.delete, color: Colors.red),
                             ),
@@ -188,26 +180,26 @@ class _ComponentViewpageState extends State<ComponentViewpage> {
               ),
             ),
           ),
-              bottomNavigationBar: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+          bottomNavigationBar: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
                 backgroundColor: bg,
                 foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 50),
-                 shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                onPressed: () {
+              ),
+              onPressed: () {
                 // Handle save action
                 context.read<ComponentBloc>().add(
-                  SendRequest(components: widget.components),
+                  SendRequest(components: state.components),
                 );
-                },
-                child: Text("Save Changes"),
-              ),
-              ),
+              },
+              child: Text("Save Changes"),
+            ),
+          ),
         );
       },
     );
