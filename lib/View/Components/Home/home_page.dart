@@ -11,7 +11,6 @@ import 'package:sairam_incubation/Profile/bloc/profile_event.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
@@ -39,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     final end = DateTime(now.year, now.month, now.day, 18);
     return now.isAfter(start) && now.isBefore(end);
   }
+
   bool checked = false;
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
@@ -90,13 +90,9 @@ class _HomePageState extends State<HomePage> {
     var size = MediaQuery.of(context).size;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
-      
       listener: (context, state) {
         if (state is ProfileStatusState) {
-          print("Has opted in: $hasOptedIn");
-          
-            hasOptedIn = (state as ProfileStatusState).hasOpted;
-          
+          hasOptedIn = (state).hasOpted;
         }
         if (state is NightStayBtnClickState) {
           // Handle the night stay button click event
@@ -174,11 +170,8 @@ class _HomePageState extends State<HomePage> {
             scholarType: profile.scholarType!.displayName,
           );
         }
-        
+
         if (nightStayStudent != null && checked == false) {
-          print(
-            "Dispatching CheckNightStayStatusEvent for studentId: ${nightStayStudent.studentId}",
-          );
           context.read<ProfileBloc>().add(
             CheckNightStayStatusProfileEvent(nightStayStudent.studentId),
           );
@@ -193,7 +186,10 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * .05,
+                vertical: 5,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -207,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                           style: GoogleFonts.lato(
                             color: Colors.black,
                             fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
@@ -832,134 +828,134 @@ class _HomePageState extends State<HomePage> {
     return months[month - 1];
   }
 
-  Widget _activityCard({
-    required String title,
-    required String value,
-    required String label,
-    required IconData icon,
-    required BuildContext context,
-    required VoidCallback onTap,
-  }) {
-    var size = MediaQuery.of(context).size;
-    return GestureDetector(
-      child: SizedBox(
-        width: size.width * .4,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 3,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        title,
-                        style: GoogleFonts.lato(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Icon(icon, color: Colors.grey),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        style: GoogleFonts.lato(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: size.height * .01),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        value,
-                        style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: 27,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: size.width * .01),
-                      Text(
-                        label,
-                        style: GoogleFonts.lato(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  //   Widget _activityCard({
+  //     required String title,
+  //     required String value,
+  //     required String label,
+  //     required IconData icon,
+  //     required BuildContext context,
+  //     required VoidCallback onTap,
+  //   }) {
+  //     var size = MediaQuery.of(context).size;
+  //     return GestureDetector(
+  //       child: SizedBox(
+  //         width: size.width * .4,
+  //         child: Card(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(20),
+  //           ),
+  //           elevation: 3,
+  //           child: Container(
+  //             decoration: BoxDecoration(
+  //               color: Colors.white,
+  //               borderRadius: BorderRadius.circular(20),
+  //             ),
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(15),
+  //               child: Column(
+  //                 children: [
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Text(
+  //                         title,
+  //                         style: GoogleFonts.lato(
+  //                           color: Colors.black,
+  //                           fontSize: 18,
+  //                           fontWeight: FontWeight.w800,
+  //                         ),
+  //                       ),
+  //                       Icon(icon, color: Colors.grey),
+  //                     ],
+  //                   ),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         label,
+  //                         style: GoogleFonts.lato(
+  //                           color: Colors.grey,
+  //                           fontWeight: FontWeight.w500,
+  //                           fontSize: 14,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   SizedBox(height: size.height * .01),
+  //                   Row(
+  //                     mainAxisAlignment: MainAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         value,
+  //                         style: GoogleFonts.inter(
+  //                           color: Colors.black,
+  //                           fontSize: 27,
+  //                           fontWeight: FontWeight.bold,
+  //                         ),
+  //                       ),
+  //                       SizedBox(width: size.width * .01),
+  //                       Text(
+  //                         label,
+  //                         style: GoogleFonts.lato(
+  //                           color: Colors.grey,
+  //                           fontSize: 14,
+  //                           fontWeight: FontWeight.w500,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }
 
-  Widget _componentCard({
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    var size = MediaQuery.of(context).size;
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Card(
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: AnimatedContainer(
-            curve: Curves.easeInOutCubic,
-            duration: Duration(seconds: 1),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 0),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(icon, color: Colors.white, size: 60),
-                  SizedBox(height: size.height * .01),
-                  Text(
-                    title,
-                    style: GoogleFonts.lato(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  //   Widget _componentCard({
+  //     required String title,
+  //     required IconData icon,
+  //     required VoidCallback onTap,
+  //   }) {
+  //     var size = MediaQuery.of(context).size;
+  //     return GestureDetector(
+  //       onTap: onTap,
+  //       child: Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 10),
+  //         child: Card(
+  //           elevation: 0,
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(15),
+  //           ),
+  //           child: AnimatedContainer(
+  //             curve: Curves.easeInOutCubic,
+  //             duration: Duration(seconds: 1),
+  //             child: Container(
+  //               padding: EdgeInsets.symmetric(horizontal: 0),
+  //               decoration: BoxDecoration(
+  //                 color: Colors.blue,
+  //                 borderRadius: BorderRadius.circular(15),
+  //               ),
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   Icon(icon, color: Colors.white, size: 60),
+  //                   SizedBox(height: size.height * .01),
+  //                   Text(
+  //                     title,
+  //                     style: GoogleFonts.lato(
+  //                       color: Colors.white,
+  //                       fontSize: 18,
+  //                       fontWeight: FontWeight.w800,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   }
 }

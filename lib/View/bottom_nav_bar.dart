@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_page.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/service/night_stay_provider.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/OD_Process/view/odPage.dart';
 import 'package:sairam_incubation/View/Components/Home/home_page.dart';
 import 'package:sairam_incubation/View/Components/profile_page.dart';
 
@@ -62,24 +61,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: HomePage(),
       ),
       ComponentPage(),
-      Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Text(
-              "OD Process",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          surfaceTintColor: Colors.white,
-          backgroundColor: Colors.white,
-        ),
-        backgroundColor: Colors.white,
-        body: Center(child: Text("Coming Soon")),
-      ),
+      ODpage(),
       ProfilePage(),
     ];
   }

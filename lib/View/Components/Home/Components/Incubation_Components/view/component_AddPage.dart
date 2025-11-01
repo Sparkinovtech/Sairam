@@ -60,7 +60,7 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           // Handle navigation or other side effects here if needed
           if (state is NavigateToViewComponentState) {
             component = state.components;
-            
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -98,8 +98,6 @@ class _ComponentAddpageState extends State<ComponentAddpage> {
           }
           if (state is ComponentLoaded) {
             component = state.components;
-            final List<ComponentControllers> componentControllers =
-                mergedControllers;
 
             return SafeArea(
               child: Column(
