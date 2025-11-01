@@ -2,8 +2,9 @@ import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 
 class ComponetRequest {
-  final Profile? profile;
   final String id;
+  final String stud_id;
+  final String stud_name;
   final DateTime? createdAt;
   final String status;
   final List<Component> components;
@@ -13,7 +14,8 @@ class ComponetRequest {
     this.createdAt,
     this.status = 'pending',
     this.components = const [],
-    required this.profile,
+    this.stud_id = '',
+    this.stud_name = '',
   });
 
   factory ComponetRequest.fromMap(
@@ -36,9 +38,8 @@ class ComponetRequest {
           : null,
       status: data['status'] ?? 'pending',
       components: componentsList,
-      profile: data['profile'] != null
-          ? Profile.fromJson(data['profile'] as Map<String, dynamic>)
-          : null,
+      stud_id: data['stud_id'] ?? '',
+      stud_name: data['stud_name'] ?? '',
     );
   }
 
@@ -48,7 +49,8 @@ class ComponetRequest {
       'createdAt': createdAt?.toIso8601String(),
       'status': status,
       'components': components.map((c) => c.toJson()).toList(),
-      'profile': profile?.toJson(),
+      'stud_id': stud_id,
+      'stud_name': stud_name,
     };
   }
 }
