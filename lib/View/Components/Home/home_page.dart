@@ -186,7 +186,10 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * .05,
+                vertical: 5,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -200,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                           style: GoogleFonts.lato(
                             color: Colors.black,
                             fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),

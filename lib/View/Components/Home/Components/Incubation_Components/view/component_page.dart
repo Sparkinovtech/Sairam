@@ -20,13 +20,21 @@ class _ComponentPageState extends State<ComponentPage> {
   @override
   void initState() {
     super.initState();
-    // Load  requests when the page initializes
-    context.read<ComponentBloc>().add(FetchComponentsEvent());
-    // context.read<ComponentBloc>().add(LoadComponentEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<ComponentBloc>().add(FetchComponentsEvent());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return BlocConsumer<ComponentBloc, ComponentState>(
       listener: (context, state) {
         final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
@@ -52,48 +60,40 @@ class _ComponentPageState extends State<ComponentPage> {
           backgroundColor: Colors.white,
           body: SafeArea(
             child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * .05,
+                vertical: 5,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    child: Stack(
-                      children: [
-                        // Centered title
-                        Center(
-                          child: Text(
-                            "Components",
-                            style: GoogleFonts.lato(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
+                  Stack(
+                    children: [
+                      // Centered title
+                      Center(
+                        child: Text(
+                          "Components",
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
+                      ),
+                    ],
+                  ),
 
-                        // Right-aligned notification button
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          bottom: 0,
-                          child: IconButton(
-                            onPressed: () {
-                              // Handle notification button press
-                            },
-                            icon: Icon(CupertinoIcons.bell),
-                            padding: EdgeInsets.zero,
-                            constraints: BoxConstraints(),
-                          ),
-                        ),
-                      ],
+                  // List of Requested Components
+                  SizedBox(height: size.height * .03),
+                  Text(
+                    "My Requests",
+                    style: GoogleFonts.poppins(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  // List of Requested Components
-                  SizedBox(height: 16),
-
+                  SizedBox(height: size.height * .02),
                   ComponentRequests.isNotEmpty
                       ? ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
@@ -102,7 +102,7 @@ class _ComponentPageState extends State<ComponentPage> {
                           itemBuilder: (context, index) {
                             return Container(
                               margin: EdgeInsets.symmetric(
-                                horizontal: 16,
+                                horizontal: 0,
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
@@ -201,13 +201,16 @@ class _ComponentPageState extends State<ComponentPage> {
                             );
                           },
                         )
-                      : Center(
-                          child: Text(
-                            "No Component Requests Found",
-                            style: GoogleFonts.lato(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                      : SizedBox(
+                          height: 650,
+                          child: Center(
+                            child: Text(
+                              "No Component Requests Found",
+                              style: GoogleFonts.poppins(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
                             ),
                           ),
                         ),
