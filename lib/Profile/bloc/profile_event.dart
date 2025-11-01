@@ -145,6 +145,5 @@ class CheckNightStayStatusProfileEvent extends ProfileEvent {
 
   const CheckNightStayStatusProfileEvent(this.studentId);
 
-  @override
   List<Object?> get props => [studentId];
 }
