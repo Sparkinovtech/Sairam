@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
@@ -107,6 +108,32 @@ class _ViewrequestpageState extends State<Viewrequestpage> {
               ],
             ),
           ),
+          bottomNavigationBar: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: bg,
+                  foregroundColor: Colors.white,
+                  minimumSize: Size(double.infinity, 52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {},
+                child: Text("Return", style: TextStyle(fontSize: 16)),
+              ),
+            ),
         );
       },
     );
