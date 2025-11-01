@@ -20,7 +20,6 @@ class _ProfileListState extends State<ProfileList>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     final workPreference =
         widget.profile?.domains?.map((domain) => domain.domainName).toList() ??
         [];
@@ -46,7 +45,7 @@ class _ProfileListState extends State<ProfileList>
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: 10),
           _buildListWidget(
             icon: Icons.edit_outlined,
             text: "Work Preference",
@@ -62,7 +61,7 @@ class _ProfileListState extends State<ProfileList>
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: 10),
           _buildListWidget(
             icon: Icons.edit_outlined,
             text: "Skill Set",
@@ -78,7 +77,7 @@ class _ProfileListState extends State<ProfileList>
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: 10),
           _buildList(
             icon: Icons.arrow_forward_ios_rounded,
             text: "Portfolio",
@@ -93,7 +92,7 @@ class _ProfileListState extends State<ProfileList>
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: 10),
           _buildList(
             icon: Icons.arrow_forward_ios_rounded,
             text: "Earned Certificates",
@@ -108,7 +107,7 @@ class _ProfileListState extends State<ProfileList>
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: 10),
         ],
       ),
     );
@@ -121,15 +120,15 @@ class _ProfileListState extends State<ProfileList>
     required VoidCallback onTap,
   }) {
     return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       color: Colors.white,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(10, 20, 10, 25),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(13),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: Colors.grey.withValues(alpha: 0.2),
             width: 1,
@@ -183,8 +182,8 @@ class _ProfileListState extends State<ProfileList>
     required VoidCallback onTap,
   }) {
     return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       color: Colors.white,
       child: Container(
         width: double.infinity,
