@@ -1,4 +1,3 @@
-import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 
 class ComponetRequest {

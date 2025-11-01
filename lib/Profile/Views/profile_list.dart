@@ -20,7 +20,6 @@ class _ProfileListState extends State<ProfileList>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     final workPreference =
         widget.profile?.domains?.map((domain) => domain.domainName).toList() ??
         [];
