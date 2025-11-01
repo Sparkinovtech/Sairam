@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart';
 import 'package:sairam_incubation/Profile/Model/profile.dart';
 import 'package:sairam_incubation/Profile/service/profile_cloud_firestore_provider.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
@@ -13,8 +12,9 @@ part 'component_state.dart';
 
 class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
   final ProfileCloudFirestoreProvider profileProvider;
-
   ComponentBloc(this.profileProvider) : super(ComponentInitial()) {
+    final Profile? profile = profileProvider.profile;
+
     on<LoadComponentEvent>((event, emit) {
       if (state is ComponentLoaded) {
         final current = state as ComponentLoaded;
@@ -59,10 +59,12 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
           status: 'pending',
           components: [
             Component(name: 'Component A', quantity: '2'),
-          Component(name: 'Component B', quantity: '5'),
-        ],
-        profile: null,
-      )];
+            Component(name: 'Component B', quantity: '5'),
+          ],
+          stud_id: profile?.id ?? '',
+          stud_name: profile?.name ?? '',
+        ),
+      ];
 
       emit(
         ComponentLoaded(
@@ -213,7 +215,8 @@ class ComponentBloc extends Bloc<ComponentEvent, ComponentState> {
 
       // Create new request
       final request = ComponetRequest(
-        profile: profileProvider.profile,
+        stud_id: profile?.id ?? '',
+        stud_name: profile?.name ?? '',
         id: 'req_${DateTime.now().millisecondsSinceEpoch}',
         createdAt: DateTime.now(),
         status: 'pending',
