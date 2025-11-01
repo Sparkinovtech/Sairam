@@ -88,7 +88,9 @@ class _ViewrequestpageState extends State<Viewrequestpage> {
                                 ),
                               ],
                             ),
-                            component.status == 'approved'
+                            Row(
+                              children: [
+                                component.status == 'approved'
                                 ? const Icon(
                                     Icons.check_circle,
                                     color: Colors.green,
@@ -99,6 +101,19 @@ class _ViewrequestpageState extends State<Viewrequestpage> {
                                     Icons.hourglass_bottom,
                                     color: Colors.orange,
                                   ),
+                            SizedBox(width: 10),
+                            ElevatedButton ( 
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: bg,
+                                foregroundColor: Colors.white,
+                                minimumSize: Size(80, 36),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              onPressed: (){}, child: Text("Return"))      
+                              ])
+                            
                           ],
                         ),
                       );
@@ -109,31 +124,31 @@ class _ViewrequestpageState extends State<Viewrequestpage> {
             ),
           ),
           bottomNavigationBar: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: Offset(0, -2),
-                  ),
-                ],
-              ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: bg,
-                  foregroundColor: Colors.white,
-                  minimumSize: Size(double.infinity, 52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, -2),
                 ),
-                onPressed: () {},
-                child: Text("Return", style: TextStyle(fontSize: 16)),
-              ),
+              ],
             ),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bg,
+                foregroundColor: Colors.white,
+                minimumSize: Size(double.infinity, 52),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {},
+              child: Text("Return All", style: TextStyle(fontSize: 16)),
+            ),
+          ),
         );
       },
     );
