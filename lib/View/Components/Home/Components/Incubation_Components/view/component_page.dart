@@ -1,16 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/bloc/component_bloc.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/component.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/model/componet_request.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/component_AddPage.dart';
-import 'package:sairam_incubation/View/Components/Home/Components/Incubation_Components/view/viewRequestPage.dart';
 
 class ComponentPage extends StatefulWidget {
-  const ComponentPage({super.key});
+  final List<Component>? components;
+  const ComponentPage({super.key, this.components});
 
   @override
   State<ComponentPage> createState() => _ComponentPageState();
@@ -18,32 +15,20 @@ class ComponentPage extends StatefulWidget {
 
 class _ComponentPageState extends State<ComponentPage> {
   @override
-  void initState() {
-    super.initState();
-    // Load  requests when the page initializes
-    context.read<ComponentBloc>().add(FetchComponentsEvent());
-    // context.read<ComponentBloc>().add(LoadComponentEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocConsumer<ComponentBloc, ComponentState>(
       listener: (context, state) {
-        final isActiveRoute = ModalRoute.of(context)?.isCurrent ?? false;
-        if (!isActiveRoute) return;
         if (state is NavigateToAddComponentState) {
+          print("Navigating to Add Component Page");
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (ctx) => BlocProvider.value(
-                value: context.read<ComponentBloc>(),
-                child: ComponentAddpage(controllers: state.controllers),
-              ),
+              builder: (context) =>
+                  ComponentAddpage(controllers: state.controllers),
             ),
           );
         }
       },
-
       builder: (context, state) {
         List<ComponetRequest> ComponentRequests = widget.components != null
             ? widget.components!
@@ -52,6 +37,7 @@ class _ComponentPageState extends State<ComponentPage> {
                       id: comp.name,
                       status: comp.status,
                       createdAt: DateTime.now(),
+                      profile: null,
                     ),
                   )
                   .toList()
