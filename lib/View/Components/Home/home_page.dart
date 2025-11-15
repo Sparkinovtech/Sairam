@@ -12,11 +12,13 @@ import 'package:sairam_incubation/Utils/Constants/colors.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_bloc.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_event.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/bloc/night_stay_state.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/mentor_name.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/night_stay_student.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_bloc.dart';
 import 'package:sairam_incubation/Profile/bloc/profile_state.dart';
 import 'package:sairam_incubation/Utils/Calender/calender_page.dart';
 import 'package:sairam_incubation/Utils/model/projects.dart';
+import 'package:sairam_incubation/View/Components/Home/Components/Night_Stay/model/stay_reason.dart';
 import 'package:sairam_incubation/View/Components/Home/Components/notification_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     final end = DateTime(now.year, now.month, now.day, 18);
     return now.isAfter(start) && now.isBefore(end);
   }
+
   bool checked = false;
   final List<Projects> ongoingProjects = [
     Projects(name: "Rover", mentor: "Sam", category: "Hardware", imagePath: ""),
@@ -90,26 +93,24 @@ class _HomePageState extends State<HomePage> {
     var size = MediaQuery.of(context).size;
 
     return BlocConsumer<ProfileBloc, ProfileState>(
-      
       listener: (context, state) {
         if (state is ProfileStatusState) {
           print("Has opted in: $hasOptedIn");
-          
-            hasOptedIn = (state as ProfileStatusState).hasOpted;
-          
+
+          hasOptedIn = (state as ProfileStatusState).hasOpted;
         }
         if (state is NightStayBtnClickState) {
           // Handle the night stay button click event
-          if (!isWithinAllowedTime) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Night Stay requests can only be made between 4 PM and 6 PM.',
-                ),
-              ),
-            );
-            return;
-          }
+          // if (!isWithinAllowedTime) {
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     SnackBar(
+          //       content: Text(
+          //         'Night Stay requests can only be made between 4 PM and 6 PM.',
+          //       ),
+          //     ),
+          //   );
+          //   return;
+          // }
           if (state.nightStayStudent == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -120,28 +121,155 @@ class _HomePageState extends State<HomePage> {
             );
             return;
           }
+
+          if (hasOptedIn) {
+            showDialog(
+              context: context,
+              builder: (builder) {
+                return AlertDialog(
+                  title: Text('Confirm Night Stay Cancellation'),
+                  content: Text(
+                    'Are you sure you want to cancel your night stay request?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        _nightStayBloc.add(
+                          SaveNightStayEvent(state.nightStayStudent!, "No"),
+                        );
+                        setState(() {
+                          hasOptedIn = !hasOptedIn;
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+            return;
+          }
+
           showDialog(
             context: context,
             builder: (builder) {
+              bool breakfast = false;
+              bool lunch = false;
+              bool dinner = true;
+              StayReason? selectedStayReason;
+              String reasonStatement = '';
+              MentorName? selectedMentor;
+
               return AlertDialog(
                 title: Text('Night Stay Request'),
-                content: Text(
-                  hasOptedIn
-                      ? 'Are you sure you want to cancel your night stay request?'
-                      : 'Are you sure you want to opt in for night stay?',
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: breakfast,
+                            onChanged: (value) => breakfast = value!,
+                          ),
+                          Text('Breakfast'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: lunch,
+                            onChanged: (value) => lunch = value!,
+                          ),
+                          Text('Lunch'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: dinner,
+                            onChanged: (value) => dinner = value!,
+                          ),
+                          Text('Dinner'),
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      DropdownButtonFormField<StayReason>(
+                        value: selectedStayReason,
+                        decoration: InputDecoration(
+                          labelText: 'Reason for Night Stay',
+                        ),
+                        items: StayReason.values.map((reason) {
+                          return DropdownMenuItem(
+                            value: reason,
+                            child: Text(reason.reasonName),
+                          );
+                        }).toList(),
+                        onChanged: (value) => selectedStayReason = value,
+                        validator: (value) =>
+                            value == null ? 'Please select a reason' : null,
+                      ),
+                      SizedBox(height: 16),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Reason Statement (Optional)',
+                        ),
+                        onChanged: (value) => reasonStatement = value,
+                      ),
+                      SizedBox(height: 16),
+                      DropdownButtonFormField<MentorName>(
+                        value: selectedMentor,
+                        decoration: InputDecoration(labelText: 'Mentor Name'),
+                        items: MentorName.values.map((mentor) {
+                          return DropdownMenuItem(
+                            value: mentor,
+                            child: Text(mentor.mentor),
+                          );
+                        }).toList(),
+                        onChanged: (value) => selectedMentor = value,
+                        validator: (value) =>
+                            value == null ? 'Please select a mentor' : null,
+                      ),
+                    ],
+                  ),
                 ),
                 actions: [
                   TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed: () => Navigator.of(context).pop(),
                     child: Text('Cancel'),
                   ),
                   TextButton(
                     onPressed: () {
+                      if (selectedStayReason == null ||
+                          selectedMentor == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Please fill all mandatory fields'),
+                          ),
+                        );
+                        return;
+                      }
+
+                      // Save event logic
                       _nightStayBloc.add(
                         SaveNightStayEvent(
-                          state.nightStayStudent!,
+                          NightStayStudent(
+                            studentId: state.nightStayStudent!.studentId,
+                            studentName: state.nightStayStudent!.studentName,
+                            scholarType: state.nightStayStudent!.scholarType,
+                            breakfast: breakfast,
+                            lunch: lunch,
+                            dinner: dinner,
+                            stayreason: selectedStayReason!,
+                            reasonStatement: reasonStatement,
+                            mentorName: selectedMentor!,
+                          ),
                           hasOptedIn ? 'No' : 'Yes',
                         ),
                       );
@@ -151,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                         hasOptedIn = !hasOptedIn;
                       });
                     },
-                    child: Text('OK'),
+                    child: Text('Save'),
                   ),
                 ],
               );
@@ -172,9 +300,12 @@ class _HomePageState extends State<HomePage> {
             studentId: profile.id!,
             studentName: profile.name!,
             scholarType: profile.scholarType!.displayName,
+            dinner: false,
+            breakfast: false,
+            lunch: false,
           );
         }
-        
+
         if (nightStayStudent != null && checked == false) {
           print(
             "Dispatching CheckNightStayStatusEvent for studentId: ${nightStayStudent.studentId}",

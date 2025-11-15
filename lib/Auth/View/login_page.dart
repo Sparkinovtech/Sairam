@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
           } else if (state.exception is GenericAuthException) {
             await showErrorDialog(context, "Authentication error", "");
           } else if (state.exception is InvalidEmailAuthException) {
-            await showErrorDialog(context, "Invalid email entered", "");
+            await showErrorDialog(context, "Invalid College ID entered", "");
           }
         }
       },
@@ -44,11 +44,7 @@ class _LoginPageState extends State<LoginPage> {
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                bg_dark,
-                bg,
-                bg_light,
-              ],
+              colors: [bg_dark, bg, bg_light],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -57,18 +53,30 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20 , vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Text("Login", style: GoogleFonts.inconsolata(fontSize: 45, color: Colors.white)),
+                          Text(
+                            "Login",
+                            style: GoogleFonts.inconsolata(
+                              fontSize: 45,
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                       Row(
                         children: [
-                          Text("Welcome Back", style: GoogleFonts.inconsolata(fontSize: 35, color: Colors.white)),
+                          Text(
+                            "Welcome Back",
+                            style: GoogleFonts.inconsolata(
+                              fontSize: 35,
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -77,22 +85,27 @@ class _LoginPageState extends State<LoginPage> {
                 Spacer(),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child:Container(
+                  child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color:Colors.white,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(50),
+                      ),
                     ),
-                    padding: EdgeInsets.only(top: 40, left: 20 , right: 20 , bottom: 20),
-                    child: SingleChildScrollView(
-                      child: LoginForm(),
+                    padding: EdgeInsets.only(
+                      top: 40,
+                      left: 20,
+                      right: 20,
+                      bottom: 20,
                     ),
-                  ) ,
-                )
+                    child: SingleChildScrollView(child: LoginForm()),
+                  ),
+                ),
               ],
             ),
           ),
-        )
+        ),
       ),
     );
   }

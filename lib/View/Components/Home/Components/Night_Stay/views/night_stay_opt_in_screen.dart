@@ -59,44 +59,44 @@ class _NightStayOptInScreenState extends State<NightStayOptInScreen> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
-    // If outside allowed time, you can optionally enable this block to show warning
-    if (!isWithinAllowedTime) {
-      return Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: Colors.yellow[100],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.orange,
-                  size: 32,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Night stay option is available only from 4PM to 6PM everyday.\n'
-                    'Please try again during the allowed period.',
-                    style: GoogleFonts.inter(
-                      color: Colors.orange[900],
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+    // // If outside allowed time, you can optionally enable this block to show warning
+    // if (!isWithinAllowedTime) {
+    //   return Scaffold(
+    //     backgroundColor: Colors.white,
+    //     body: SafeArea(
+    //       child: Container(
+    //         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    //         padding: const EdgeInsets.all(18),
+    //         decoration: BoxDecoration(
+    //           color: Colors.yellow[100],
+    //           borderRadius: BorderRadius.circular(10),
+    //         ),
+    //         child: Row(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             const Icon(
+    //               Icons.warning_amber_rounded,
+    //               color: Colors.orange,
+    //               size: 32,
+    //             ),
+    //             const SizedBox(width: 12),
+    //             Expanded(
+    //               child: Text(
+    //                 'Night stay option is available only from 4PM to 6PM everyday.\n'
+    //                 'Please try again during the allowed period.',
+    //                 style: GoogleFonts.inter(
+    //                   color: Colors.orange[900],
+    //                   fontSize: 16,
+    //                   fontWeight: FontWeight.w500,
+    //                 ),
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     // Within allowed time, if profile incomplete show profile incomplete widget
     if (infoMissing) {
